@@ -367,9 +367,9 @@ export default function EstoquePage() {
 
       {/* 2. BARRA DE CONTROLE: ABAS DE CATEGORIA + BARRA DE BUSCA ULTRA LARGA */}
       <div className="bg-white border border-outline-variant rounded-xl p-4 flex flex-col gap-4 shadow-xs">
-        {/* Abas de Categoria */}
-        <div className="flex items-center justify-between border-b border-outline-variant/60 pb-3">
-          <div className="flex items-center gap-2">
+        {/* Abas de Categoria + Última Conciliação */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/60 pb-3">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               id="tab-estoque-armacoes"
               onClick={() => setActiveTab("armacoes")}
@@ -422,9 +422,10 @@ export default function EstoquePage() {
             </button>
           </div>
 
-          <div className="hidden lg:flex items-center gap-2 text-secondary font-mono-data text-xs pr-2">
-            <span className="material-symbols-outlined text-[16px]">sync</span>
-            Última conciliação: Hoje às 14:32:09
+          <div id="badge-estoque-ultima-conciliacao" className="flex items-center gap-2 text-secondary font-mono-data text-xs pr-1 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="material-symbols-outlined text-[16px] text-[#5483b3]">sync</span>
+            <span>Última conciliação: <strong className="text-primary font-mono">Hoje às 14:32:09</strong></span>
           </div>
         </div>
 

@@ -115,7 +115,7 @@ export default function SidebarNav() {
           <div className={`h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 transition-all ${
             collapsed ? "px-2 justify-center" : "px-4 justify-between"
           }`}>
-            <Link id="nav-link-brand-home" href="/" className="flex items-center">
+            <Link id="nav-link-brand-home" href="/" className={`flex items-center ${collapsed ? "justify-center w-full" : ""}`}>
               {collapsed ? (
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#052659] to-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white shadow-xs">
                   <span className="material-symbols-outlined text-[22px]">visibility</span>
@@ -125,20 +125,16 @@ export default function SidebarNav() {
               )}
             </Link>
 
-            {/* Desktop Collapse Toggle Button */}
-            {!forceExpanded && (
+            {/* Desktop Collapse Toggle Button (When Expanded) */}
+            {!forceExpanded && !collapsed && (
               <button
                 id="btn-sidebar-toggle-collapse"
                 type="button"
                 onClick={toggleCollapse}
-                title={collapsed ? "Expandir Menu Lateral [Alt+B]" : "Recolher Menu Lateral [Alt+B]"}
-                className={`hidden md:flex p-1.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/20 transition-colors cursor-pointer ${
-                  collapsed ? "mt-1" : ""
-                }`}
+                title="Recolher Menu Lateral [Alt+B]"
+                className="hidden md:flex p-1.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/20 transition-colors cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[18px]">
-                  {collapsed ? "last_page" : "first_page"}
-                </span>
+                <span className="material-symbols-outlined text-[18px]">first_page</span>
               </button>
             )}
 
@@ -153,10 +149,25 @@ export default function SidebarNav() {
             </button>
           </div>
 
+          {/* Desktop Expand Toggle Button (When Collapsed - Centered Perfectly) */}
+          {collapsed && !forceExpanded && (
+            <div className="px-2 pt-2.5 pb-0.5 flex justify-center">
+              <button
+                id="btn-sidebar-toggle-collapse-collapsed"
+                type="button"
+                onClick={toggleCollapse}
+                title="Expandir Menu Lateral [Alt+B]"
+                className="hidden md:flex w-10 h-7.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/25 transition-colors cursor-pointer items-center justify-center border border-[#5483B3]/30 shadow-2xs"
+              >
+                <span className="material-symbols-outlined text-[18px]">last_page</span>
+              </button>
+            </div>
+          )}
+
           {/* Live Optical Engine Pulse Badge */}
           {collapsed ? (
             <div 
-              className="mx-auto mt-3 w-8 h-8 rounded-lg bg-[#021024]/70 border border-[#5483B3]/30 flex items-center justify-center shadow-2xs"
+              className="mx-auto mt-2 w-8 h-8 rounded-lg bg-[#021024]/70 border border-[#5483B3]/30 flex items-center justify-center shadow-2xs"
               title="EDI Óptico Conectado • Tolerância ±0.25D"
             >
               <span className="relative flex h-2.5 w-2.5">
