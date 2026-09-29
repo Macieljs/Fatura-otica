@@ -269,12 +269,18 @@ export default function OrdensDeServicoPage() {
       esf: formatDiopterOnBlur(prev.esf) || "+0.75",
       cil: formatDiopterOnBlur(prev.cil) || "-1.00",
       eixo: prev.eixo && parseInt(prev.eixo, 10) >= 0 && parseInt(prev.eixo, 10) <= 180 ? prev.eixo : "180",
+      add: prev.add || "+1.50",
+      dnp: prev.dnp || "31.5",
+      altura: prev.altura || "19.0",
     }));
     setOe((prev) => ({
       ...prev,
       esf: formatDiopterOnBlur(prev.esf) || "-1.25",
       cil: formatDiopterOnBlur(prev.cil) || "0.00",
       eixo: prev.cil && parseFloat(prev.cil) !== 0 ? (prev.eixo || "180") : "",
+      add: prev.add || "+1.50",
+      dnp: prev.dnp || "32.0",
+      altura: prev.altura || "19.0",
     }));
 
     toast.success("Dioptrias ajustadas para valores clinicamente válidos!", {
@@ -714,16 +720,16 @@ export default function OrdensDeServicoPage() {
 
               {/* Table */}
               <div className="p-6 overflow-x-auto">
-                <table id="table-os-matriz-dioptrica" className="w-full border-collapse">
+                <table id="table-os-matriz-dioptrica" className="w-full min-w-[760px] border-collapse">
                   <thead>
                     <tr className="bg-slate-50 text-slate-600 border-b border-[#d0e2f2] text-xs font-bold text-left uppercase tracking-wider">
-                      <th className="px-4 py-3 w-32 font-bold text-[#021024]">Olho</th>
-                      <th className="px-3 py-3 text-center w-40">Esférico (Esf)</th>
-                      <th className="px-3 py-3 text-center w-40">Cilíndrico (Cil)</th>
-                      <th className="px-3 py-3 text-center w-48">Eixo (º)</th>
-                      <th className="px-3 py-3 text-center w-36">Adição (Add)</th>
-                      <th className="px-3 py-3 text-center w-32">DNP (mm)</th>
-                      <th className="px-3 py-3 text-center w-32">Altura (Alt mm)</th>
+                      <th className="px-4 py-3 w-36 font-bold text-[#021024]">Olho</th>
+                      <th className="px-3 py-3 text-center min-w-[130px]">Esférico (D)</th>
+                      <th className="px-3 py-3 text-center min-w-[130px]">Cilíndrico (D)</th>
+                      <th className="px-3 py-3 text-center min-w-[110px]">Eixo (º)</th>
+                      <th className="px-3 py-3 text-center min-w-[110px]">Adição (D)</th>
+                      <th className="px-3 py-3 text-center min-w-[100px]">DNP (mm)</th>
+                      <th className="px-3 py-3 text-center min-w-[100px]">Altura (mm)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#d0e2f2] text-sm">
@@ -743,7 +749,7 @@ export default function OrdensDeServicoPage() {
 
                       {/* Esférico OD */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[130px]">
+                        <div className="inline-block w-full max-w-[120px]">
                           <input
                             id="input-os-od-esferico"
                             type="text"
@@ -752,26 +758,27 @@ export default function OrdensDeServicoPage() {
                             onChange={(e) => setOd({ ...od, esf: sanitizeDiopterInput(e.target.value) })}
                             onBlur={(e) => setOd({ ...od, esf: formatDiopterOnBlur(e.target.value) })}
                             placeholder="±0.00"
-                            className={`w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border transition-all ${
+                            className={`w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border transition-all ${
                               !odEsfValidation.isValid
                                 ? "bg-rose-50 border-2 border-rose-500 text-rose-900 ring-2 ring-rose-200"
-                                : "bg-white border-[#d0e2f2] text-[#021024] focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
+                                : "bg-white border-[#d0e2f2] text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
                             }`}
                           />
-                          <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">D</span>
                         </div>
-                        {odEsfValidation.isValid ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 mt-1 font-medium">
-                            <span className="material-symbols-outlined text-[13px]">check_circle</span> Passo 0.25
-                          </span>
-                        ) : (
-                          <span className="block text-[10px] text-rose-600 mt-1 font-bold">{odEsfValidation.message}</span>
-                        )}
+                        <div className="mt-1">
+                          {odEsfValidation.isValid ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-medium">
+                              <span className="material-symbols-outlined text-[14px]">check_circle</span> Passo 0.25
+                            </span>
+                          ) : (
+                            <span className="block text-[11px] text-rose-600 font-bold">{odEsfValidation.message}</span>
+                          )}
+                        </div>
                       </td>
 
                       {/* Cilíndrico OD */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[130px]">
+                        <div className="inline-block w-full max-w-[120px]">
                           <input
                             id="input-os-od-cilindrico"
                             type="text"
@@ -780,43 +787,56 @@ export default function OrdensDeServicoPage() {
                             onChange={(e) => setOd({ ...od, cil: sanitizeDiopterInput(e.target.value) })}
                             onBlur={(e) => setOd({ ...od, cil: formatDiopterOnBlur(e.target.value) })}
                             placeholder="-0.00"
-                            className="w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border bg-[#f0f6fc] border-[#5483b3]/40 text-[#052659] focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
+                            className={`w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border transition-all ${
+                              !odCilValidation.isValid
+                                ? "bg-rose-50 border-2 border-rose-500 text-rose-900 ring-2 ring-rose-200"
+                                : "bg-white border-[#d0e2f2] text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
+                            }`}
                           />
-                          <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">D</span>
                         </div>
-                        <span className="block text-[10px] text-[#5483b3] mt-1 font-medium">Astigmatismo ativo</span>
-                      </td>
-
-                      {/* Eixo OD (com validação de erro) */}
-                      <td className="px-3 py-4 text-center relative">
-                        <div className="relative inline-block w-full max-w-[170px]">
-                          <div className="relative">
-                            <input
-                              id="input-os-od-eixo"
-                              type="text"
-                              maxLength={3}
-                              value={od.eixo}
-                              onChange={(e) => setOd({ ...od, eixo: e.target.value.replace(/[^0-9]/g, "").slice(0, 3) })}
-                              placeholder="ex: 180"
-                              className={`w-full h-10 text-center font-mono-data text-sm font-bold rounded-lg border transition-all ${
-                                !odEixoValidation.isValid
-                                  ? "bg-rose-50 border-2 border-rose-500 text-rose-900 ring-2 ring-rose-200"
-                                  : "bg-white border-[#d0e2f2] text-[#021024] focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
-                              }`}
-                            />
-                            {!odEixoValidation.isValid && (
-                              <span className="absolute right-2.5 top-2.5 text-rose-600 material-symbols-outlined text-[18px]">
-                                warning
-                              </span>
-                            )}
-                          </div>
-                          {!odEixoValidation.isValid ? (
-                            <span className="flex items-center gap-1 text-[10px] text-rose-600 font-bold mt-1 text-left leading-tight">
-                              <span className="material-symbols-outlined text-[13px]">warning</span> Obrigatório (0º a 180º)
+                        <div className="mt-1">
+                          {isCilindricoActive(od.cil) ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] text-[#5483b3] font-medium">
+                              Astigmatismo ativo
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 mt-1 font-medium">
-                              <span className="material-symbols-outlined text-[13px]">check_circle</span> Eixo Válido
+                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-400">
+                              Sem astigmatismo
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Eixo OD */}
+                      <td className="px-3 py-4 text-center">
+                        <div className="inline-block w-full max-w-[110px]">
+                          <input
+                            id="input-os-od-eixo"
+                            type="text"
+                            maxLength={3}
+                            disabled={!isCilindricoActive(od.cil)}
+                            value={od.eixo}
+                            onChange={(e) => setOd({ ...od, eixo: e.target.value.replace(/[^0-9]/g, "").slice(0, 3) })}
+                            placeholder={isCilindricoActive(od.cil) ? "0 a 180" : "—"}
+                            className={`w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border transition-all ${
+                              !isCilindricoActive(od.cil)
+                                ? "bg-slate-100 border-[#d0e2f2] text-slate-400 cursor-not-allowed"
+                                : !odEixoValidation.isValid
+                                ? "bg-rose-50 border-2 border-rose-500 text-rose-900 ring-2 ring-rose-200"
+                                : "bg-white border-[#d0e2f2] text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
+                            }`}
+                          />
+                        </div>
+                        <div className="mt-1">
+                          {!isCilindricoActive(od.cil) ? (
+                            <span className="text-[11px] text-slate-400">Bloqueado (Cil = 0.00)</span>
+                          ) : !odEixoValidation.isValid ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] text-rose-600 font-bold">
+                              <span className="material-symbols-outlined text-[14px]">warning</span> Obrigatório (0º a 180º)
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-medium">
+                              <span className="material-symbols-outlined text-[14px]">check_circle</span> Eixo Válido
                             </span>
                           )}
                         </div>
@@ -824,7 +844,7 @@ export default function OrdensDeServicoPage() {
 
                       {/* Adição OD */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[110px]">
+                        <div className="inline-block w-full max-w-[110px]">
                           <input
                             id="input-os-od-adicao"
                             type="text"
@@ -833,40 +853,47 @@ export default function OrdensDeServicoPage() {
                             onChange={(e) => setOd({ ...od, add: sanitizeDiopterInput(e.target.value) })}
                             onBlur={(e) => setOd({ ...od, add: formatDiopterOnBlur(e.target.value) })}
                             placeholder="+0.00"
-                            className="w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border border-[#d0e2f2] bg-white focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
+                            className="w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border border-[#d0e2f2] bg-white text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
                           />
-                          <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">D</span>
                         </div>
-                        <span className="block text-[10px] text-slate-500 mt-1">Presbiopia</span>
+                        <div className="mt-1">
+                          <span className="text-[11px] text-slate-500">Presbiopia</span>
+                        </div>
                       </td>
 
                       {/* DNP OD */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[95px]">
+                        <div className="inline-block w-full max-w-[100px]">
                           <input
                             id="input-os-od-dnp"
                             type="text"
                             maxLength={5}
                             value={od.dnp}
                             onChange={(e) => setOd({ ...od, dnp: e.target.value.replace(/[^0-9.]/g, "").slice(0, 5) })}
-                            className="w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border border-[#d0e2f2] bg-white focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
+                            placeholder="32.0"
+                            className="w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border border-[#d0e2f2] bg-white text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
                           />
-                          <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">mm</span>
+                        </div>
+                        <div className="mt-1">
+                          <span className="text-[11px] text-slate-500">Monocular</span>
                         </div>
                       </td>
 
                       {/* Altura OD */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[95px]">
+                        <div className="inline-block w-full max-w-[100px]">
                           <input
                             id="input-os-od-altura"
                             type="text"
                             maxLength={5}
                             value={od.altura}
                             onChange={(e) => setOd({ ...od, altura: e.target.value.replace(/[^0-9.]/g, "").slice(0, 5) })}
-                            className="w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border border-[#d0e2f2] bg-white focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
+                            placeholder="19.0"
+                            className="w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border border-[#d0e2f2] bg-white text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
                           />
-                          <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">mm</span>
+                        </div>
+                        <div className="mt-1">
+                          <span className="text-[11px] text-slate-500">Montagem</span>
                         </div>
                       </td>
                     </tr>
@@ -887,43 +914,38 @@ export default function OrdensDeServicoPage() {
 
                       {/* Esférico OE */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[130px]">
-                          <div className="relative">
-                            <input
-                              id="input-os-oe-esferico"
-                              type="text"
-                              maxLength={6}
-                              value={oe.esf}
-                              onChange={(e) => setOe({ ...oe, esf: sanitizeDiopterInput(e.target.value) })}
-                              onBlur={(e) => setOe({ ...oe, esf: formatDiopterOnBlur(e.target.value) })}
-                              placeholder="±0.00"
-                              className={`w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border transition-all ${
-                                !oeEsfValidation.isValid
-                                  ? "bg-rose-50 border-2 border-rose-500 text-rose-900 ring-2 ring-rose-200"
-                                  : "bg-white border-[#d0e2f2] text-[#021024] focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
-                              }`}
-                            />
-                            {!oeEsfValidation.isValid && (
-                              <span className="absolute right-2.5 top-2.5 text-rose-600 material-symbols-outlined text-[18px]">
-                                error
-                              </span>
-                            )}
-                          </div>
+                        <div className="inline-block w-full max-w-[120px]">
+                          <input
+                            id="input-os-oe-esferico"
+                            type="text"
+                            maxLength={6}
+                            value={oe.esf}
+                            onChange={(e) => setOe({ ...oe, esf: sanitizeDiopterInput(e.target.value) })}
+                            onBlur={(e) => setOe({ ...oe, esf: formatDiopterOnBlur(e.target.value) })}
+                            placeholder="±0.00"
+                            className={`w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border transition-all ${
+                              !oeEsfValidation.isValid
+                                ? "bg-rose-50 border-2 border-rose-500 text-rose-900 ring-2 ring-rose-200"
+                                : "bg-white border-[#d0e2f2] text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
+                            }`}
+                          />
                         </div>
-                        {!oeEsfValidation.isValid ? (
-                          <span className="block text-[10px] text-rose-600 font-bold mt-1 text-center">
-                            {oeEsfValidation.message || "Fora do passo 0.25"}
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 mt-1 font-medium">
-                            <span className="material-symbols-outlined text-[13px]">check_circle</span> Passo 0.25
-                          </span>
-                        )}
+                        <div className="mt-1">
+                          {!oeEsfValidation.isValid ? (
+                            <span className="block text-[11px] text-rose-600 font-bold text-center">
+                              {oeEsfValidation.message || "Fora do passo 0.25"}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-medium">
+                              <span className="material-symbols-outlined text-[14px]">check_circle</span> Passo 0.25
+                            </span>
+                          )}
+                        </div>
                       </td>
 
                       {/* Cilíndrico OE */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[130px]">
+                        <div className="inline-block w-full max-w-[120px]">
                           <input
                             id="input-os-oe-cilindrico"
                             type="text"
@@ -932,18 +954,23 @@ export default function OrdensDeServicoPage() {
                             onChange={(e) => setOe({ ...oe, cil: sanitizeDiopterInput(e.target.value) })}
                             onBlur={(e) => setOe({ ...oe, cil: formatDiopterOnBlur(e.target.value) })}
                             placeholder="-0.00"
-                            className="w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border border-[#d0e2f2] bg-white focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
+                            className={`w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border transition-all ${
+                              !oeCilValidation.isValid
+                                ? "bg-rose-50 border-2 border-rose-500 text-rose-900 ring-2 ring-rose-200"
+                                : "bg-white border-[#d0e2f2] text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
+                            }`}
                           />
-                          <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">D</span>
                         </div>
-                        <span className="block text-[10px] text-slate-500 mt-1">
-                          {isCilindricoActive(oe.cil) ? "Astigmatismo ativo" : "Sem astigmatismo"}
-                        </span>
+                        <div className="mt-1">
+                          <span className="text-[11px] text-slate-500">
+                            {isCilindricoActive(oe.cil) ? "Astigmatismo ativo" : "Sem astigmatismo"}
+                          </span>
+                        </div>
                       </td>
 
                       {/* Eixo OE */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[170px]">
+                        <div className="inline-block w-full max-w-[110px]">
                           <input
                             id="input-os-oe-eixo"
                             type="text"
@@ -952,21 +979,25 @@ export default function OrdensDeServicoPage() {
                             value={isCilindricoActive(oe.cil) ? oe.eixo : "—"}
                             onChange={(e) => setOe({ ...oe, eixo: e.target.value.replace(/[^0-9]/g, "").slice(0, 3) })}
                             placeholder={isCilindricoActive(oe.cil) ? "0 a 180" : "—"}
-                            className={`w-full h-10 text-center font-mono-data text-sm font-bold rounded-lg border ${
+                            className={`w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border transition-all ${
                               !isCilindricoActive(oe.cil)
                                 ? "bg-slate-100 border-[#d0e2f2] text-slate-400 cursor-not-allowed"
-                                : "bg-white border-[#d0e2f2] text-[#021024]"
+                                : !oeEixoValidation.isValid
+                                ? "bg-rose-50 border-2 border-rose-500 text-rose-900 ring-2 ring-rose-200"
+                                : "bg-white border-[#d0e2f2] text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
                             }`}
                           />
                         </div>
-                        <span className="block text-[10px] text-slate-400 mt-1">
-                          {!isCilindricoActive(oe.cil) ? "Bloqueado (Cil = 0.00)" : "0º a 180º"}
-                        </span>
+                        <div className="mt-1">
+                          <span className="text-[11px] text-slate-400">
+                            {!isCilindricoActive(oe.cil) ? "Bloqueado (Cil = 0.00)" : oeEixoValidation.isValid ? "Eixo Válido" : "Obrigatório (0º a 180º)"}
+                          </span>
+                        </div>
                       </td>
 
                       {/* Adição OE */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[110px]">
+                        <div className="inline-block w-full max-w-[110px]">
                           <input
                             id="input-os-oe-adicao"
                             type="text"
@@ -975,40 +1006,47 @@ export default function OrdensDeServicoPage() {
                             onChange={(e) => setOe({ ...oe, add: sanitizeDiopterInput(e.target.value) })}
                             onBlur={(e) => setOe({ ...oe, add: formatDiopterOnBlur(e.target.value) })}
                             placeholder="+0.00"
-                            className="w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border border-[#d0e2f2] bg-white focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
+                            className="w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border border-[#d0e2f2] bg-white text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
                           />
-                          <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">D</span>
                         </div>
-                        <span className="block text-[10px] text-slate-500 mt-1">Presbiopia</span>
+                        <div className="mt-1">
+                          <span className="text-[11px] text-slate-500">Presbiopia</span>
+                        </div>
                       </td>
 
                       {/* DNP OE */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[95px]">
+                        <div className="inline-block w-full max-w-[100px]">
                           <input
                             id="input-os-oe-dnp"
                             type="text"
                             maxLength={5}
                             value={oe.dnp}
                             onChange={(e) => setOe({ ...oe, dnp: e.target.value.replace(/[^0-9.]/g, "").slice(0, 5) })}
-                            className="w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border border-[#d0e2f2] bg-white focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
+                            placeholder="32.0"
+                            className="w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border border-[#d0e2f2] bg-white text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
                           />
-                          <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">mm</span>
+                        </div>
+                        <div className="mt-1">
+                          <span className="text-[11px] text-slate-500">Monocular</span>
                         </div>
                       </td>
 
                       {/* Altura OE */}
                       <td className="px-3 py-4 text-center">
-                        <div className="relative inline-block w-full max-w-[95px]">
+                        <div className="inline-block w-full max-w-[100px]">
                           <input
                             id="input-os-oe-altura"
                             type="text"
                             maxLength={5}
                             value={oe.altura}
                             onChange={(e) => setOe({ ...oe, altura: e.target.value.replace(/[^0-9.]/g, "").slice(0, 5) })}
-                            className="w-full h-10 text-center font-mono-data text-sm font-semibold rounded-lg border border-[#d0e2f2] bg-white focus:border-[#052659] focus:ring-1 focus:ring-[#052659]"
+                            placeholder="19.0"
+                            className="w-full h-11 text-center font-mono text-sm md:text-base font-bold rounded-lg border border-[#d0e2f2] bg-white text-[#052659] focus:border-[#052659] focus:ring-2 focus:ring-[#5483b3]/20"
                           />
-                          <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">mm</span>
+                        </div>
+                        <div className="mt-1">
+                          <span className="text-[11px] text-slate-500">Montagem</span>
                         </div>
                       </td>
                     </tr>
@@ -1021,11 +1059,19 @@ export default function OrdensDeServicoPage() {
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> DNP Total:{" "}
-                    <strong className="font-mono text-[#021024]">63.5 mm</strong>
+                    <strong className="font-mono text-[#021024]">
+                      {(parseFloat(od.dnp) || 0) + (parseFloat(oe.dnp) || 0) > 0
+                        ? `${((parseFloat(od.dnp) || 0) + (parseFloat(oe.dnp) || 0)).toFixed(1)} mm`
+                        : "---"}
+                    </strong>
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#052659] inline-block"></span> Tipo Calculado:{" "}
-                    <strong className="text-[#052659]">Multifocal / Progressiva</strong>
+                    <strong className="text-[#052659]">
+                      {parseFloat(od.add) > 0 || parseFloat(oe.add) > 0
+                        ? "Multifocal / Progressiva"
+                        : "Visão Simples"}
+                    </strong>
                   </span>
                 </div>
                 <div className="text-slate-500 flex items-center gap-1">
