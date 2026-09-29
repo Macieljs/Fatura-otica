@@ -467,7 +467,7 @@ export default function OrdensDeServicoPage() {
                 icon: "save",
               })
             }
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#052659] border border-[#7da0ca]/40 bg-white hover:bg-[#f0f6fc] rounded-lg transition-colors shadow-2xs whitespace-nowrap cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#052659] border border-[#7da0ca]/40 bg-white hover:bg-[#f0f6fc] rounded-lg transition-colors shadow-2xs whitespace-nowrap cursor-pointer shrink-0"
           >
             <span className="material-symbols-outlined text-[16px]">save</span>
             <span>Salvar Rascunho</span>

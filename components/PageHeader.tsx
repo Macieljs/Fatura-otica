@@ -41,11 +41,11 @@ export default function PageHeader({
   return (
     <header
       id={id}
-      className={`sticky top-14 md:top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#7DA0CA]/30 px-4 sm:px-6 lg:px-8 py-3 min-h-[68px] shadow-xs flex items-center transition-all ${className}`}
+      className={`sticky top-14 md:top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#7DA0CA]/30 px-4 sm:px-6 py-3 min-h-[68px] shadow-xs flex items-center transition-all ${className}`}
     >
       <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-3 min-w-0">
         {/* Lado Esquerdo: Breadcrumb / Voltar + Ícone + Título + Subtítulo */}
-        <div className="flex items-center gap-3 min-w-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
           {/* Botão Voltar (se fornecido) */}
           {backHref && (
             <>
@@ -69,7 +69,7 @@ export default function PageHeader({
           )}
 
           {/* Hierarquia de Títulos */}
-          <div className="min-w-0">
+          <div>
             {/* Breadcrumbs opcionais no topo do título */}
             {breadcrumbs && breadcrumbs.length > 0 && (
               <nav aria-label="Navegação Estrutural" className="flex items-center gap-1.5 text-xs text-[#5483B3] mb-0.5">
@@ -98,8 +98,8 @@ export default function PageHeader({
             )}
 
             {/* Linha Principal do Título */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-base sm:text-lg font-bold text-[#052659] tracking-tight leading-snug truncate">
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <h1 className="text-sm sm:text-base lg:text-lg font-bold text-[#052659] tracking-tight leading-snug whitespace-nowrap">
                 {title}
               </h1>
               {badge && <div className="shrink-0 inline-flex items-center">{badge}</div>}
@@ -107,9 +107,9 @@ export default function PageHeader({
 
             {/* Subtítulo ou Metadados Clínicos */}
             {subtitle && (
-              <div className="text-[11px] sm:text-xs text-[#5483B3] flex items-center gap-1.5 mt-0.5 flex-wrap truncate">
+              <div className="text-[11px] sm:text-xs text-[#5483B3] flex items-center gap-1.5 mt-0.5 whitespace-nowrap">
                 {typeof subtitle === "string" ? (
-                  <span className="truncate">{subtitle}</span>
+                  <span>{subtitle}</span>
                 ) : (
                   subtitle
                 )}

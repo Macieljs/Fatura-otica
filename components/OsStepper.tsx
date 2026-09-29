@@ -68,12 +68,12 @@ export default function OsStepper({
                   step
                 )}
               </div>
-              {/* No desktop largo, mostra nome completo; no intermediário, mostra nome curto; no estreito, oculta os passos inativos */}
+              {/* No desktop ultrawide/full hd mostra todos; em larguras menores mantém o passo ativo visível e compacta os demais */}
               <span
                 className={`text-xs ${
                   isActive
                     ? "inline font-bold"
-                    : "hidden lg:inline"
+                    : "hidden 2xl:inline"
                 }`}
               >
                 {label}
