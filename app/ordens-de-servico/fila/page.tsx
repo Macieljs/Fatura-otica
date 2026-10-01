@@ -36,6 +36,35 @@ function FilaLaboratorioContent() {
   const [mensagemSucessoBip, setMensagemSucessoBip] = useState<string | null>(null);
   const [osDestacada, setOsDestacada] = useState<string | null>(destaqueParam);
 
+  const [gavetasAbertas, setGavetasAbertas] = useState<Record<string, boolean>>({
+    aguardando_lab: true,
+    surfacagem: true,
+    controle_qualidade: true,
+    pronto: true,
+  });
+
+  const toggleGaveta = (id: string) => {
+    setGavetasAbertas((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const expandirTodasGavetas = () => {
+    setGavetasAbertas({
+      aguardando_lab: true,
+      surfacagem: true,
+      controle_qualidade: true,
+      pronto: true,
+    });
+  };
+
+  const recolherTodasGavetas = () => {
+    setGavetasAbertas({
+      aguardando_lab: false,
+      surfacagem: false,
+      controle_qualidade: false,
+      pronto: false,
+    });
+  };
+
   const [ordens, setOrdens] = useState<OSItem[]>([
     {
       id: "10294",
@@ -390,10 +419,42 @@ function FilaLaboratorioContent() {
   }, [ordens, filtroColuna, busca, osDestacada]);
 
   const colunasKanban = [
-    { id: "aguardando_lab", titulo: "No Laboratório Externo", cor: "bg-rose-600" },
-    { id: "surfacagem", titulo: "Em Produção / Montagem", cor: "bg-[#5483B3]" },
-    { id: "controle_qualidade", titulo: "Chegou / Conferir Lensômetro", cor: "bg-indigo-600" },
-    { id: "pronto", titulo: "Pronto na Gaveta (Retirada)", cor: "bg-emerald-600" },
+    {
+      id: "aguardando_lab",
+      gavetaNumero: "Gaveteiro 01",
+      titulo: "No Laboratório Externo",
+      subtitulo: "Ordens enviadas e em trânsito com laboratórios terceirizados",
+      cor: "bg-rose-500",
+      badgeCor: "bg-rose-50 text-rose-700 border-rose-200",
+      icone: "local_shipping",
+    },
+    {
+      id: "surfacagem",
+      gavetaNumero: "Gaveteiro 02",
+      titulo: "Em Produção / Montagem",
+      subtitulo: "Em processo de surfaçagem, blocagem e montagem de aro",
+      cor: "bg-[#5483B3]",
+      badgeCor: "bg-[#F0F6FC] text-[#052659] border-[#C1E8FF]",
+      icone: "precision_manufacturing",
+    },
+    {
+      id: "controle_qualidade",
+      gavetaNumero: "Gaveteiro 03",
+      titulo: "Chegou / Conferir Lensômetro",
+      subtitulo: "Malote entregue na loja aguardando conferência dióptrica de grau",
+      cor: "bg-indigo-500",
+      badgeCor: "bg-indigo-50 text-indigo-700 border-indigo-200",
+      icone: "visibility",
+    },
+    {
+      id: "pronto",
+      gavetaNumero: "Gaveteiro 04",
+      titulo: "Pronto na Gaveta (Retirada no Balcão)",
+      subtitulo: "Óculos conferidos, alocados nas gavetas de balcão e liberados para entrega",
+      cor: "bg-emerald-500",
+      badgeCor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      icone: "inventory_2",
+    },
   ];
 
   return (
@@ -831,110 +892,213 @@ function FilaLaboratorioContent() {
             </div>
           </section>
         ) : (
-          /* 2. VISUALIZAÇÃO KANBAN POR GAVETAS / ESTÁGIOS */
-          <div className="flex gap-4 items-start overflow-x-auto pb-6 scroll-smooth">
+          /* 2. VISUALIZAÇÃO GAVETAS DE BALCÃO (ACCORDIONS EXPANSÍVEIS) */
+          <div className="space-y-4">
+            {/* Barra de Ações Rápidas das Gavetas */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-500 px-1 gap-2">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[17px] text-[#5483B3]">inventory_2</span>
+                <span className="font-semibold text-[#052659]">Gaveteiro de Balcão (4 Estágios Físicos)</span>
+                <span className="text-slate-400 hidden sm:inline">•</span>
+                <span className="hidden sm:inline">Visualização horizontal ampla sem corte de cards</span>
+              </div>
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <button
+                  id="btn-gavetas-expandir-todas"
+                  type="button"
+                  onClick={expandirTodasGavetas}
+                  className="text-xs font-semibold text-[#5483B3] hover:text-[#052659] hover:underline cursor-pointer flex items-center gap-1"
+                >
+                  <span className="material-symbols-outlined text-[15px]">unfold_more</span>
+                  <span>Expandir Todas</span>
+                </button>
+                <span className="text-slate-300">|</span>
+                <button
+                  id="btn-gavetas-recolher-todas"
+                  type="button"
+                  onClick={recolherTodasGavetas}
+                  className="text-xs font-semibold text-slate-500 hover:text-slate-800 hover:underline cursor-pointer flex items-center gap-1"
+                >
+                  <span className="material-symbols-outlined text-[15px]">unfold_less</span>
+                  <span>Recolher Todas</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Lista dos 4 Gaveteiros */}
             {colunasKanban.map((col) => {
               const ordensNaColuna = ordensFiltradas.filter((o) => o.statusColuna === col.id);
+              const isOpen = gavetasAbertas[col.id] !== false;
+
               return (
                 <div
                   key={col.id}
-                  id={`coluna-fila-kanban-${col.id}`}
-                  className="w-[290px] sm:w-[320px] xl:w-auto xl:flex-1 shrink-0 bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow"
+                  id={`gaveta-secao-${col.id}`}
+                  className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-sm transition-all"
                 >
-                  <div className="p-3 bg-[#F0F6FC] border-b border-[#C1E8FF]/80 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className={`w-2.5 h-2.5 rounded-full ${col.cor}`}></span>
-                      <h3 className="font-bold text-xs text-[#052659] leading-tight">{col.titulo}</h3>
+                  {/* Cabeçalho do Gaveteiro (Clicável para Expandir/Recolher) */}
+                  <button
+                    id={`btn-toggle-gaveta-${col.id}`}
+                    type="button"
+                    onClick={() => toggleGaveta(col.id)}
+                    className="w-full p-4 bg-[#F0F6FC] hover:bg-[#e4effa] border-b border-[#C1E8FF]/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white ${col.cor} shadow-xs shrink-0`}>
+                        <span className="material-symbols-outlined text-[18px]">{col.icone}</span>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#5483B3] bg-white px-2 py-0.5 rounded border border-[#C1E8FF]/80">
+                            {col.gavetaNumero}
+                          </span>
+                          <h3 className="font-bold text-sm text-[#052659]">{col.titulo}</h3>
+                        </div>
+                        <p className="text-[11px] text-slate-500 hidden md:block mt-0.5">
+                          {col.subtitulo}
+                        </p>
+                      </div>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-[#FFFFFF] border border-[#C1E8FF]/80 text-[#052659]">
-                      {ordensNaColuna.length}
-                    </span>
-                  </div>
 
-                  <div className="p-3 space-y-3 flex-1 overflow-y-auto max-h-[640px]">
-                    {ordensNaColuna.length === 0 ? (
-                      <div className="py-12 text-center text-xs text-slate-400">Nenhum pedido nesta gaveta</div>
-                    ) : (
-                      ordensNaColuna.map((item) => {
-                        const isHighlighted = item.id === osDestacada;
-                        return (
-                          <div
-                            key={item.id}
-                            id={`card-fila-kanban-${item.id}`}
-                            className={`p-3 rounded-xl border transition-all duration-300 space-y-2 group shadow-2xs ${
-                              isHighlighted
-                                ? "border-amber-400 bg-amber-50/90 ring-2 ring-amber-300 shadow-sm"
-                                : "border-[#C1E8FF]/70 bg-[#FFFFFF] hover:border-[#052659] hover:bg-[#F0F6FC]/50 hover:shadow-xs"
-                            }`}
-                          >
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex items-center gap-1.5">
-                                <span className="font-mono font-bold text-xs text-[#052659] bg-[#F0F6FC] px-1.5 py-0.5 rounded border border-[#C1E8FF]/80 whitespace-nowrap shrink-0">
-                                  OS #{item.id}
-                                </span>
-                              </div>
-                              <span
-                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold border truncate max-w-[62%] text-right shrink-0 ${
-                                  item.statusBadgeTipo === "danger"
-                                    ? "bg-[#FEF2F2] text-[#B91C1C] border-[#F87171]"
-                                    : item.statusBadgeTipo === "warning"
-                                    ? "bg-[#FFFBEB] text-[#B45309] border-[#FCD34D]"
-                                    : item.statusBadgeTipo === "info"
-                                    ? "bg-[#EFF6FF] text-[#1D4ED8] border-[#93C5FD]"
-                                    : "bg-[#F0FDF4] text-[#15803D] border-[#86EFAC]"
+                    <div className="flex items-center gap-3 self-end sm:self-center">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-mono font-bold border ${col.badgeCor}`}>
+                        {ordensNaColuna.length} {ordensNaColuna.length === 1 ? "pedido" : "pedidos"}
+                      </span>
+                      <span className="material-symbols-outlined text-[20px] text-[#5483B3] transition-transform duration-200">
+                        {isOpen ? "expand_less" : "expand_more"}
+                      </span>
+                    </div>
+                  </button>
+
+                  {/* Conteúdo da Gaveta: Grid Amplo e Responsivo de Cards */}
+                  {isOpen && (
+                    <div className="p-4 sm:p-5 bg-[#FAFCFF]">
+                      {ordensNaColuna.length === 0 ? (
+                        <div className="py-8 text-center text-xs text-slate-400 flex flex-col items-center justify-center gap-1.5">
+                          <span className="material-symbols-outlined text-[24px] text-slate-300">inbox</span>
+                          <span>Nenhum pedido alocado neste estágio no momento</span>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+                          {ordensNaColuna.map((item) => {
+                            const isHighlighted = item.id === osDestacada;
+                            return (
+                              <div
+                                key={item.id}
+                                id={`card-fila-gaveta-${item.id}`}
+                                className={`p-4 rounded-xl border transition-all duration-200 flex flex-col justify-between space-y-3 shadow-xs hover:shadow-md ${
+                                  isHighlighted
+                                    ? "border-amber-400 bg-amber-50/90 ring-2 ring-amber-300"
+                                    : "border-[#C1E8FF]/80 bg-[#FFFFFF] hover:border-[#052659]"
                                 }`}
-                                title={item.statusBadge}
                               >
-                                {item.statusBadge}
-                              </span>
-                            </div>
+                                {/* Topo do Card */}
+                                <div className="flex items-center justify-between gap-2 pb-2 border-b border-[#F0F6FC]">
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-mono font-bold text-xs text-[#052659] bg-[#F0F6FC] px-2 py-0.5 rounded border border-[#C1E8FF] whitespace-nowrap">
+                                      OS #{item.id}
+                                    </span>
+                                    <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
+                                      {item.prometido}
+                                    </span>
+                                  </div>
+                                  <span
+                                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold border truncate max-w-[55%] text-right shrink-0 ${
+                                      item.statusBadgeTipo === "danger"
+                                        ? "bg-[#FEF2F2] text-[#B91C1C] border-[#F87171]"
+                                        : item.statusBadgeTipo === "warning"
+                                        ? "bg-[#FFFBEB] text-[#B45309] border-[#FCD34D]"
+                                        : item.statusBadgeTipo === "info"
+                                        ? "bg-[#EFF6FF] text-[#1D4ED8] border-[#93C5FD]"
+                                        : "bg-[#F0FDF4] text-[#15803D] border-[#86EFAC]"
+                                    }`}
+                                    title={item.statusBadge}
+                                  >
+                                    {item.statusBadge}
+                                  </span>
+                                </div>
 
-                            <div className="flex items-center gap-1.5 text-xs text-[#021024] min-w-0">
-                              <span className="material-symbols-outlined text-[15px] text-[#5483B3] shrink-0">
-                                person
-                              </span>
-                              <span className="font-semibold truncate" title={item.cliente}>
-                                {item.cliente}
-                              </span>
-                            </div>
+                                {/* Dados do Paciente */}
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-1.5 text-xs text-[#021024]">
+                                    <span className="material-symbols-outlined text-[16px] text-[#5483B3] shrink-0">
+                                      person
+                                    </span>
+                                    <span className="font-bold truncate text-[13px]" title={item.cliente}>
+                                      {item.cliente}
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] font-mono text-slate-500 pl-5">
+                                    {item.telefone}
+                                  </div>
+                                </div>
 
-                            <div className="space-y-0.5 text-xs text-slate-600">
-                              <div className="truncate font-medium text-slate-800" title={item.armacao}>
-                                {item.armacao}
-                              </div>
-                              <div className="truncate text-[11px] text-slate-500" title={item.lente}>
-                                {item.lente}
-                              </div>
-                            </div>
+                                {/* Detalhes de Armação, Lente e Laboratório */}
+                                <div className="bg-[#F8FAFC] rounded-lg p-2.5 space-y-1 border border-[#F0F6FC] text-xs">
+                                  <div className="flex items-start gap-1.5">
+                                    <span className="material-symbols-outlined text-[14px] text-[#5483B3] shrink-0 mt-0.5">
+                                      eyeglasses
+                                    </span>
+                                    <span className="font-semibold text-slate-800 line-clamp-1" title={item.armacao}>
+                                      {item.armacao}
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] text-slate-600 line-clamp-1 pl-5" title={item.lente}>
+                                    {item.lente}
+                                  </div>
+                                  <div className="text-[10px] text-slate-400 font-mono pl-5 pt-0.5 flex items-center justify-between">
+                                    <span>{item.laboratorio}</span>
+                                    <span className="font-bold text-[#5483B3]">{item.gaveta}</span>
+                                  </div>
+                                </div>
 
-                            <div className="pt-2 border-t border-[#F0F6FC] flex items-center justify-between text-[11px]">
-                              <span className="font-mono text-slate-500 text-[10px]">{item.gaveta}</span>
-                              <div className="flex items-center gap-1.5">
-                                <Link
-                                  id={`link-fila-kanban-avisar-${item.id}`}
-                                  href={`/ordens-de-servico/notificar-whatsapp?id=${item.id}`}
-                                  className="text-emerald-700 hover:text-emerald-900 font-bold inline-flex items-center gap-0.5"
-                                  title="Notificar cliente no WhatsApp"
-                                >
-                                  <span className="material-symbols-outlined text-[14px]">chat</span>
-                                  <span>Avisar</span>
-                                </Link>
-                                <span className="text-slate-300">•</span>
-                                <Link
-                                  id={`link-fila-kanban-ficha-${item.id}`}
-                                  href={`/ordens-de-servico/detalhes?id=${item.id}`}
-                                  className="text-[#5483B3] hover:text-[#052659] font-bold inline-flex items-center gap-0.5"
-                                >
-                                  <span>Ficha</span>
-                                  <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
-                                </Link>
+                                {/* Rodapé de Ações de Balcão */}
+                                <div className="pt-2 border-t border-[#F0F6FC] flex items-center justify-between gap-2">
+                                  {item.statusBadgeTipo === "danger" ? (
+                                    <a
+                                      id={`link-gaveta-cobrar-lab-${item.id}`}
+                                      href={`https://wa.me/5511987654321?text=Ol%C3%A1%20${encodeURIComponent(item.laboratorio)}!%20Cobran%C3%A7a%20urgente%20da%20OS%20%23${item.id}%20do%20paciente%20${encodeURIComponent(item.cliente)}%20que%20est%C3%A1%20atrasada.`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#FEF2F2] text-[#B91C1C] border border-[#F87171] hover:bg-red-100 transition-colors inline-flex items-center gap-1 shadow-2xs"
+                                      title="Cobrar laboratório"
+                                    >
+                                      <span className="material-symbols-outlined text-[14px]">warning</span>
+                                      <span>Cobrar Lab</span>
+                                    </a>
+                                  ) : (
+                                    <span className="text-[11px] font-mono font-bold text-[#052659]">
+                                      R$ {item.valorTotal.toFixed(2).replace(".", ",")}
+                                    </span>
+                                  )}
+
+                                  <div className="flex items-center gap-1.5">
+                                    <Link
+                                      id={`link-gaveta-avisar-${item.id}`}
+                                      href={`/ordens-de-servico/notificar-whatsapp?id=${item.id}`}
+                                      className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-colors inline-flex items-center gap-1 shadow-2xs"
+                                      title="Notificar paciente no WhatsApp"
+                                    >
+                                      <span className="material-symbols-outlined text-[14px] text-emerald-600">chat</span>
+                                      <span>Avisar</span>
+                                    </Link>
+                                    <Link
+                                      id={`link-gaveta-ficha-${item.id}`}
+                                      href={`/ordens-de-servico/detalhes?id=${item.id}`}
+                                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#F0F6FC] text-[#052659] border border-[#7DA0CA] hover:bg-[#dce9f8] transition-colors inline-flex items-center gap-0.5 shadow-2xs"
+                                    >
+                                      <span>Ficha</span>
+                                      <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+                                    </Link>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
