@@ -28,7 +28,10 @@ function FilaLaboratorioContent() {
 
   const [busca, setBusca] = useState("");
   const [filtroColuna, setFiltroColuna] = useState<string>("todas");
-  const [modoVisualizacao, setModoVisualizacao] = useState<"tabela" | "kanban">("tabela");
+  const viewParam = searchParams.get("view");
+  const [modoVisualizacao, setModoVisualizacao] = useState<"tabela" | "kanban">(
+    viewParam === "kanban" || viewParam === "gavetas" ? "kanban" : "tabela"
+  );
   const [inputMalote, setInputMalote] = useState("");
   const [mensagemSucessoBip, setMensagemSucessoBip] = useState<string | null>(null);
   const [osDestacada, setOsDestacada] = useState<string | null>(destaqueParam);
@@ -393,6 +396,11 @@ function FilaLaboratorioContent() {
     { id: "pronto", titulo: "Pronto na Gaveta (Retirada)", cor: "bg-emerald-600" },
   ];
 
+  const colunasExibidas = useMemo(() => {
+    if (filtroColuna === "todas") return colunasKanban;
+    return colunasKanban.filter((c) => c.id === filtroColuna);
+  }, [filtroColuna, colunasKanban]);
+
   return (
     <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-20 text-[#021024]">
       {/* Top Header & Breadcrumbs */}
@@ -453,12 +461,12 @@ function FilaLaboratorioContent() {
         </div>
       </div>
 
-      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto px-6 lg:px-10 py-6 space-y-6">
+      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-4 sm:space-y-6">
         {/* Barra de Recepção Rápida de Malote em 1 Bip */}
-        <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 shadow-xs">
+        <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 shadow-sm">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#F0F6FC] border border-[#7DA0CA]/60 flex items-center justify-center text-[#052659]">
+              <div className="w-10 h-10 rounded-lg bg-[#F0F6FC] border border-[#7DA0CA]/60 flex items-center justify-center text-[#052659] shrink-0">
                 <span className="material-symbols-outlined text-[24px]">barcode_scanner</span>
               </div>
               <div>
@@ -471,7 +479,7 @@ function FilaLaboratorioContent() {
               </div>
             </div>
 
-            <form id="form-fila-bip-malote" onSubmit={handleDarEntradaBip} className="flex items-center gap-2 w-full lg:w-auto">
+            <form id="form-fila-bip-malote" onSubmit={handleDarEntradaBip} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
               <div className="relative flex-1 sm:w-80">
                 <input
                   id="input-fila-bip-codigo"
@@ -488,7 +496,7 @@ function FilaLaboratorioContent() {
               <button
                 id="btn-fila-bipar"
                 type="submit"
-                className="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors inline-flex items-center gap-1.5 shadow-xs shrink-0 cursor-pointer"
+                className="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors inline-flex items-center justify-center gap-1.5 shadow-xs shrink-0 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">qr_code_scanner</span>
                 <span>Dar Entrada</span>
@@ -515,7 +523,7 @@ function FilaLaboratorioContent() {
         </div>
 
         {/* Faixa de KPIs Executivos de Loja de Balcão */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
             <span className="text-[11px] font-semibold text-[#5483B3] uppercase">No Laboratório Externo</span>
             <div className="text-2xl font-bold font-mono text-[#052659]">6 Pedidos</div>
@@ -553,8 +561,10 @@ function FilaLaboratorioContent() {
         </div>
 
         {/* Barra de Filtros, Pesquisa e Seletor de Modo de Visualização */}
-        <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-3.5 flex flex-col md:flex-row items-center justify-between gap-3 shadow-sm">
-          <div className="flex items-center gap-1.5 flex-wrap w-full md:w-auto">
+        {/* Barra de Filtros, Pesquisa e Seletor de Modo de Visualização */}
+        <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-3.5 flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3.5 shadow-sm">
+          {/* Pills de Filtro de Estágio com rolagem horizontal suave no mobile/tablet */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 xl:pb-0 scrollbar-none w-full xl:w-auto shrink-0">
             {[
               { id: "todas", label: `Todos (${ordens.length})` },
               { id: "aguardando_lab", label: "No Lab Externo (4)" },
@@ -567,7 +577,7 @@ function FilaLaboratorioContent() {
                 id={`btn-fila-filtro-${f.id}`}
                 type="button"
                 onClick={() => setFiltroColuna(f.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors border cursor-pointer shrink-0 ${
                   filtroColuna === f.id
                     ? "bg-[#052659] text-white border-[#052659] shadow-2xs"
                     : "bg-[#FFFFFF] text-[#052659] border-[#C1E8FF]/80 hover:bg-[#F0F6FC]"
@@ -578,10 +588,10 @@ function FilaLaboratorioContent() {
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between xl:justify-end gap-3 w-full xl:w-auto">
             {/* Campo de Pesquisa Rápida Estruturada */}
-            <div className="flex flex-col gap-1 w-full sm:w-auto">
-              <div className="relative w-full sm:w-72">
+            <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 sm:flex-initial">
+              <div className="relative w-full sm:w-72 lg:w-80">
                 <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-[#5483B3]">
                   search
                 </span>
@@ -598,7 +608,7 @@ function FilaLaboratorioContent() {
                     id="btn-fila-limpar-busca-icone"
                     type="button"
                     onClick={() => setBusca("")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
                     title="Limpar busca"
                   >
                     <span className="material-symbols-outlined text-[14px]">close</span>
@@ -635,7 +645,7 @@ function FilaLaboratorioContent() {
                 id="btn-fila-view-tabela"
                 type="button"
                 onClick={() => setModoVisualizacao("tabela")}
-                className={`px-2.5 py-1 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
                   modoVisualizacao === "tabela"
                     ? "bg-[#052659] text-white"
                     : "text-[#052659] hover:bg-[#FFFFFF]"
@@ -643,13 +653,13 @@ function FilaLaboratorioContent() {
                 title="Visualização em Tabela Ágil"
               >
                 <span className="material-symbols-outlined text-[15px]">table_rows</span>
-                <span className="hidden sm:inline">Tabela</span>
+                <span>Tabela</span>
               </button>
               <button
                 id="btn-fila-view-kanban"
                 type="button"
                 onClick={() => setModoVisualizacao("kanban")}
-                className={`px-2.5 py-1 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
                   modoVisualizacao === "kanban"
                     ? "bg-[#052659] text-white"
                     : "text-[#052659] hover:bg-[#FFFFFF]"
@@ -657,7 +667,7 @@ function FilaLaboratorioContent() {
                 title="Visualização por Gavetas e Estágios"
               >
                 <span className="material-symbols-outlined text-[15px]">view_kanban</span>
-                <span className="hidden sm:inline">Gavetas</span>
+                <span>Gavetas</span>
               </button>
             </div>
           </div>
@@ -827,21 +837,27 @@ function FilaLaboratorioContent() {
           </section>
         ) : (
           /* 2. VISUALIZAÇÃO KANBAN POR GAVETAS / ESTÁGIOS */
-          <div className="flex xl:grid xl:grid-cols-4 gap-4 items-start overflow-x-auto pb-4 snap-x">
-            {colunasKanban.map((col) => {
+          <div
+            className={`grid gap-4 items-start ${
+              colunasExibidas.length === 1
+                ? "grid-cols-1 max-w-2xl mx-auto"
+                : "grid-cols-1 md:grid-cols-2 xl:grid-cols-4"
+            }`}
+          >
+            {colunasExibidas.map((col) => {
               const ordensNaColuna = ordensFiltradas.filter((o) => o.statusColuna === col.id);
               return (
                 <div
                   key={col.id}
                   id={`coluna-fila-kanban-${col.id}`}
-                  className="min-w-[280px] xl:min-w-0 flex-1 snap-start bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg overflow-hidden flex flex-col min-h-[460px] shadow-xs"
+                  className="w-full bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl overflow-hidden flex flex-col min-h-[460px] shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="p-3 bg-[#F0F6FC] border-b border-[#7DA0CA] flex items-center justify-between">
+                  <div className="p-3 bg-[#F0F6FC] border-b border-[#C1E8FF]/80 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className={`w-2.5 h-2.5 rounded-full ${col.cor}`}></span>
                       <h3 className="font-bold text-xs text-[#052659] leading-tight">{col.titulo}</h3>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-[#FFFFFF] border border-[#7DA0CA] text-[#052659]">
+                    <span className="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-[#FFFFFF] border border-[#C1E8FF]/80 text-[#052659]">
                       {ordensNaColuna.length}
                     </span>
                   </div>
@@ -856,15 +872,15 @@ function FilaLaboratorioContent() {
                           <div
                             key={item.id}
                             id={`card-fila-kanban-${item.id}`}
-                            className={`p-3 rounded-lg border transition-all duration-1000 space-y-2 group shadow-2xs ${
+                            className={`p-3 rounded-xl border transition-all duration-300 space-y-2 group shadow-2xs ${
                               isHighlighted
                                 ? "border-amber-400 bg-amber-50/90 ring-2 ring-amber-300 shadow-sm"
-                                : "border-[#7DA0CA]/70 bg-[#FFFFFF] hover:border-[#052659] hover:bg-[#F0F6FC]/50"
+                                : "border-[#C1E8FF]/70 bg-[#FFFFFF] hover:border-[#052659] hover:bg-[#F0F6FC]/50 hover:shadow-xs"
                             }`}
                           >
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center gap-1.5">
-                                <span className="font-mono font-bold text-xs text-[#052659] bg-[#F0F6FC] px-1.5 py-0.5 rounded border border-[#7DA0CA]/60 whitespace-nowrap shrink-0">
+                                <span className="font-mono font-bold text-xs text-[#052659] bg-[#F0F6FC] px-1.5 py-0.5 rounded border border-[#C1E8FF]/80 whitespace-nowrap shrink-0">
                                   OS #{item.id}
                                 </span>
                               </div>
