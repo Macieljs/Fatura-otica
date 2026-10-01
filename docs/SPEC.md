@@ -430,7 +430,43 @@ Na Etapa 1 do Wizard de Nova Ordem de Serviço (`app/ordens-de-servico/page.tsx`
 
 ---
 
+### 💎 Sprint 16: Refinamento Visual Premium & Microinterações de Interface (Visual Polish)
 
+**Status:** Concluído (Entregue na Sprint 16 & Validado no DoD).
+
+**Motivação:**
+Com base no relatório de consultoria de UX/UI, implementar uma elevação visual incremental (sem alterações bruscas no layout e sem adição de bibliotecas externas pesadas), refinando o acabamento profissional, a legibilidade de dados densos e a agilidade nas rotinas diárias sob o Design System *Clinical Precision*.
+
+**Especificação Técnica:**
+1. **Containeres & Cards Suavizados:**
+   - Padronização dos cartões e painéis para cantos arredondados modernos `rounded-xl`, borda suave `border-[#C1E8FF]/60` e elevação limpa `shadow-sm`, com hover refinado `hover:shadow-md transition-shadow`.
+   - Aplicado em: Dashboard (Home), Estoque Livre, Kardex & Rastreabilidade, Fila de Ordens de Serviço, Detalhes da OS e Subtela de Disparo WhatsApp.
+2. **Tabelas de Alta Densidade (Sticky Header & Microinteração de Linha):**
+   - Cabeçalhos de tabela (`<thead>`) fixados com `sticky top-0 z-10 bg-[#F0F6FC] border-b border-[#C1E8FF]/80`, garantindo contexto permanente durante rolagem de inventários e relatórios extensos.
+   - Microinteração de hover em linhas de tabela com realce sutil `hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default`.
+   - Aplicado em: Catálogo de Estoque, Tabelas do Kardex (Sugestões e Ledger), Fila de Ordens de Serviço, Tabelas de SLA e Ranking da Dashboard, e Histórico de Disparos de WhatsApp.
+3. **Campos de Busca com Focus Glow Clínico:**
+   - Efeito visual de foco com anel suave `focus:ring-2 focus:ring-[#5483B3]/40 focus:border-[#5483B3] transition-all` nos campos de busca de Estoque, Kardex e Fila de OS.
+4. **Sidebar Navigation & Operador Ativo:**
+   - Implementação de avatar circular com iniciais do operador logado (`CR` para Dr. Carlos Ramos, `MS` para Mariana Souza) gerado dinamicamente via `getInitials(name)`.
+   - Feedback de hover aprimorado nos itens de menu da barra lateral com `hover:bg-[#5483B3]/25 transition-colors`.
+5. **Dashboard Gerencial & Badges de Tendência:**
+   - Inclusão de micro-badges visuais de tendência (`trending_up` / `trending_down`) com cores semânticas (verde/vermelho) nos cards de indicadores executivos.
+6. **Wizard de Nova OS (Etapa 1 - Clientes Frequentes de Balcão):**
+   - Eliminação de áreas vazias na Etapa 1 do Wizard através da seção "Clientes Frequentes de Balcão (Acesso Rápido)" com 3 cartões de preenchimento instantâneo (`Roberto Mendes`, `Beatriz Fagundes`, `Claudio Nogueira`).
+   - 1-clique preenche automaticamente nome, CPF mascarado e telefone, com feedback visual via Toast corporativo e IDs semânticos únicos (`#btn-os-cliente-rapido-1`, etc.).
+
+**Critérios de Aceite:**
+- [x] Cards e containeres globais atualizados com `rounded-xl`, `border-[#C1E8FF]/60` e `shadow-sm`.
+- [x] Sticky headers e microinterações de hover aplicados em todas as tabelas de alta densidade.
+- [x] Inputs de busca equipados com anel de foco suave (`focus:ring-2 focus:ring-[#5483B3]/40`).
+- [x] Avatar de iniciais do operador na Sidebar nos modos expandido e colapsado.
+- [x] Badges de tendência no Dashboard gerencial.
+- [x] Clientes frequentes de balcão na Etapa 1 do Wizard de OS.
+- [x] 100% de conformidade com IDs semânticos (`semantic-ids.md`).
+- [x] `npm run build` executado com Exit Code 0 em todas as 14 rotas.
+
+---
 
 Para garantir que o **Fatura Ótica** seja escalável como SaaS B2B e adaptável a diferentes óticas sem comprometer a integridade clínica, estabelecemos três camadas rígidas de responsabilidade:
 

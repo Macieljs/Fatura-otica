@@ -479,7 +479,7 @@ export default function OrdensDeServicoPage() {
       <main className="flex-1 max-w-[1760px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* STEP 1: DADOS DO CLIENTE */}
         {currentStep === 1 && (
-          <section className="bg-white rounded-xl border border-[#d0e2f2] shadow-xs p-6 space-y-6">
+          <section className="bg-white rounded-xl border border-[#C1E8FF]/60 shadow-sm p-6 space-y-6">
             <div className="border-b border-[#d0e2f2] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h2 className="text-lg font-bold text-[#052659]">1. Identificação do Cliente &amp; Atendimento</h2>
@@ -613,6 +613,89 @@ export default function OrdensDeServicoPage() {
                   value="Filial Centro - Loja 01"
                   className="w-full h-10 px-3 bg-[#f0f6fc] border border-[#d0e2f2] rounded-lg text-sm font-semibold text-slate-700 cursor-not-allowed"
                 />
+              </div>
+            </div>
+
+            {/* Quick Autocomplete: Clientes Frequentes de Balcão */}
+            <div className="pt-5 border-t border-[#d0e2f2]">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[#052659] text-[18px]">history</span>
+                  <h3 className="text-xs font-bold text-[#052659] uppercase tracking-wider">
+                    Clientes Frequentes de Balcão (Acesso Rápido)
+                  </h3>
+                </div>
+                <span className="text-[11px] text-[#5483B3] font-mono hidden sm:inline">1-Clique para preenchimento ágil</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {[
+                  {
+                    nome: "Roberto Mendes de Oliveira",
+                    cpf: "348.912.778-05",
+                    telefone: "(11) 98765-4321",
+                    convenio: "Particular",
+                    tag: "Última OS: #10287",
+                  },
+                  {
+                    nome: "Beatriz Fagundes Rocha",
+                    cpf: "882.143.905-22",
+                    telefone: "(11) 97412-3390",
+                    convenio: "Convênio Bradesco Saúde",
+                    tag: "Última OS: #10279",
+                  },
+                  {
+                    nome: "Claudio Nogueira Dias",
+                    cpf: "512.638.441-90",
+                    telefone: "(11) 96321-8854",
+                    convenio: "Convênio Oftalmológico Amil",
+                    tag: "Última OS: #10274",
+                  },
+                ].map((frequent, idx) => (
+                  <div
+                    key={idx}
+                    id={`card-os-cliente-recente-${idx + 1}`}
+                    className="p-3.5 rounded-xl border border-[#C1E8FF]/80 bg-[#F0F6FC]/60 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all flex flex-col justify-between shadow-2xs group"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="font-bold text-xs text-[#052659] truncate group-hover:text-[#5483B3] transition-colors">
+                          {frequent.nome}
+                        </span>
+                        <span className="text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded bg-[#C1E8FF] text-[#052659] shrink-0">
+                          {frequent.tag}
+                        </span>
+                      </div>
+                      <div className="mt-1 text-[11px] text-slate-500 font-mono space-y-0.5">
+                        <div>CPF: {frequent.cpf}</div>
+                        <div>WhatsApp: {frequent.telefone}</div>
+                        <div className="text-[10px] text-[#5483B3] font-sans font-medium">{frequent.convenio}</div>
+                      </div>
+                    </div>
+
+                    <button
+                      id={`btn-os-usar-cliente-recente-${idx + 1}`}
+                      type="button"
+                      onClick={() => {
+                        setClientData({
+                          ...clientData,
+                          nome: frequent.nome,
+                          cpf: frequent.cpf,
+                          telefone: frequent.telefone,
+                          tipoAtendimento: frequent.convenio,
+                        });
+                        toast.info(`Dados de ${frequent.nome.split(" ")[0]} preenchidos no formulário!`, {
+                          title: "Cliente Selecionado",
+                          icon: "person_check",
+                        });
+                      }}
+                      className="mt-3 w-full py-1.5 px-2.5 rounded-lg bg-white hover:bg-[#052659] text-[#052659] hover:text-white border border-[#7DA0CA]/60 text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">touch_app</span>
+                      <span>Preencher Dados</span>
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
 

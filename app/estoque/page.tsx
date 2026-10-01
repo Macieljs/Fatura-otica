@@ -441,7 +441,7 @@ export default function EstoquePage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por Código de Barras (SKU), Marca, Modelo ou Cor..."
-              className="w-full h-10 pl-11 pr-24 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-secondary/70 focus:bg-white focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all"
+              className="w-full h-10 pl-11 pr-24 bg-surface-container-low border border-[#C1E8FF]/80 rounded-xl text-sm text-on-surface placeholder:text-secondary/70 focus:bg-white focus:border-[#5483B3] focus:ring-2 focus:ring-[#5483B3]/40 shadow-2xs transition-all"
             />
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center gap-1.5 pointer-events-none">
               <kbd className="px-2 py-0.5 text-[11px] font-mono bg-white text-secondary border border-outline-variant rounded font-semibold shadow-2xs">
@@ -505,11 +505,11 @@ export default function EstoquePage() {
       </div>
 
       {/* 3. TABELA B2B SAAS DE ALTA DENSIDADE */}
-      <div className="bg-white border border-outline-variant rounded-xl shadow-xs overflow-hidden flex flex-col flex-1">
+      <div className="bg-white border border-[#C1E8FF]/60 rounded-xl shadow-sm overflow-hidden flex flex-col flex-1">
         <div className="overflow-x-auto w-full">
           <table id="table-estoque-catalogo" className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-outline-variant text-[11px] font-semibold text-secondary uppercase tracking-wider select-none">
+              <tr className="bg-[#F0F6FC] sticky top-0 z-10 border-b border-[#C1E8FF]/80 text-[11px] font-bold text-[#052659] uppercase tracking-wider select-none shadow-2xs">
                 <th className="w-10 px-4 py-3.5 text-center whitespace-nowrap">
                   <input
                     id="checkbox-estoque-selecionar-todos"
@@ -552,12 +552,12 @@ export default function EstoquePage() {
                   return (
                     <tr
                       key={item.id}
-                      className={`transition-colors ${
+                      className={`transition-colors duration-150 cursor-default ${
                         isCritical
-                          ? "bg-rose-50/70 hover:bg-rose-100/60 border-l-4 border-l-rose-600"
+                          ? "bg-rose-50/70 hover:bg-rose-100/70 border-l-4 border-l-rose-600"
                           : isZero
                           ? "bg-slate-50/80 hover:bg-slate-100/80 opacity-80"
-                          : "hover:bg-slate-50/70 bg-white"
+                          : "hover:bg-[#C1E8FF]/15 bg-white"
                       }`}
                     >
                       <td className="px-4 py-4 text-center whitespace-nowrap">

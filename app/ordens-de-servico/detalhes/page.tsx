@@ -225,7 +225,7 @@ function DetalheOSContent() {
         {/* Grid de 2 Colunas: Prescrição e Materiais */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Card 1: Prescrição Oftalmológica */}
-          <section className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-5 space-y-4 shadow-xs">
+          <section className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-5 space-y-4 shadow-sm">
             <div className="flex items-center justify-between pb-3 border-b border-[#F0F6FC]">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#5483B3] text-[20px]">visibility</span>
@@ -242,7 +242,7 @@ function DetalheOSContent() {
             <div className="overflow-x-auto">
               <table id="table-os-detalhe-matriz-dioptrica" className="w-full text-center text-xs border-collapse">
                 <thead>
-                  <tr className="bg-[#F0F6FC] text-[#052659] border-b border-[#7DA0CA] text-[11px] font-bold uppercase tracking-wider">
+                  <tr className="bg-[#F0F6FC] sticky top-0 z-10 text-[#052659] border-b border-[#C1E8FF]/80 text-[11px] font-bold uppercase tracking-wider shadow-2xs">
                     <th className="py-2.5 px-3 text-left">Olho</th>
                     <th className="py-2.5 px-2">Esférico</th>
                     <th className="py-2.5 px-2">Cilíndrico</th>
@@ -253,7 +253,7 @@ function DetalheOSContent() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E2E8F0] font-mono font-semibold">
-                  <tr className="hover:bg-[#F0F6FC]/50">
+                  <tr className="hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
                     <td className="py-3 px-3 text-left font-sans font-bold text-[#052659]">OD (Direito)</td>
                     <td className="py-3 px-2 text-[#021024]">{os.od.esf} D</td>
                     <td className="py-3 px-2 text-[#052659]">{os.od.cil} D</td>
@@ -262,7 +262,7 @@ function DetalheOSContent() {
                     <td className="py-3 px-2 text-slate-700">{os.od.dnp} mm</td>
                     <td className="py-3 px-2 text-slate-700">{os.od.altura} mm</td>
                   </tr>
-                  <tr className="hover:bg-[#F0F6FC]/50">
+                  <tr className="hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
                     <td className="py-3 px-3 text-left font-sans font-bold text-[#5483B3]">OE (Esquerdo)</td>
                     <td className="py-3 px-2 text-[#021024]">{os.oe.esf} D</td>
                     <td className="py-3 px-2 text-[#052659]">{os.oe.cil} D</td>
@@ -292,7 +292,7 @@ function DetalheOSContent() {
           </section>
 
           {/* Card 2: Materiais e Componentes Alocados */}
-          <section className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-5 space-y-4 shadow-xs">
+          <section className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-5 space-y-4 shadow-sm">
             <div className="flex items-center justify-between pb-3 border-b border-[#F0F6FC]">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#5483B3] text-[20px]">inventory_2</span>
@@ -306,7 +306,7 @@ function DetalheOSContent() {
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 rounded border border-[#7DA0CA]/60 bg-[#F0F6FC] flex items-center justify-between">
+              <div className="p-3 rounded-xl border border-[#C1E8FF]/60 bg-[#F0F6FC] flex items-center justify-between shadow-2xs">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-[#5483B3] block">Armação Vinculada</span>
                   <div className="text-xs font-bold text-[#052659] mt-0.5">{os.armacao}</div>
@@ -319,7 +319,7 @@ function DetalheOSContent() {
                 </span>
               </div>
 
-              <div className="p-3 rounded border border-[#7DA0CA]/60 bg-[#F0F6FC] flex items-center justify-between">
+              <div className="p-3 rounded-xl border border-[#C1E8FF]/60 bg-[#F0F6FC] flex items-center justify-between shadow-2xs">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-[#5483B3] block">Bloco de Lentes</span>
                   <div className="text-xs font-bold text-[#052659] mt-0.5">{os.lente}</div>
@@ -341,7 +341,7 @@ function DetalheOSContent() {
         </div>
 
         {/* Linha do Tempo de Rastreabilidade & Produção */}
-        <section className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-5 space-y-4 shadow-xs">
+        <section className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-5 space-y-4 shadow-sm">
           <div className="flex items-center gap-2 pb-3 border-b border-[#F0F6FC]">
             <span className="material-symbols-outlined text-[#5483B3] text-[20px]">timeline</span>
             <h2 className="text-sm font-bold text-[#052659] uppercase tracking-wide">

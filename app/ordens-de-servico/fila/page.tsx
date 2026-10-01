@@ -516,13 +516,13 @@ function FilaLaboratorioContent() {
 
         {/* Faixa de KPIs Executivos de Loja de Balcão */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-1 shadow-xs">
+          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
             <span className="text-[11px] font-semibold text-[#5483B3] uppercase">No Laboratório Externo</span>
             <div className="text-2xl font-bold font-mono text-[#052659]">6 Pedidos</div>
             <span className="text-[11px] text-slate-500">Essilor (3), Hoya (2), Lab Lux (1)</span>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-1 shadow-xs">
+          <div className="bg-[#FFFFFF] border border-red-200/80 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow bg-red-50/10">
             <span className="text-[11px] font-semibold text-rose-600 uppercase">Atrasados pelo Lab</span>
             <div className="text-2xl font-bold font-mono text-rose-700">2 Pedidos</div>
             <a
@@ -537,13 +537,13 @@ function FilaLaboratorioContent() {
             </a>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-1 shadow-xs">
+          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
             <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Prontos p/ Retirada na Loja</span>
             <div className="text-2xl font-bold font-mono text-emerald-700">4 Pedidos</div>
             <span className="text-[11px] text-slate-500">Gavetas G-01 a G-05</span>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-1 shadow-xs">
+          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
             <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Avisos WhatsApp Enviados</span>
             <div className="text-2xl font-bold font-mono text-[#052659]">8 Notificados</div>
             <span className="inline-block px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#F0FDF4] text-[#15803D] border border-emerald-200">
@@ -553,7 +553,7 @@ function FilaLaboratorioContent() {
         </div>
 
         {/* Barra de Filtros, Pesquisa e Seletor de Modo de Visualização */}
-        <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-3.5 flex flex-col md:flex-row items-center justify-between gap-3 shadow-xs">
+        <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-3.5 flex flex-col md:flex-row items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-1.5 flex-wrap w-full md:w-auto">
             {[
               { id: "todas", label: `Todos (${ordens.length})` },
@@ -567,10 +567,10 @@ function FilaLaboratorioContent() {
                 id={`btn-fila-filtro-${f.id}`}
                 type="button"
                 onClick={() => setFiltroColuna(f.id)}
-                className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors border cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border cursor-pointer ${
                   filtroColuna === f.id
-                    ? "bg-[#052659] text-white border-[#052659]"
-                    : "bg-[#FFFFFF] text-[#052659] border-[#7DA0CA] hover:bg-[#F0F6FC]"
+                    ? "bg-[#052659] text-white border-[#052659] shadow-2xs"
+                    : "bg-[#FFFFFF] text-[#052659] border-[#C1E8FF]/80 hover:bg-[#F0F6FC]"
                 }`}
               >
                 {f.label}
@@ -591,7 +591,7 @@ function FilaLaboratorioContent() {
                   value={busca}
                   onChange={(e) => setBusca(e.target.value)}
                   placeholder="Buscar OS, cliente, lab:essilor, status:atrasado..."
-                  className="w-full h-8 pl-8 pr-7 rounded border border-[#7DA0CA] text-xs bg-[#FFFFFF] text-[#021024] focus:outline-none focus:ring-1 focus:ring-[#5483B3]"
+                  className="w-full h-8.5 pl-8 pr-7 rounded-lg border border-[#C1E8FF]/80 text-xs bg-[#FFFFFF] text-[#021024] focus:border-[#5483B3] focus:ring-2 focus:ring-[#5483B3]/40 transition-all shadow-2xs"
                 />
                 {busca && (
                   <button
@@ -665,11 +665,11 @@ function FilaLaboratorioContent() {
 
         {/* 1. VISUALIZAÇÃO PADRÃO: TABELA ÁGIL DE ALTA DENSIDADE */}
         {modoVisualizacao === "tabela" ? (
-          <section className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg overflow-hidden shadow-xs">
+          <section className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table id="table-fila-producao" className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-[#F0F6FC] border-b border-[#7DA0CA] text-[11px] font-bold text-[#052659] uppercase">
+                  <tr className="bg-[#F0F6FC] sticky top-0 z-10 border-b border-[#C1E8FF]/80 text-[11px] font-bold text-[#052659] uppercase shadow-2xs">
                     <th className="px-4 py-3">OS &amp; Paciente</th>
                     <th className="px-4 py-3">Armação &amp; Lente</th>
                     <th className="px-4 py-3">Laboratório Parceiro</th>
@@ -698,7 +698,7 @@ function FilaLaboratorioContent() {
                             setBusca("");
                             setFiltroColuna("todas");
                           }}
-                          className="mt-2 px-3 py-1.5 rounded bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-colors inline-flex items-center gap-1 cursor-pointer"
+                          className="mt-2 px-3 py-1.5 rounded-lg bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-colors inline-flex items-center gap-1 cursor-pointer shadow-xs"
                         >
                           <span className="material-symbols-outlined text-sm">restart_alt</span>
                           <span>Limpar Filtros e Pesquisa</span>
@@ -712,10 +712,10 @@ function FilaLaboratorioContent() {
                         <tr
                           key={item.id}
                           id={`linha-os-${item.id}`}
-                          className={`transition-colors duration-1000 ${
+                          className={`transition-colors duration-150 cursor-default ${
                             isHighlighted
-                              ? "bg-amber-100/80"
-                              : "hover:bg-[#F0F6FC]/50"
+                              ? "bg-amber-100/80 ring-2 ring-amber-500/50"
+                              : "hover:bg-[#C1E8FF]/15"
                           }`}
                         >
                           {/* OS & Paciente */}

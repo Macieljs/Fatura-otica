@@ -188,7 +188,7 @@ export default function Kardex() {
   return (
     <div className="p-4 lg:p-6 space-y-4 max-w-[1720px] w-full mx-auto">
       {/* Header Compacto com Ações Diretas */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white px-4 py-3 rounded-lg border border-[#7DA0CA]/40 shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white px-4 py-3 rounded-xl border border-[#C1E8FF]/60 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#052659] text-xl">inventory_2</span>
@@ -210,7 +210,7 @@ export default function Kardex() {
           <Link
             id="link-kardex-entrada-nfe"
             href="/kardex/entrada-nfe"
-            className="h-8 px-3 inline-flex items-center gap-1.5 rounded-md text-xs font-bold border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] bg-white transition-colors"
+            className="h-8 px-3 inline-flex items-center gap-1.5 rounded-lg text-xs font-bold border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] bg-white transition-colors shadow-2xs"
           >
             <span className="material-symbols-outlined text-sm text-[#5483B3]">upload_file</span>
             <span>+ Entrada NF-e</span>
@@ -220,7 +220,7 @@ export default function Kardex() {
               <Link
                 id="link-kardex-ajuste-manual"
                 href="/kardex/ajuste-manual"
-                className="h-8 px-3 inline-flex items-center gap-1.5 rounded-md text-xs font-bold border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] bg-white transition-colors"
+                className="h-8 px-3 inline-flex items-center gap-1.5 rounded-lg text-xs font-bold border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] bg-white transition-colors shadow-2xs"
               >
                 <span className="material-symbols-outlined text-sm text-rose-600">construction</span>
                 <span>+ Ajuste / Avaria</span>
@@ -228,7 +228,7 @@ export default function Kardex() {
               <Link
                 id="link-kardex-painel-reposicao"
                 href="/kardex/sugestoes-compra"
-                className="h-8 px-3.5 inline-flex items-center gap-1.5 rounded-md text-xs font-bold text-white bg-[#052659] hover:bg-[#021024] transition-colors shadow-xs"
+                className="h-8 px-3.5 inline-flex items-center gap-1.5 rounded-lg text-xs font-bold text-white bg-[#052659] hover:bg-[#021024] transition-colors shadow-xs"
               >
                 <span className="material-symbols-outlined text-sm">shopping_cart_checkout</span>
                 <span>Painel Reposição [F8]</span>
@@ -240,28 +240,28 @@ export default function Kardex() {
 
       {/* Mini-Indicadores Operacionais At-a-Glance */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-3.5 shadow-xs flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-3.5 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
           <div>
             <div className="text-xs font-bold text-[#5483B3] uppercase tracking-wide">SKUs no Kardex</div>
             <div className="text-2xl font-mono font-bold text-[#052659] mt-0.5">842 <span className="text-xs font-normal text-slate-500">itens</span></div>
           </div>
           <span className="material-symbols-outlined text-[#5483B3] text-2xl">category</span>
         </div>
-        <div className="bg-white rounded-lg border border-red-300 p-3.5 shadow-xs flex items-center justify-between bg-red-50/15">
+        <div className="bg-white rounded-xl border border-red-200/80 p-3.5 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between bg-red-50/15">
           <div>
             <div className="text-xs font-bold text-red-600 uppercase tracking-wide">Rupturas Críticas</div>
             <div className="text-2xl font-mono font-bold text-red-700 mt-0.5">4 <span className="text-xs font-normal text-red-500">itens</span></div>
           </div>
           <span className="material-symbols-outlined text-red-600 text-2xl">emergency</span>
         </div>
-        <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-3.5 shadow-xs flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-3.5 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
           <div>
             <div className="text-xs font-bold text-[#5483B3] uppercase tracking-wide">Entradas NF-e Mês</div>
             <div className="text-2xl font-mono font-bold text-emerald-700 mt-0.5">+128 <span className="text-xs font-normal text-slate-500">un</span></div>
           </div>
           <span className="material-symbols-outlined text-emerald-600 text-2xl">receipt_long</span>
         </div>
-        <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-3.5 shadow-xs flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-3.5 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
           <div>
             <div className="text-xs font-bold text-[#5483B3] uppercase tracking-wide">Saídas Balcão &amp; OS</div>
             <div className="text-2xl font-mono font-bold text-[#052659] mt-0.5">-94 <span className="text-xs font-normal text-slate-500">un</span></div>
@@ -272,7 +272,7 @@ export default function Kardex() {
 
       {/* TABELA 1: SUGESTÃO DE REPOSIÇÃO AUTOMÁTICA (COMPACTA - EXCLUSIVA GERENTE) */}
       {isManager && (
-        <section className="bg-white rounded-lg border border-amber-300/80 shadow-xs overflow-hidden">
+        <section className="bg-white rounded-xl border border-amber-300/80 shadow-sm overflow-hidden">
           {/* Banner Superior da Tabela 1 */}
           <div className="px-4 py-2.5 bg-amber-50/80 border-b border-amber-200 flex items-center justify-between flex-wrap gap-2 text-xs">
           <div className="flex items-center gap-2">
@@ -305,7 +305,7 @@ export default function Kardex() {
         <div className="overflow-x-auto">
           <table id="table-kardex-sugestoes-rapidas" className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase tracking-wider h-9">
+              <tr className="bg-[#F0F6FC] sticky top-0 z-10 border-b border-slate-200 text-[11px] font-bold text-[#052659] uppercase tracking-wider h-9 shadow-2xs">
                 <th className="w-8 px-3 text-center">
                   <input
                     id="checkbox-kardex-reposicao-todos"
@@ -336,7 +336,7 @@ export default function Kardex() {
                 return (
                   <tr
                     key={item.sku}
-                    className={`h-12 hover:bg-[#F0F6FC] transition-colors ${
+                    className={`h-12 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default ${
                       isChecked ? "bg-amber-50/20" : ""
                     }`}
                   >
@@ -447,7 +447,7 @@ export default function Kardex() {
       )}
 
       {/* TABELA 2: KARDEX LEDGER (RASTREABILIDADE DE MOVIMENTAÇÕES) */}
-      <section className="bg-white rounded-lg border border-[#7DA0CA]/40 shadow-xs flex flex-col overflow-hidden">
+      <section className="bg-white rounded-xl border border-[#C1E8FF]/60 shadow-sm flex flex-col overflow-hidden">
         {/* Barra de Filtros Compacta */}
         <div className="p-3 border-b border-[#F0F6FC] flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 bg-white">
           <div className="relative flex-1 max-w-md">
@@ -460,7 +460,7 @@ export default function Kardex() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Buscar por SKU, Documento (NF-e/OS) ou Operador..."
-              className="w-full h-8 pl-8 pr-3 text-xs rounded-md border border-[#7DA0CA]/60 focus:border-[#052659] focus:ring-1 focus:ring-[#052659] placeholder:text-slate-400"
+              className="w-full h-8 pl-8 pr-3 text-xs rounded-lg border border-[#C1E8FF]/80 focus:border-[#5483B3] focus:ring-2 focus:ring-[#5483B3]/40 placeholder:text-slate-400 transition-all shadow-2xs"
             />
           </div>
 
@@ -471,7 +471,7 @@ export default function Kardex() {
                 id="select-kardex-ledger-operacao"
                 value={filterOp}
                 onChange={(e) => setFilterOp(e.target.value)}
-                className="h-8 text-xs rounded-md border border-[#7DA0CA]/60 px-2 py-0 bg-white text-[#052659] font-medium focus:border-[#052659] focus:ring-0"
+                className="h-8 text-xs rounded-lg border border-[#C1E8FF]/80 px-2 py-0 bg-white text-[#052659] font-medium focus:border-[#5483B3] focus:ring-2 focus:ring-[#5483B3]/30"
               >
                 <option value="todas">Todas as Operações</option>
                 <option value="entrada">Entradas (NF-e Fornecedor)</option>
@@ -486,7 +486,7 @@ export default function Kardex() {
                 id="select-kardex-ledger-periodo"
                 value={filterPeriodo}
                 onChange={(e) => setFilterPeriodo(e.target.value)}
-                className="h-8 text-xs rounded-md border border-[#7DA0CA]/60 px-2 py-0 bg-white text-[#052659] font-medium focus:border-[#052659] focus:ring-0"
+                className="h-8 text-xs rounded-lg border border-[#C1E8FF]/80 px-2 py-0 bg-white text-[#052659] font-medium focus:border-[#5483B3] focus:ring-2 focus:ring-[#5483B3]/30"
               >
                 <option value="30d">Últimos 30 dias</option>
                 <option value="hoje">Hoje</option>
@@ -497,7 +497,7 @@ export default function Kardex() {
 
             <button
               id="btn-kardex-ledger-filtros"
-              className="h-8 px-2.5 rounded-md border border-[#7DA0CA]/60 bg-[#F0F6FC] hover:bg-white text-[#052659] inline-flex items-center gap-1 text-xs font-semibold transition-colors"
+              className="h-8 px-2.5 rounded-lg border border-[#7DA0CA]/60 bg-[#F0F6FC] hover:bg-white text-[#052659] inline-flex items-center gap-1 text-xs font-semibold transition-colors shadow-2xs"
             >
               <span className="material-symbols-outlined text-sm text-[#5483B3]">tune</span>
               <span>Filtros</span>
@@ -509,7 +509,7 @@ export default function Kardex() {
         <div className="overflow-x-auto">
           <table id="table-kardex-ledger-movimentacoes" className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#F0F6FC] border-b border-[#7DA0CA]/40 text-[11px] font-bold text-[#052659] uppercase tracking-wider h-9">
+              <tr className="bg-[#F0F6FC] sticky top-0 z-10 border-b border-[#C1E8FF]/80 text-[11px] font-bold text-[#052659] uppercase tracking-wider h-9 shadow-2xs">
                 <th className="px-3">Data / Hora</th>
                 <th className="px-3">Operação</th>
                 <th className="px-3">Documento / Vínculo</th>
@@ -521,7 +521,7 @@ export default function Kardex() {
             </thead>
             <tbody className="divide-y divide-[#F0F6FC] text-[#021024]">
               {filteredMovements.map((mov, idx) => (
-                <tr key={idx} className="h-12 hover:bg-[#F0F6FC]/70 transition-colors">
+                <tr key={idx} className="h-12 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
                   <td className="px-3 font-mono text-xs text-slate-700 font-medium whitespace-nowrap">
                     {mov.data}
                   </td>

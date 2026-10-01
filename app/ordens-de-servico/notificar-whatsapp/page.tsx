@@ -227,7 +227,7 @@ function WhatsAppNotifierContent() {
           {/* Coluna Esquerda: Dados do Paciente & Seleção de Templates (5 Colunas) */}
           <div className="lg:col-span-5 space-y-4">
             {/* Card 1: Dados do Paciente */}
-            <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-3 shadow-xs">
+            <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-3 shadow-sm">
               <div className="flex items-center justify-between pb-2 border-b border-[#F0F6FC]">
                 <div className="flex items-center gap-2">
                   <span className="font-mono font-bold text-xs text-[#052659] bg-[#F0F6FC] px-2 py-0.5 rounded border border-[#7DA0CA]/60">
@@ -273,7 +273,7 @@ function WhatsAppNotifierContent() {
             </div>
 
             {/* Card 2: Seletor de Modelo de Mensagem */}
-            <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-3 shadow-xs">
+            <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-3 shadow-sm">
               <div className="flex items-center justify-between pb-2 border-b border-[#F0F6FC]">
                 <h3 className="text-xs font-bold text-[#052659] uppercase tracking-wide flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[17px] text-[#5483B3]">format_list_bulleted</span>
@@ -355,7 +355,7 @@ function WhatsAppNotifierContent() {
             </div>
 
             {/* Card 3: Parâmetros do Disparo */}
-            <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-2.5 shadow-xs">
+            <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-2.5 shadow-sm">
               <h3 className="text-xs font-bold text-[#052659] uppercase tracking-wide">
                 Opções &amp; Anexos Digitais
               </h3>
@@ -386,7 +386,7 @@ function WhatsAppNotifierContent() {
 
           {/* Coluna Direita: Simulador Visual do WhatsApp Web & Ações de Disparo (7 Colunas) */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg overflow-hidden shadow-xs">
+            <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-sm">
               {/* Topo do Chat do WhatsApp */}
               <div className="bg-[#052659] text-white p-3.5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -459,7 +459,7 @@ function WhatsAppNotifierContent() {
             </div>
 
             {/* Card de Dicas Operacionais para a Loja */}
-            <div className="p-3.5 rounded-lg bg-[#FFFFFF] border border-[#7DA0CA] flex items-center justify-between text-xs text-slate-600">
+            <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#C1E8FF]/60 shadow-sm flex items-center justify-between text-xs text-slate-600">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#5483B3] text-[20px]">lightbulb</span>
                 <span>
@@ -471,8 +471,8 @@ function WhatsAppNotifierContent() {
         </div>
 
         {/* Tabela de Histórico de Disparos para Esta OS */}
-        <section className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg overflow-hidden shadow-xs">
-          <div className="p-3.5 bg-[#F0F6FC] border-b border-[#7DA0CA] flex items-center justify-between">
+        <section className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-sm">
+          <div className="p-3.5 bg-[#F0F6FC] border-b border-[#C1E8FF]/80 flex items-center justify-between">
             <h3 className="text-xs font-bold text-[#052659] uppercase tracking-wide flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[17px] text-[#5483B3]">history</span>
               Histórico de Mensagens Enviadas para esta OS (#{osData.id})
@@ -484,8 +484,8 @@ function WhatsAppNotifierContent() {
 
           <div className="overflow-x-auto">
             <table id="table-notificar-historico-disparos" className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-[#F0F6FC]/50 border-b border-[#7DA0CA]/50 text-[11px] font-bold text-[#052659] uppercase">
+              <thead className="sticky top-0 z-10 bg-[#F0F6FC] border-b border-[#C1E8FF]/80">
+                <tr className="text-[11px] font-bold text-[#052659] uppercase">
                   <th className="px-4 py-2.5">Data / Hora</th>
                   <th className="px-4 py-2.5">Modelo Disparado</th>
                   <th className="px-4 py-2.5">Destinatário</th>
@@ -495,7 +495,7 @@ function WhatsAppNotifierContent() {
               </thead>
               <tbody className="divide-y divide-[#F0F6FC]">
                 {historicoMensagens.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-[#F0F6FC]/30 transition-colors">
+                  <tr key={idx} className="hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
                     <td className="px-4 py-3 font-mono font-medium text-slate-600">{item.dataHora}</td>
                     <td className="px-4 py-3 font-semibold text-[#021024]">{item.template}</td>
                     <td className="px-4 py-3 font-mono text-slate-600">{osData.telefone}</td>

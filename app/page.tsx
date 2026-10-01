@@ -394,7 +394,7 @@ export default function Home() {
           /* GERENTE: 6-KPI STRIP EXECUTIVA FINANCEIRA */
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             {/* KPI 1: Faturamento Hoje */}
-            <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-4 flex flex-col justify-between shadow-xs hover:border-[#5483B3] transition-all">
+            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
               <div>
                 <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
                   <span>Faturamento Hoje</span>
@@ -420,7 +420,7 @@ export default function Home() {
             </div>
 
             {/* KPI 2: Ticket Médio Diário */}
-            <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-4 flex flex-col justify-between shadow-xs hover:border-[#5483B3] transition-all">
+            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
               <div>
                 <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
                   <span>Ticket Médio</span>
@@ -441,7 +441,7 @@ export default function Home() {
             </div>
 
             {/* KPI 3: Saldo a Receber */}
-            <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-4 flex flex-col justify-between shadow-xs hover:border-[#5483B3] transition-all">
+            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
               <div>
                 <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
                   <span>Saldo a Receber</span>
@@ -462,7 +462,7 @@ export default function Home() {
             </div>
 
             {/* KPI 4: Laboratório no Prazo */}
-            <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-4 flex flex-col justify-between shadow-xs hover:border-[#5483B3] transition-all">
+            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
               <div>
                 <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
                   <span>Lab no Prazo</span>
@@ -483,7 +483,7 @@ export default function Home() {
             </div>
 
             {/* KPI 5: Ordens em Produção */}
-            <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-4 flex flex-col justify-between shadow-xs hover:border-[#5483B3] transition-all">
+            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
               <div>
                 <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
                   <span>Ordens em Fila</span>
@@ -503,7 +503,7 @@ export default function Home() {
             </div>
 
             {/* KPI 6: Retiradas Pendentes */}
-            <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-4 flex flex-col justify-between shadow-xs hover:border-[#5483B3] transition-all">
+            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
               <div>
                 <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
                   <span>Prontos p/ Retirada</span>
@@ -529,7 +529,7 @@ export default function Home() {
           /* CONSULTOR: 4-KPI STRIP OPERACIONAL DE BALCÃO (CLEAN) */
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Card 1: Minhas OSs em Aberto */}
-            <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-4 flex flex-col justify-between shadow-xs hover:border-[#5483B3] transition-all">
+            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
               <div>
                 <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
                   <span>Minhas OSs em Aberto</span>
@@ -538,8 +538,9 @@ export default function Home() {
                 <div className="mt-2 text-3xl font-mono font-bold text-[#052659] tracking-tight">
                   8 <span className="text-sm font-sans font-medium text-[#5483B3]">ordens</span>
                 </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-medium text-[#5483B3]">
-                  <span>3 em laboratório • 5 em montagem</span>
+                <div className="flex items-center gap-1 mt-1 text-xs font-bold text-emerald-700">
+                  <span className="material-symbols-outlined text-sm">trending_up</span>
+                  <span>+2 vs semana anterior</span>
                 </div>
               </div>
               <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] flex items-center justify-between text-[11px]">
@@ -549,7 +550,7 @@ export default function Home() {
             </div>
 
             {/* Card 2: Prontas para Retirada */}
-            <div className="bg-white rounded-lg border border-emerald-200 bg-emerald-50/20 p-4 flex flex-col justify-between shadow-xs hover:border-emerald-400 transition-all">
+            <div className="bg-white rounded-xl border border-emerald-200/80 bg-emerald-50/30 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-emerald-400 transition-all">
               <div>
                 <div className="flex items-center justify-between text-emerald-800 text-[11px] font-bold uppercase tracking-wider">
                   <span>Prontas para Retirada</span>
@@ -560,7 +561,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-center gap-1 mt-1 text-xs font-bold text-emerald-700">
                   <span className="material-symbols-outlined text-sm">chat</span>
-                  <span>Clientes notificados via WhatsApp</span>
+                  <span>WhatsApp disparado</span>
                 </div>
               </div>
               <div className="mt-3 pt-2.5 border-t border-emerald-100 flex items-center justify-between text-[11px]">
@@ -572,7 +573,7 @@ export default function Home() {
             </div>
 
             {/* Card 3: Aguardando Validação / Receita */}
-            <div className="bg-white rounded-lg border border-amber-200 bg-amber-50/20 p-4 flex flex-col justify-between shadow-xs hover:border-amber-400 transition-all">
+            <div className="bg-white rounded-xl border border-amber-200/80 bg-amber-50/30 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-400 transition-all">
               <div>
                 <div className="flex items-center justify-between text-amber-800 text-[11px] font-bold uppercase tracking-wider">
                   <span>Aguardando Confirmação</span>
@@ -582,7 +583,8 @@ export default function Home() {
                   2 <span className="text-sm font-sans font-medium text-amber-700">pendências</span>
                 </div>
                 <div className="flex items-center gap-1 mt-1 text-xs font-medium text-amber-800">
-                  <span>1 pendente DNP • 1 receita médica</span>
+                  <span className="material-symbols-outlined text-sm">warning</span>
+                  <span>1 pendente DNP • 1 receita</span>
                 </div>
               </div>
               <div className="mt-3 pt-2.5 border-t border-amber-100 flex items-center justify-between text-[11px]">
@@ -592,7 +594,7 @@ export default function Home() {
             </div>
 
             {/* Card 4: Meus Atendimentos Hoje */}
-            <div className="bg-white rounded-lg border border-[#7DA0CA]/40 p-4 flex flex-col justify-between shadow-xs hover:border-[#5483B3] transition-all">
+            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
               <div>
                 <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
                   <span>Meus Atendimentos Hoje</span>
@@ -621,7 +623,7 @@ export default function Home() {
           /* GERENTE: GRÁFICO DE FATURAMENTO + SLA DOS LABORATÓRIOS */
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             {/* Left Column: Billing Chart (7 cols) */}
-            <div className="lg:col-span-7 bg-white rounded-lg border border-[#7DA0CA]/40 p-5 shadow-xs">
+            <div className="lg:col-span-7 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#F0F6FC] gap-2">
                 <div>
                   <h2 className="text-base font-bold text-[#052659]">Evolução de Faturamento Diário vs. Meta</h2>
@@ -697,7 +699,7 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="mt-4 p-3 bg-[#F0F6FC] rounded-lg border border-[#7DA0CA]/40 flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2">
+                <div className="mt-4 p-3 bg-[#F0F6FC] rounded-xl border border-[#C1E8FF]/60 flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2">
                   <div className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-[#5483B3] text-lg">insights</span>
                     <span className="font-bold text-[#052659]">Projeção de fechamento:</span>
@@ -709,7 +711,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: SLA & Performance dos Laboratórios (5 cols) */}
-            <div className="lg:col-span-5 bg-white rounded-lg border border-[#7DA0CA]/40 p-5 shadow-xs flex flex-col h-full">
+            <div className="lg:col-span-5 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col h-full">
               <div className="flex items-center justify-between pb-4 border-b border-[#F0F6FC]">
                 <div>
                   <h2 className="text-base font-bold text-[#052659]">SLA dos Laboratórios Externos</h2>
@@ -725,10 +727,10 @@ export default function Home() {
                 </Link>
               </div>
 
-              <div className="mt-3 flex-1 overflow-x-auto border border-[#7DA0CA]/40 rounded-lg">
+              <div className="mt-3 flex-1 overflow-x-auto border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-2xs">
                 <table id="table-dash-sla-laboratorios" className="w-full h-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="h-9 bg-[#F0F6FC] text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#7DA0CA]/40 uppercase">
+                    <tr className="h-9 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF]/80 uppercase">
                       <th className="px-3">Laboratório</th>
                       <th className="px-2 text-center">Ativos</th>
                       <th className="px-2 text-center">SLA Médio</th>
@@ -738,7 +740,7 @@ export default function Home() {
                   </thead>
                   <tbody className="divide-y divide-[#F0F6FC]">
                     {labs.map((lab) => (
-                      <tr key={lab.nome} className="h-14 hover:bg-[#C1E8FF]/20 transition-colors">
+                      <tr key={lab.nome} className="h-14 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
                         <td className="px-3 font-semibold text-[#052659]">
                           <div className="flex items-center gap-1.5">
                             <span
@@ -800,7 +802,7 @@ export default function Home() {
           /* CONSULTOR: "MINHAS ORDENS DO DIA" + "AGING DE LABORATÓRIO DOS MEUS PEDIDOS" */
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             {/* Left Column: Minhas Ordens de Serviço do Dia (7 cols) */}
-            <div className="lg:col-span-7 bg-white rounded-lg border border-[#7DA0CA]/40 p-5 shadow-xs flex flex-col justify-between">
+            <div className="lg:col-span-7 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#F0F6FC] gap-2">
                   <div>
@@ -813,7 +815,7 @@ export default function Home() {
                   <Link
                     id="btn-dash-consultor-nova-os"
                     href="/ordens-de-servico"
-                    className="h-8 px-3 rounded-md bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto"
+                    className="h-8 px-3 rounded-lg bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto shadow-2xs"
                   >
                     <span className="material-symbols-outlined text-sm">add</span>
                     <span>Nova Venda</span>
@@ -821,10 +823,10 @@ export default function Home() {
                 </div>
 
                 {/* Table of Consultant Orders */}
-                <div className="mt-3 overflow-x-auto border border-[#7DA0CA]/40 rounded-lg">
+                <div className="mt-3 overflow-x-auto border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-2xs">
                   <table id="table-dash-consultor-minhas-ordens" className="w-full text-left border-collapse text-xs">
                     <thead>
-                      <tr className="h-9 bg-[#F0F6FC] text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#7DA0CA]/40 uppercase">
+                      <tr className="h-9 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF]/80 uppercase">
                         <th className="px-3">OS / Cliente</th>
                         <th className="px-3 hidden md:table-cell">Armação &amp; Lente</th>
                         <th className="px-2 text-center">Status</th>
@@ -833,7 +835,7 @@ export default function Home() {
                     </thead>
                     <tbody className="divide-y divide-[#F0F6FC]">
                       {consultantOrders.map((ord) => (
-                        <tr key={ord.id} className="h-13 hover:bg-[#F0F6FC]/80 transition-colors">
+                        <tr key={ord.id} className="h-13 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
                           <td className="px-3 py-2 font-medium">
                             <div className="font-bold text-[#052659]">{ord.cliente}</div>
                             <div className="font-mono text-[11px] text-[#5483B3] flex items-center gap-1">
@@ -901,7 +903,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Aging de Laboratório dos Meus Pedidos (5 cols) */}
-            <div className="lg:col-span-5 bg-white rounded-lg border border-[#7DA0CA]/40 p-5 shadow-xs flex flex-col justify-between">
+            <div className="lg:col-span-5 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between pb-3 border-b border-[#F0F6FC]">
                   <div>
@@ -917,7 +919,7 @@ export default function Home() {
                 </div>
 
                 {/* Progress bar and summary */}
-                <div className="mt-3 p-3 rounded-lg bg-[#F0F6FC] border border-[#7DA0CA]/30">
+                <div className="mt-3 p-3 rounded-xl bg-[#F0F6FC] border border-[#C1E8FF]/60">
                   <div className="flex justify-between text-xs font-semibold text-[#052659] mb-1">
                     <span>Pontualidade das minhas lentes:</span>
                     <span className="font-mono text-emerald-700 font-bold">100% no prazo</span>
@@ -932,7 +934,7 @@ export default function Home() {
                   {consultantLabAlerts.map((alert) => (
                     <div
                       key={alert.os}
-                      className="p-3 rounded-lg border border-[#7DA0CA]/30 bg-white hover:bg-[#F0F6FC]/60 transition-colors flex items-center justify-between"
+                      className="p-3 rounded-xl border border-[#C1E8FF]/50 bg-white hover:bg-[#F0F6FC]/60 transition-colors flex items-center justify-between shadow-2xs"
                     >
                       <div>
                         <div className="flex items-center gap-2">
@@ -963,7 +965,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mt-4 p-2.5 bg-blue-50/60 rounded-lg border border-blue-200 text-xs flex items-center justify-between text-blue-900">
+              <div className="mt-4 p-2.5 bg-blue-50/60 rounded-xl border border-blue-200 text-xs flex items-center justify-between text-blue-900">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-blue-700 text-base">support_agent</span>
                   <span>Dúvida sobre prazo de laboratório?</span>
@@ -987,7 +989,7 @@ export default function Home() {
           /* GERENTE: ACOMPANHAMENTO PRIORITÁRIO + METAS DA EQUIPE */
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Column: Acompanhamento Prioritário de Balcão (7 cols) */}
-            <div className="lg:col-span-7 bg-white rounded-lg border border-[#7DA0CA]/40 p-5 shadow-xs">
+            <div className="lg:col-span-7 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#F0F6FC] gap-2">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#052659]">notifications_active</span>
@@ -1004,10 +1006,10 @@ export default function Home() {
               </div>
 
               {/* Compact Clinical Worklist Table */}
-              <div className="mt-3 overflow-x-auto border border-[#7DA0CA]/40 rounded-lg">
+              <div className="mt-3 overflow-x-auto border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-2xs">
                 <table id="table-dash-acompanhamento-prioritario" className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="h-9 bg-[#F0F6FC] text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#7DA0CA]/40 uppercase">
+                    <tr className="h-9 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF]/80 uppercase">
                       <th className="px-3">OS</th>
                       <th className="px-3">Cliente / Paciente</th>
                       <th className="px-3">Prescrição / Lente</th>
@@ -1018,7 +1020,7 @@ export default function Home() {
                   </thead>
                   <tbody className="divide-y divide-[#F0F6FC]">
                     {priorityOrders.map((order) => (
-                      <tr key={order.id} className="h-12 hover:bg-[#F0F6FC] transition-colors">
+                      <tr key={order.id} className="h-12 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
                         <td className="px-3 font-mono font-bold text-[#052659]">#{order.id}</td>
                         <td className="px-3 font-medium text-[#052659]">
                           <div className="flex items-center gap-1.5">
@@ -1099,7 +1101,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Ranking de Vendas da Equipe de Balcão (5 cols) */}
-            <div className="lg:col-span-5 bg-white rounded-lg border border-[#7DA0CA]/40 p-5 shadow-xs">
+            <div className="lg:col-span-5 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm">
               <div className="flex items-center justify-between pb-3 border-b border-[#F0F6FC]">
                 <div>
                   <h2 className="text-base font-bold text-[#052659]">Metas da Equipe de Balcão</h2>
@@ -1115,7 +1117,7 @@ export default function Home() {
                 {sellers.map((s, index) => (
                   <div
                     key={s.nome}
-                    className="p-3 rounded-lg border border-[#7DA0CA]/30 bg-[#F0F6FC]/60 hover:bg-[#F0F6FC] transition-colors"
+                    className="p-3 rounded-xl border border-[#C1E8FF]/60 bg-[#F0F6FC]/60 hover:bg-[#F0F6FC] transition-colors shadow-2xs"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
@@ -1167,7 +1169,7 @@ export default function Home() {
               </div>
 
               {/* Quick Restock Alert Box */}
-              <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200 flex items-center justify-between text-xs">
+              <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between text-xs shadow-2xs">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-700 text-base">emergency</span>
                   <span className="text-amber-900 font-medium">8 itens aguardando reposição</span>
@@ -1186,7 +1188,7 @@ export default function Home() {
           /* CONSULTOR: ACOMPANHAMENTO PRIORITÁRIO + SLA DOS LABORATÓRIOS (ESSENCIAL P/ ATENDIMENTO) */
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Column: Acompanhamento Prioritário de Balcão (7 cols) */}
-            <div className="lg:col-span-7 bg-white rounded-lg border border-[#7DA0CA]/40 p-5 shadow-xs">
+            <div className="lg:col-span-7 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#F0F6FC] gap-2">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#052659]">notifications_active</span>
@@ -1203,10 +1205,10 @@ export default function Home() {
               </div>
 
               {/* Compact Clinical Worklist Table */}
-              <div className="mt-3 overflow-x-auto border border-[#7DA0CA]/40 rounded-lg">
+              <div className="mt-3 overflow-x-auto border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-2xs">
                 <table id="table-dash-consultor-prioritarias" className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="h-9 bg-[#F0F6FC] text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#7DA0CA]/40 uppercase">
+                    <tr className="h-9 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF]/80 uppercase">
                       <th className="px-3">OS</th>
                       <th className="px-3">Cliente / Paciente</th>
                       <th className="px-3">Prescrição / Lente</th>
@@ -1217,7 +1219,7 @@ export default function Home() {
                   </thead>
                   <tbody className="divide-y divide-[#F0F6FC]">
                     {priorityOrders.map((order) => (
-                      <tr key={order.id} className="h-12 hover:bg-[#F0F6FC] transition-colors">
+                      <tr key={order.id} className="h-12 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
                         <td className="px-3 font-mono font-bold text-[#052659]">#{order.id}</td>
                         <td className="px-3 font-medium text-[#052659]">
                           <div className="flex items-center gap-1.5">
@@ -1297,7 +1299,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: SLA dos Laboratórios Externos (5 cols - Essencial para o Consultor passar prazos) */}
-            <div className="lg:col-span-5 bg-white rounded-lg border border-[#7DA0CA]/40 p-5 shadow-xs flex flex-col justify-between">
+            <div className="lg:col-span-5 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between pb-3 border-b border-[#F0F6FC]">
                   <div>
@@ -1309,10 +1311,10 @@ export default function Home() {
                   </span>
                 </div>
 
-                <div className="mt-3 overflow-x-auto border border-[#7DA0CA]/40 rounded-lg">
+                <div className="mt-3 overflow-x-auto border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-2xs">
                   <table id="table-dash-consultor-sla-labs" className="w-full text-left border-collapse text-xs">
                     <thead>
-                      <tr className="h-9 bg-[#F0F6FC] text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#7DA0CA]/40 uppercase">
+                      <tr className="h-9 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF]/80 uppercase">
                         <th className="px-3">Laboratório</th>
                         <th className="px-2 text-center">Prazo Médio</th>
                         <th className="px-2 text-center">Pontualidade</th>
@@ -1321,7 +1323,7 @@ export default function Home() {
                     </thead>
                     <tbody className="divide-y divide-[#F0F6FC]">
                       {labs.map((lab) => (
-                        <tr key={lab.nome} className="h-12 hover:bg-[#F0F6FC] transition-colors">
+                        <tr key={lab.nome} className="h-12 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
                           <td className="px-3 font-semibold text-[#052659]">
                             <div className="flex items-center gap-1.5">
                               <span
@@ -1351,7 +1353,7 @@ export default function Home() {
                               href={`https://wa.me/55${lab.contato}?text=Ol%C3%A1%2C%20gostaria%20de%20consultar%20o%20prazo%20de%20uma%20OS.`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-1 rounded hover:bg-[#F0F6FC] text-[#5483B3] hover:text-emerald-600 transition-colors inline-block"
+                              className="p-1 rounded-lg hover:bg-[#F0F6FC] text-[#5483B3] hover:text-emerald-600 transition-colors inline-block"
                               title="Contato via WhatsApp"
                             >
                               <span className="material-symbols-outlined text-base">chat</span>
@@ -1364,7 +1366,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mt-4 p-3 bg-[#F0F6FC] rounded-lg border border-[#7DA0CA]/40 flex items-center justify-between text-xs text-[#5483B3]">
+              <div className="mt-4 p-3 bg-[#F0F6FC] rounded-xl border border-[#C1E8FF]/60 flex items-center justify-between text-xs text-[#5483B3]">
                 <div className="flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-sm text-[#052659]">info</span>
                   <span>Oriente o cliente sempre com +1 dia útil de margem de montagem.</span>

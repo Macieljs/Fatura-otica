@@ -104,8 +104,18 @@ export default function SidebarNav() {
     return pathname.startsWith(cleanHref);
   };
 
+  const getInitials = (name: string) => {
+    if (!name) return "FO";
+    const clean = name.replace(/^(Dr\.|Dra\.)\s*/i, "").trim();
+    const parts = clean.split(" ").filter(Boolean);
+    if (parts.length === 0) return "FO";
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
   const navContent = (forceExpanded = false) => {
     const collapsed = forceExpanded ? false : isCollapsed;
+    const initials = getInitials(operator.name);
 
     return (
       <div className="flex flex-col h-full justify-between">
@@ -220,7 +230,7 @@ export default function SidebarNav() {
                         } ${
                           active
                             ? "bg-[#5483B3] text-white shadow-xs font-semibold"
-                            : "text-[#C1E8FF] hover:bg-[#C1E8FF]/10 hover:text-white"
+                            : "text-[#C1E8FF] hover:bg-[#5483B3]/25 hover:text-white transition-colors duration-150"
                         }`}
                       >
                         <div className={`flex items-center ${collapsed ? "justify-center" : "gap-2.5 min-w-0"}`}>
@@ -282,9 +292,9 @@ export default function SidebarNav() {
                 id="btn-sidebar-user-avatar"
                 href="/login"
                 title={`${operator.name} • ${operator.role} • Trocar`}
-                className="relative w-9 h-9 rounded-xl bg-[#5483B3]/20 border border-[#5483B3]/40 flex items-center justify-center text-[#C1E8FF] hover:border-white transition-all cursor-pointer"
+                className="relative w-9 h-9 rounded-xl bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shadow-xs hover:border-white transition-all cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[20px]">account_circle</span>
+                <span>{initials}</span>
                 <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#052659]"></span>
               </Link>
               <Link
@@ -297,10 +307,10 @@ export default function SidebarNav() {
               </Link>
             </div>
           ) : (
-            <div className="p-2.5 rounded-lg bg-[#031c44] border border-[#7DA0CA]/30 flex items-center justify-between gap-2.5">
+            <div className="p-2.5 rounded-xl bg-[#031c44] border border-[#7DA0CA]/30 shadow-xs flex items-center justify-between gap-2.5">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-full bg-[#5483B3]/20 border border-[#5483B3]/40 flex items-center justify-center text-[#C1E8FF] flex-shrink-0">
-                  <span className="material-symbols-outlined text-lg">account_circle</span>
+                <div className="w-8 h-8 rounded-full bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs">
+                  {initials}
                 </div>
                 <div className="flex flex-col min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
