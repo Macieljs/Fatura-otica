@@ -396,11 +396,6 @@ function FilaLaboratorioContent() {
     { id: "pronto", titulo: "Pronto na Gaveta (Retirada)", cor: "bg-emerald-600" },
   ];
 
-  const colunasExibidas = useMemo(() => {
-    if (filtroColuna === "todas") return colunasKanban;
-    return colunasKanban.filter((c) => c.id === filtroColuna);
-  }, [filtroColuna, colunasKanban]);
-
   return (
     <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-20 text-[#021024]">
       {/* Top Header & Breadcrumbs */}
@@ -837,20 +832,14 @@ function FilaLaboratorioContent() {
           </section>
         ) : (
           /* 2. VISUALIZAÇÃO KANBAN POR GAVETAS / ESTÁGIOS */
-          <div
-            className={`grid gap-4 items-start ${
-              colunasExibidas.length === 1
-                ? "grid-cols-1 max-w-2xl mx-auto"
-                : "grid-cols-1 md:grid-cols-2 xl:grid-cols-4"
-            }`}
-          >
-            {colunasExibidas.map((col) => {
+          <div className="flex gap-4 items-start overflow-x-auto pb-6 scroll-smooth">
+            {colunasKanban.map((col) => {
               const ordensNaColuna = ordensFiltradas.filter((o) => o.statusColuna === col.id);
               return (
                 <div
                   key={col.id}
                   id={`coluna-fila-kanban-${col.id}`}
-                  className="w-full bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl overflow-hidden flex flex-col min-h-[460px] shadow-sm hover:shadow-md transition-shadow"
+                  className="w-[290px] sm:w-[320px] xl:w-auto xl:flex-1 shrink-0 bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="p-3 bg-[#F0F6FC] border-b border-[#C1E8FF]/80 flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -862,7 +851,7 @@ function FilaLaboratorioContent() {
                     </span>
                   </div>
 
-                  <div className="p-3 space-y-3 flex-1 overflow-y-auto">
+                  <div className="p-3 space-y-3 flex-1 overflow-y-auto max-h-[640px]">
                     {ordensNaColuna.length === 0 ? (
                       <div className="py-12 text-center text-xs text-slate-400">Nenhum pedido nesta gaveta</div>
                     ) : (
