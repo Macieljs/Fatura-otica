@@ -368,7 +368,7 @@ function FilaLaboratorioContent() {
 
   // Motor de Busca Lógica Estruturada com AND e Prefixos
   const ordensFiltradas = useMemo(() => {
-    return ordens.filter((o) => {
+    const resultado = ordens.filter((o) => {
       const isHighlighted = osDestacada && o.id === osDestacada;
       if (filtroColuna !== "todas" && o.statusColuna !== filtroColuna && !isHighlighted) {
         return false;
@@ -416,21 +416,51 @@ function FilaLaboratorioContent() {
         );
       });
     });
+
+    // Ordenação por proximidade do cliente: o processo mais próximo do balcão primeiro
+    const prioridadeStatus: Record<string, number> = {
+      pronto: 1,              // Mais próximo do cliente (já na loja, na gaveta de retirada)
+      controle_qualidade: 2,  // Chegou na loja (conferência rápida para liberar ao cliente)
+      surfacagem: 3,          // Em produção / montagem (em andamento)
+      aguardando_lab: 4,      // No laboratório terceirizado (mais distante)
+    };
+
+    return [...resultado].sort((a, b) => {
+      const prioridadeA = prioridadeStatus[a.statusColuna] || 99;
+      const prioridadeB = prioridadeStatus[b.statusColuna] || 99;
+      if (prioridadeA !== prioridadeB) {
+        return prioridadeA - prioridadeB;
+      }
+      // Se empatar no mesmo estágio, OSs com atraso/atenção sobem para o topo
+      if (a.statusBadgeTipo === "danger" && b.statusBadgeTipo !== "danger") return -1;
+      if (b.statusBadgeTipo === "danger" && a.statusBadgeTipo !== "danger") return 1;
+      return 0;
+    });
   }, [ordens, filtroColuna, busca, osDestacada]);
 
+  // Gaveteiros organizados por proximidade do cliente (Customer-First)
   const colunasKanban = [
     {
-      id: "aguardando_lab",
+      id: "pronto",
       gavetaNumero: "Gaveteiro 01",
-      titulo: "No Laboratório Externo",
-      subtitulo: "Ordens enviadas e em trânsito com laboratórios terceirizados",
-      cor: "bg-rose-500",
-      badgeCor: "bg-rose-50 text-rose-700 border-rose-200",
-      icone: "local_shipping",
+      titulo: "Pronto na Gaveta (Retirada no Balcão)",
+      subtitulo: "Óculos conferidos e prontos para entrega imediata ao cliente no balcão",
+      cor: "bg-emerald-500",
+      badgeCor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      icone: "inventory_2",
+    },
+    {
+      id: "controle_qualidade",
+      gavetaNumero: "Gaveteiro 02",
+      titulo: "Chegou / Conferir Lensômetro",
+      subtitulo: "Malote entregue na loja aguardando conferência dióptrica rápida",
+      cor: "bg-indigo-500",
+      badgeCor: "bg-indigo-50 text-indigo-700 border-indigo-200",
+      icone: "visibility",
     },
     {
       id: "surfacagem",
-      gavetaNumero: "Gaveteiro 02",
+      gavetaNumero: "Gaveteiro 03",
       titulo: "Em Produção / Montagem",
       subtitulo: "Em processo de surfaçagem, blocagem e montagem de aro",
       cor: "bg-[#5483B3]",
@@ -438,22 +468,13 @@ function FilaLaboratorioContent() {
       icone: "precision_manufacturing",
     },
     {
-      id: "controle_qualidade",
-      gavetaNumero: "Gaveteiro 03",
-      titulo: "Chegou / Conferir Lensômetro",
-      subtitulo: "Malote entregue na loja aguardando conferência dióptrica de grau",
-      cor: "bg-indigo-500",
-      badgeCor: "bg-indigo-50 text-indigo-700 border-indigo-200",
-      icone: "visibility",
-    },
-    {
-      id: "pronto",
+      id: "aguardando_lab",
       gavetaNumero: "Gaveteiro 04",
-      titulo: "Pronto na Gaveta (Retirada no Balcão)",
-      subtitulo: "Óculos conferidos, alocados nas gavetas de balcão e liberados para entrega",
-      cor: "bg-emerald-500",
-      badgeCor: "bg-emerald-50 text-emerald-700 border-emerald-200",
-      icone: "inventory_2",
+      titulo: "No Laboratório Externo",
+      subtitulo: "Ordens enviadas e em trânsito com laboratórios terceirizados",
+      cor: "bg-rose-500",
+      badgeCor: "bg-rose-50 text-rose-700 border-rose-200",
+      icone: "local_shipping",
     },
   ];
 
@@ -578,12 +599,20 @@ function FilaLaboratorioContent() {
           )}
         </div>
 
-        {/* Faixa de KPIs Executivos de Loja de Balcão */}
+        {/* Faixa de KPIs Executivos de Loja de Balcão (Prioridade do Cliente Primeiro) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">No Laboratório Externo</span>
-            <div className="text-2xl font-bold font-mono text-[#052659]">6 Pedidos</div>
-            <span className="text-[11px] text-slate-500">Essilor (3), Hoya (2), Lab Lux (1)</span>
+            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Prontos p/ Retirada na Loja</span>
+            <div className="text-2xl font-bold font-mono text-emerald-700">4 Pedidos</div>
+            <span className="text-[11px] text-slate-500">Gavetas G-01 a G-05</span>
+          </div>
+
+          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
+            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Avisos WhatsApp Enviados</span>
+            <div className="text-2xl font-bold font-mono text-[#052659]">8 Notificados</div>
+            <span className="inline-block px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#F0FDF4] text-[#15803D] border border-emerald-200">
+              Taxa de Resposta: 92%
+            </span>
           </div>
 
           <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
@@ -602,31 +631,22 @@ function FilaLaboratorioContent() {
           </div>
 
           <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Prontos p/ Retirada na Loja</span>
-            <div className="text-2xl font-bold font-mono text-emerald-700">4 Pedidos</div>
-            <span className="text-[11px] text-slate-500">Gavetas G-01 a G-05</span>
-          </div>
-
-          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Avisos WhatsApp Enviados</span>
-            <div className="text-2xl font-bold font-mono text-[#052659]">8 Notificados</div>
-            <span className="inline-block px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#F0FDF4] text-[#15803D] border border-emerald-200">
-              Taxa de Resposta: 92%
-            </span>
+            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">No Laboratório Externo</span>
+            <div className="text-2xl font-bold font-mono text-[#052659]">6 Pedidos</div>
+            <span className="text-[11px] text-slate-500">Essilor (3), Hoya (2), Lab Lux (1)</span>
           </div>
         </div>
 
-        {/* Barra de Filtros, Pesquisa e Seletor de Modo de Visualização */}
         {/* Barra de Filtros, Pesquisa e Seletor de Modo de Visualização */}
         <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-3.5 flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3.5 shadow-sm">
           {/* Pills de Filtro de Estágio com rolagem horizontal suave no mobile/tablet */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 xl:pb-0 scrollbar-none w-full xl:w-auto shrink-0">
             {[
               { id: "todas", label: `Todos (${ordens.length})` },
-              { id: "aguardando_lab", label: "No Lab Externo (4)" },
-              { id: "surfacagem", label: "Em Produção (3)" },
-              { id: "controle_qualidade", label: "Chegou / Conferir (3)" },
               { id: "pronto", label: "Prontos p/ Retirar (4)" },
+              { id: "controle_qualidade", label: "Chegou / Conferir (3)" },
+              { id: "surfacagem", label: "Em Produção (3)" },
+              { id: "aguardando_lab", label: "No Lab Externo (4)" },
             ].map((f) => (
               <button
                 key={f.id}
