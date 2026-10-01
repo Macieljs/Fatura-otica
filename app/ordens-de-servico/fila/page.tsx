@@ -522,9 +522,9 @@ function FilaLaboratorioContent() {
             <span className="text-[11px] text-slate-500">Essilor (3), Hoya (2), Lab Lux (1)</span>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-red-200/80 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow bg-red-50/10">
-            <span className="text-[11px] font-semibold text-rose-600 uppercase">Atrasados pelo Lab</span>
-            <div className="text-2xl font-bold font-mono text-rose-700">2 Pedidos</div>
+          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
+            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Atrasados pelo Lab</span>
+            <div className="text-2xl font-bold font-mono text-red-600">2 Pedidos</div>
             <a
               id="link-fila-kpi-cobrar-lab"
               href="https://wa.me/5511987654321?text=Ol%C3%A1%20Laborat%C3%B3rio!%20Gostaria%20de%20cobrar%20posi%C3%A7%C3%A3o%20urgente%20dos%20pedidos%20em%20atraso%20da%20Fatura%20%C3%93tica."
