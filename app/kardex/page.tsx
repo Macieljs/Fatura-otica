@@ -315,12 +315,14 @@ export default function Kardex() {
                     <Link
                       id={`link-kardex-ledger-doc-${idx}`}
                       href={mov.docLink}
-                      className="inline-flex items-center gap-1.5 font-mono font-bold text-sm text-[#052659] hover:underline"
+                      prefetch={true}
+                      className="px-2.5 py-1 rounded-lg font-mono font-bold text-xs bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#C1E8FF] hover:border-[#052659] shadow-2xs hover:shadow-xs transition-all inline-flex items-center gap-1 group cursor-pointer active:scale-95 duration-100"
+                      title="Ver Documento"
                     >
-                      <span className="material-symbols-outlined text-base text-[#5483B3]">
-                        {mov.doc.includes("OS") ? "receipt_long" : "description"}
+                      <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white transition-colors">
+                        {mov.doc.includes("OS") ? "tag" : "description"}
                       </span>
-                      {mov.doc}
+                      <span>{mov.doc}</span>
                     </Link>
                   </td>
                   <td className="px-4 py-3.5">

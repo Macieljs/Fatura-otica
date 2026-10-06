@@ -125,7 +125,7 @@ export default function SidebarNav() {
           <div className={`h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 transition-all ${
             collapsed ? "px-2 justify-center" : "px-4 justify-between"
           }`}>
-            <Link id="nav-link-brand-home" href="/" className={`flex items-center ${collapsed ? "justify-center w-full" : ""}`}>
+            <Link id="nav-link-brand-home" href="/" prefetch={true} className={`flex items-center cursor-pointer active:scale-95 transition-transform duration-100 ${collapsed ? "justify-center w-full" : ""}`}>
               {collapsed ? (
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#052659] to-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white shadow-xs">
                   <span className="material-symbols-outlined text-[22px]">visibility</span>
@@ -222,8 +222,9 @@ export default function SidebarNav() {
                         key={iIdx}
                         id={item.id}
                         href={item.href}
+                        prefetch={true}
                         title={collapsed ? `${item.label} ${item.shortcut ? `(${item.shortcut})` : ""}` : undefined}
-                        className={`rounded-lg transition-all relative group flex items-center ${
+                        className={`rounded-lg transition-all relative group flex items-center cursor-pointer active:scale-95 duration-100 ${
                           collapsed
                             ? "h-11 w-11 mx-auto justify-center"
                             : "w-full px-2.5 py-2 justify-between font-medium text-[13px]"
@@ -233,7 +234,7 @@ export default function SidebarNav() {
                             : "text-[#C1E8FF] hover:bg-[#5483B3]/25 hover:text-white transition-colors duration-150"
                         }`}
                       >
-                        <div className={`flex items-center ${collapsed ? "justify-center" : "gap-2.5 min-w-0"}`}>
+                        <div className={`flex items-center pointer-events-none ${collapsed ? "justify-center" : "gap-2.5 min-w-0"}`}>
                           <span
                             className={`material-symbols-outlined text-[20px] ${
                               active ? "text-white" : "text-[#7DA0CA]"

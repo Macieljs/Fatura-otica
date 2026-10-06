@@ -20,14 +20,40 @@ const DEFAULT_OPERATOR: OperatorData = {
   loginTime: "08:00",
 };
 
+const getInitialOperator = (): OperatorData => {
+  if (typeof window !== "undefined") {
+    try {
+      const stored = localStorage.getItem("fatura_otica_operator");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const isManager =
+          parsed.roleType === "gerente" ||
+          (parsed.role && parsed.role.toLowerCase().includes("gerente")) ||
+          (parsed.name && parsed.name.toLowerCase().includes("carlos"));
+
+        return {
+          name: parsed.name || (isManager ? "Dr. Carlos Ramos" : "Mariana Souza"),
+          role: parsed.role || (isManager ? "Gerente Operacional & Optometrista" : "Consultora de Atendimento"),
+          roleType: isManager ? "gerente" : "consultor",
+          branch: parsed.branch || "Filial Centro - Loja 01 Matriz",
+          loginTime: parsed.loginTime || "08:00",
+        };
+      }
+    } catch (e) {
+      console.error("Erro ao ler operador inicial:", e);
+    }
+  }
+  return DEFAULT_OPERATOR;
+};
+
 /**
  * Hook de sessão unificado e reativo para controle de acesso baseado em papel (RBAC MVP).
  * Lê e sincroniza a sessão do operador gravada em localStorage ("fatura_otica_operator").
  * Notifica abas e componentes instantaneamente em mudanças de operador.
  */
 export function useOperator() {
-  const [operator, setOperator] = useState<OperatorData>(DEFAULT_OPERATOR);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [operator, setOperator] = useState<OperatorData>(getInitialOperator);
+  const [isLoaded, setIsLoaded] = useState(true);
 
   const syncFromStorage = useCallback(() => {
     try {

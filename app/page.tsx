@@ -1348,7 +1348,8 @@ export default function Home() {
               <Link
                 id="link-dash-consultor-shortcut-nova-os"
                 href="/ordens-de-servico"
-                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
+                prefetch={true}
+                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:scale-98 cursor-pointer"
               >
                 <div className="w-10 h-10 rounded-lg bg-[#052659] text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
                   <span className="material-symbols-outlined text-[20px]">add_circle</span>
@@ -1365,7 +1366,8 @@ export default function Home() {
               <Link
                 id="link-dash-consultor-shortcut-catalogo"
                 href="/estoque"
-                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
+                prefetch={true}
+                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:scale-98 cursor-pointer"
               >
                 <div className="w-10 h-10 rounded-lg bg-[#5483B3] text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
                   <span className="material-symbols-outlined text-[20px]">eyeglasses</span>
@@ -1379,7 +1381,8 @@ export default function Home() {
               <Link
                 id="link-dash-consultor-shortcut-fila"
                 href="/ordens-de-servico/fila"
-                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
+                prefetch={true}
+                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:scale-98 cursor-pointer"
               >
                 <div className="w-10 h-10 rounded-lg bg-[#5483B3] text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
                   <span className="material-symbols-outlined text-[20px]">shelves</span>
@@ -1393,7 +1396,8 @@ export default function Home() {
               <Link
                 id="link-dash-consultor-shortcut-kardex"
                 href="/kardex"
-                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
+                prefetch={true}
+                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:scale-98 cursor-pointer"
               >
                 <div className="w-10 h-10 rounded-lg bg-[#5483B3] text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
                   <span className="material-symbols-outlined text-[20px]">swap_horiz</span>

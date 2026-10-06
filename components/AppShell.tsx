@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import SidebarNav from "@/components/SidebarNav";
 import { useSidebar } from "@/context/SidebarContext";
@@ -8,6 +9,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { isCollapsed } = useSidebar();
   const isLoginPage = pathname === "/login";
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
 
   if (isLoginPage) {
     return <main className="w-full min-h-screen">{children}</main>;

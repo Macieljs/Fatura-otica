@@ -52,7 +52,8 @@ export default function PageHeader({
               <Link
                 id={backId || `${id}-link-voltar`}
                 href={backHref}
-                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-slate-600 hover:text-[#052659] hover:bg-[#F0F6FC] transition-colors text-xs font-semibold whitespace-nowrap shrink-0 border border-transparent hover:border-[#7DA0CA]/30"
+                prefetch={true}
+                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-slate-600 hover:text-[#052659] hover:bg-[#F0F6FC] transition-colors text-xs font-semibold whitespace-nowrap shrink-0 border border-transparent hover:border-[#7DA0CA]/30 cursor-pointer active:scale-95"
               >
                 <span className="material-symbols-outlined text-[17px]">arrow_back</span>
                 <span className="hidden sm:inline">{backLabel}</span>
@@ -81,7 +82,8 @@ export default function PageHeader({
                         <Link
                           id={crumb.id || `${id}-crumb-${idx}`}
                           href={crumb.href}
-                          className="hover:underline hover:text-[#052659] transition-colors truncate max-w-[150px]"
+                          prefetch={true}
+                          className="hover:underline hover:text-[#052659] transition-colors truncate max-w-[150px] cursor-pointer"
                         >
                           {crumb.label}
                         </Link>
