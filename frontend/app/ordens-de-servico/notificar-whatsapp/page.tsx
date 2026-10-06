@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState, useMemo, Suspense } from "react";
 import PageHeader from "@/components/PageHeader";
+import OpticalFrameIcon from "@/components/icons/OpticalFrameIcon";
 
 interface OSWhatsAppDetail {
   id: string;
@@ -352,7 +353,7 @@ function WhatsAppNotifierContent() {
               <div className="mt-3.5 space-y-2.5 text-xs">
                 <div className="p-3 bg-[#F0F6FC] rounded-xl border border-[#C1E8FF] flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="material-symbols-outlined text-[#5483B3] text-lg">eyeglasses</span>
+                    <OpticalFrameIcon size={18} className="text-[#5483B3] shrink-0" />
                     <div className="min-w-0">
                       <span className="text-[10px] uppercase font-bold text-[#5483B3] block">Armação</span>
                       <span className="font-semibold text-slate-800 truncate block" title={osData.armacao}>

@@ -409,7 +409,7 @@ export default function OrdensDeServicoPage() {
       if (!selectedFrame.sku) {
         toast.warning("Selecione uma armação do estoque livre para montar a Ordem de Serviço.", {
           title: "Armação Não Selecionada",
-          icon: "eyeglasses",
+          icon: "inventory_2",
         });
         return;
       }

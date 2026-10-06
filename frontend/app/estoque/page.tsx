@@ -6,6 +6,7 @@ import { useOperator } from "@/hooks/useOperator";
 import { useToast } from "@/components/ToastProvider";
 import PageHeader from "@/components/PageHeader";
 import KpiCard from "@/components/KpiCard";
+import OpticalFrameIcon from "@/components/icons/OpticalFrameIcon";
 
 interface FrameItem {
   id: string;
@@ -377,7 +378,7 @@ export default function EstoquePage() {
             title="Armações em Estoque"
             value={counts.armacoes}
             unit="modelos"
-            icon="eyeglasses"
+            icon={<OpticalFrameIcon size={18} />}
             trend={{ text: "8 itens em estoque livre", isPositive: true }}
             footerLeft="Disponíveis para venda"
             footerHref="#tab-estoque-armacoes"
@@ -865,7 +866,7 @@ export default function EstoquePage() {
                         : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[16px] shrink-0">eyeglasses</span>
+                    <OpticalFrameIcon size={16} className="shrink-0" />
                     <span className="truncate">Armação</span>
                   </button>
                   <button

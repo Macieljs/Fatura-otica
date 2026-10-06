@@ -79,7 +79,7 @@ A aplicação utiliza estritamente o sistema de cores do Fatura Ótica:
 - Container: `rounded-2xl border p-4 sm:p-5 transition-all duration-200 cursor-pointer group flex flex-col justify-between`.
 - Estado Padrão: `bg-white border-[#C1E8FF] hover:border-[#5483B3] hover:shadow-md hover:-translate-y-0.5`.
 - Estado Selecionado: `bg-[#F0F6FC] border-[#052659] ring-2 ring-[#052659]/30 shadow-md -translate-y-0.5`.
-- Squircle institucional com ícone de categoria (`eyeglasses`, `lens`, `auto_awesome`).
+- Squircle institucional com ícone de categoria (`OpticalFrameIcon`, `lens`, `auto_awesome`).
 - Indicador circular de check/radio no canto superior direito.
 - Preço em `font-mono text-base sm:text-lg font-bold text-[#052659]`.
 - Badge de disponibilidade/estoque em pílula mono sutil.

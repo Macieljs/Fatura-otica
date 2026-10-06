@@ -6,6 +6,7 @@ import { useState, useEffect, useMemo, Suspense } from "react";
 import { useToast } from "@/components/ToastProvider";
 import PageHeader from "@/components/PageHeader";
 import KpiCard from "@/components/KpiCard";
+import OpticalFrameIcon from "@/components/icons/OpticalFrameIcon";
 
 interface OSItem {
   id: string;
@@ -1119,9 +1120,7 @@ function FilaLaboratorioContent() {
                                 {/* Detalhes de Armação, Lente e Laboratório */}
                                 <div className="bg-[#F8FAFC] rounded-lg p-2.5 space-y-1 border border-[#F0F6FC] text-xs">
                                   <div className="flex items-start gap-1.5">
-                                    <span className="material-symbols-outlined text-[14px] text-[#5483B3] shrink-0 mt-0.5">
-                                      eyeglasses
-                                    </span>
+                                    <OpticalFrameIcon size={14} className="text-[#5483B3] shrink-0 mt-0.5" />
                                     <span className="font-semibold text-slate-800 line-clamp-1" title={item.armacao}>
                                       {item.armacao}
                                     </span>
