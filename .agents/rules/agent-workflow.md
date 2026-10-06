@@ -19,3 +19,11 @@ Ler `docs/AGENT_WORKFLOW.md` a partir da raiz do checkout atual e usar os modelo
 10. Não remover testes, enfraquecer critérios ou editar um PRD para fingir aprovação. Registrar bloqueio e condição de retomada.
 
 O CI executa verificações; não inicia os agentes nem publica as aplicações. Um orquestrador precisa executar as delegações e acompanhar as etapas.
+
+## Política de modelos na delegação
+
+Seguir `docs/MODEL_ROUTING.md`. Apoio simples/risco baixo: solicitar `gpt-6-luna` com contexto recortado. Implementação e revisão críticas: modelo principal herdado. Registrar risco, modelo solicitado, motivo, validação e fallback/escalada. Ambiguidade ou risco crítico exige escalada imediata; tarefa simples tem no máximo uma tentativa de correção antes de escalar. Falhas de ambiente precisam de diagnóstico, não troca automática de modelo. Não definir Luna como padrão global nem fingir seleção apenas pela persona.
+
+## Um incremento por execução
+
+Seguir `docs/INCREMENTAL_EXECUTION.md`. Selecionar uma tarefa pronta pequena; registrar aceite, fora de escopo, dependências e modelos. Encerrar após validar/revisar o incremento ou registrar bloqueio concreto; entregar próxima ação. Não exigir toda a sprint para registrar um incremento concluído em sua branch e não iniciar outro incremento automaticamente nessa run. Gate de integração/release e DoD da sprint permanecem. Usar a autorização de escopo existente ao retomar.

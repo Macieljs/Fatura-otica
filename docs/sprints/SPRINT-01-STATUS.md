@@ -50,3 +50,10 @@ Frontend quality: success. Backend quality: failure na etapa Behavioral tests an
 - A restrição de comunicação local VSTest/datacollector no sandbox causou timeout90s. Executar as suites com permissão adequada resolveu; testes/gates não foram enfraquecidos.
 - Modelo: agentes desta etapa herdaram o modelo do chat. É possível escolher modelos por tarefa mediante instrução do usuário; nenhuma troca de modelo foi aplicada nesta etapa.
 - Próximo passo: disponibilizar PostgreSQL real (Docker local ou execução remota controlada) e implementar S1-03/04/05 com QA Red, incluindo SMTP com captura local. Entrega real de e-mail requer configuração de destino externo; não confundir falta de credenciais de produção com impossibilidade de testar o adaptador.
+## Política de execução adotada
+
+A partir deste refinamento, o SM executa um incremento pequeno por run e registra a próxima ação ao encerrar. Roteamento de modelos em docs/MODEL_ROUTING.md; plano de incrementos em docs/INCREMENTAL_EXECUTION.md. Primeiro apoio simples delegado explicitamente a gpt-6-luna, esforço medium, contexto novo restrito: conferência de links/coerência da política; resultado sem inconsistência concreta. Nenhum agente crítico existente foi trocado. Economia de consumo não foi medida.
+
+Docker info foi rechecado neste refinamento e o motor Linux permanece indisponível. Próximo alvo: disponibilizar ambiente de PostgreSQL real como tarefa delimitada e então executar S1-03A; não iniciar toda a sprint de uma vez.
+
+Revisões desta política: apoio documental solicitado explicitamente a gpt-6-luna (medium/contexto restrito), sem inconsistência concreta; revisão de limites de execução/integração pelo agente independente do modelo principal, parecer favorável. Confirmação da dependência55ea2cd fora de develop; nenhuma redução de Feature/DoD nem implementação de outra etapa nesta run.

@@ -99,3 +99,7 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 - PRD antigo em frontend/docs ainda descreve Node/Drizzle e modelos incompatíveis. Esta spec governa somente a Sprint 01; módulos futuros permanecem em refinamento.
 - Proteções remotas de develop/main e ambiente de homologação não configurados/verificados. YAML não impõe revisão nem deploy automaticamente.
 
+
+## Execução em incrementos — refinamento do plano
+
+Por decisão do usuário, cada run executa somente um incremento pequeno. Os itens03/04/05 foram decompostos em `docs/INCREMENTAL_EXECUTION.md`; S1-01 e núcleoS1-02 já foram entregues nesta etapa inicial. Incremento validado, integração e sprintDone são estados distintos. O próximo incremento de implementação é S1-03A, condicionado a PostgreSQL real disponível; resolver o impedimento do ambiente pode ser uma execução própria. Nenhum critério BDD ou gate Feature foi removido.
