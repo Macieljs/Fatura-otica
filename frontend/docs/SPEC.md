@@ -816,6 +816,98 @@ Em ambiente de balcão e retaguarda de ótica, operadores frequentemente realiza
 
 ---
 
+### 🚀 Sprint 26: Painel Administrativo de Identidade, Gestão de Operadores e Filiais (Alinhamento Backend Sprint 01)
+
+**Status:** Especificação Aprovada (Fase de Modelagem de Dados & Mock Adapter).
+
+**Motivação & Contexto Empresarial:**
+Alinhamento direto entre a interface Next.js e o contrato oficial de API do backend .NET 10 (`backend/docs/contracts/identity.openapi.yaml` e `docs/sprints/SPRINT-01-IDENTITY.md`).
+Em uma rede ótica com múltiplas lojas e laboratório central, a concessão de acessos precisa ser rigorosamente segregada:
+1. Gestores de filial podem cadastrar novos funcionários para sua unidade, mas **nunca criam nem visualizam senhas**. O perfil nasce com status `pending`.
+2. O Administrador de Acessos da empresa (ou o Dono da rede) é o único autorizado a conceder papéis (`seller`, `branchManager`, `accessAdministrator`, `owner`) e filiais permitidas.
+3. O novo colaborador recebe convite seguro para ativar sua conta e definir sua própria senha em uma tela de primeiro acesso (`/ativar-conta`).
+4. Enquanto os endpoints HTTP da Sprint 01 do backend estão sendo finalizados em C#/PostgreSQL, o front-end implementa uma camada de **Design-First com Mock Service Layer**, garantindo 100% de testabilidade, fidelidade aos DTOs e zero retrabalho futuro.
+
+**Especificação Técnica das Telas e Componentes:**
+
+#### 1. Página de Gestão de Usuários e Acessos (`/admin/usuarios`):
+- **Cabeçalho:** `PageHeader` (`header-admin-usuarios`) com breadcrumbs (`Dashboard > Administração > Colaboradores & Acessos`).
+- **Cards de Indicadores (KPIs):**
+  - `card-kpi-total-usuarios`: Total de colaboradores cadastrados na organização.
+  - `card-kpi-usuarios-ativos`: Colaboradores ativos e homologados.
+  - `card-kpi-usuarios-pendentes`: Convites pendentes de primeiro acesso/ativação.
+  - `card-kpi-usuarios-bloqueados`: Acessos revogados/bloqueados por auditoria.
+- **Barra de Filtros & Ações:**
+  - Campo de busca textual (`input-admin-busca-usuario`): filtra por nome, e-mail ou CPF.
+  - Filtro por Filial (`select-admin-filtro-filial`): lista filiais da rede ou "Todas as Filiais" (restrito se o usuário logado for gestor local).
+  - Pílulas de filtro de status: `btn-filtro-status-todos`, `btn-filtro-status-ativos`, `btn-filtro-status-pendentes`, `btn-filtro-status-bloqueados`.
+  - Botão de Ação Primária: `btn-admin-novo-usuario` (+ Novo Colaborador), abre o modal de cadastro rápido.
+- **Tabela de Operadores (`table-admin-usuarios`):**
+  - Colunas:
+    1. **Colaborador:** Nome completo, e-mail corporativo normalizado e avatar com iniciais.
+    2. **Filial de Lotação:** Nome da loja e chip de identificação.
+    3. **Papéis Concedidos:** Badges clínicos indicando `Vendedor`, `Gestor`, `Admin Acessos` ou `Dono`.
+    4. **Status do Perfil:**
+       - `badge-status-ativo`: Verde esmeralda (Ativo e operando).
+       - `badge-status-pendente`: Amarelo âmbar (Aguardando ativação pelo colaborador).
+       - `badge-status-bloqueado`: Rosa avermelhado (Acesso suspenso).
+    5. **Ações:**
+       - `btn-usuario-gerenciar-acessos-{id}`: Abre gaveta lateral de concessões.
+       - `btn-usuario-reenviar-convite-{id}`: Disponível para pendentes, dispara reenvio de token.
+       - `btn-usuario-toggle-bloqueio-{id}`: Alterna bloqueio/desbloqueio imediato.
+
+#### 2. Modal de Cadastro Rápido pelo Gestor (`modal-admin-novo-usuario`):
+- **Campos:**
+  - Nome Completo (`input-modal-usuario-nome`): `required`, mínimo 3 caracteres.
+  - E-mail Corporativo (`input-modal-usuario-email`): `required`, formato email normalizado.
+  - Filial de Lotação (`select-modal-usuario-filial`): seleção da unidade.
+  - Cargo/Função (`input-modal-usuario-cargo`): texto descritivo (ex: "Consultor Óptico Balcão", "Técnico de Surfaçagem").
+- **Garantia de Segurança:** Nenhum campo de senha no formulário. Alerta informativo institucional explicando que um token de ativação seguro (24h de validade) será enviado para o e-mail cadastrado.
+- **Botões:** `btn-modal-usuario-cancelar` e `btn-modal-usuario-salvar` (com proteção anti-duplo clique e feedback de sucesso via toast).
+
+#### 3. Gaveta Lateral de Concessões e Permissões (`drawer-admin-permissoes-usuario`):
+- Exibe os dados do colaborador selecionado e suas credenciais.
+- **Matriz de Papéis (`GrantRequest.role`):**
+  - `seller` (Vendedor): Opera OS nas filiais autorizadas.
+  - `branchManager` (Gestor de Filial): Visualiza relatórios locais e cadastra novos perfis na sua unidade.
+  - `accessAdministrator` (Admin de Acessos): Concede/revoga papéis e filiais a terceiros.
+  - `owner` (Dono): Acesso irrestrito a todas as filiais e visão consolidada.
+- **Matriz de Filiais Autorizadas (`GrantRequest.branchId`):** Lista todas as filiais com checkboxes individuais.
+- **Ações:**
+  - Salvar Concessões (`btn-drawer-salvar-concessoes`): Salva os novos papéis e filiais.
+  - Bloquear / Desbloquear (`btn-drawer-toggle-status`): Altera o estado entre `active` e `blocked`.
+  - Reenviar E-mail de Ativação (`btn-drawer-reenviar-ativacao`): Gera novo token de 24h para o usuário.
+
+#### 4. Tela de Primeiro Acesso & Ativação de Senha (`/ativar-conta`):
+- Acessada via link com token: `/ativar-conta?token=FO-ACT-2026-X89`
+- Exibe os dados pré-cadastrados (Nome e E-mail da ótica).
+- **Campos de Senha:**
+  - Nova Senha (`input-ativar-senha`): tipo password com toggle de visualização.
+  - Confirmação de Senha (`input-ativar-confirmar-senha`).
+  - Checklist Dinâmico de Segurança: Mínimo 8 caracteres, pelo menos 1 número, 1 letra maiúscula e 1 caractere especial.
+- **Submissão (`btn-ativar-conta-submit`):**
+  - Dispara ativação atômica com validação de token.
+  - Altera status para `active` e redireciona para `/login` com toast de boas-vindas.
+
+#### 5. Camada de Tipagem e Mock Adapter (`types/identity.ts` e `services/identityService.ts`):
+- Modelagem TypeScript 100% aderente a `identity.openapi.yaml`:
+  - `Profile`, `Branch`, `Grant`, `Session`, `Me`, `Problem`.
+- Mock Adapter desacoplado com latência simulada de 300ms, persistência em `localStorage` e retorno padronizado para testes rápidos no navegador.
+
+**Critérios de Aceite:**
+- [ ] Modelagem de tipos em `types/identity.ts` conforme schemas de `identity.openapi.yaml`.
+- [ ] Mock Service Adapter em `services/identityService.ts` implementando usuários padrão, filiais e ações de CRUD.
+- [ ] Página `/admin/usuarios` criada com listagem de colaboradores, badges de status, filtros e KPIs.
+- [ ] Modal de criação rápida de colaborador sem exposição de senha e com auto-lock.
+- [ ] Gaveta lateral de concessões para Administrador de Acessos alterar filiais e papéis.
+- [ ] Página `/ativar-conta` para primeiro acesso e definição de senha com checklist visual de segurança.
+- [ ] 100% de conformidade com `semantic-ids.md` em todos os botões, inputs e elementos interativos.
+- [ ] `npm run lint:frontend` executado com Exit Code 0 (0 errors, 0 warnings).
+- [ ] `npm run build:frontend` executado com Exit Code 0.
+- [ ] Validação visual completa no navegador.
+
+---
+
 Para garantir que o **Fatura Ótica** seja escalável como SaaS B2B e adaptável a diferentes óticas sem comprometer a integridade clínica, estabelecemos três camadas rígidas de responsabilidade:
 
 | Camada | Escopo | Quem Define | Exemplos no Sistema |
