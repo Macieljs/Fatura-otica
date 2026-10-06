@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useToast } from "@/components/ToastProvider";
 import PageHeader from "@/components/PageHeader";
+import Button from "@/components/Button";
 
 interface ItemNFe {
   id: string;
@@ -28,6 +29,19 @@ export default function EntradaNFePage() {
   const [gerarContasPagar, setGerarContasPagar] = useState(true);
   const [imprimirEtiquetas, setImprimirEtiquetas] = useState(true);
   const [gaveteiroDestino, setGaveteiroDestino] = useState("Almoxarifado Geral / Gaveteiro A-04");
+
+  // Ação assíncrona protegida contra duplo clique
+  const handleConfirmarEntrada = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    setConfirmadoSucesso(true);
+    toast.success(
+      "Entrada da NF-e confirmada com sucesso! Saldos e custos médios atualizados no Kardex.",
+      {
+        title: "NF-e Lançada",
+        icon: "verified",
+      }
+    );
+  };
 
   const [itens, setItens] = useState<ItemNFe[]>([
     {
@@ -444,37 +458,29 @@ export default function EntradaNFePage() {
             >
               Cancelar
             </Link>
-            <button
+            <Button
               id="btn-nfe-salvar-rascunho"
-              type="button"
+              variant="outline"
+              size="md"
               onClick={() =>
                 toast.success("Rascunho de conferência de NF-e salvo localmente com sucesso.", {
                   title: "Rascunho Salvo",
                   icon: "save",
                 })
               }
-              className="px-4 py-2 rounded bg-[#C1E8FF] text-[#052659] hover:bg-[#a9daf8] text-xs font-semibold transition-colors"
             >
               Salvar Rascunho
-            </button>
-            <button
+            </Button>
+            <Button
               id="btn-nfe-confirmar-entrada"
-              type="button"
-              onClick={() => {
-                setConfirmadoSucesso(true);
-                toast.success(
-                  "Entrada da NF-e confirmada com sucesso! Saldos e custos médios atualizados no Kardex.",
-                  {
-                    title: "NF-e Lançada",
-                    icon: "verified",
-                  }
-                );
-              }}
-              className="px-5 py-2.5 rounded bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-colors shadow-sm flex items-center gap-2"
+              variant="primary"
+              size="md"
+              icon="inventory"
+              onClick={handleConfirmarEntrada}
+              loadingText="Atualizando Saldos & Custos..."
             >
-              <span className="material-symbols-outlined text-[17px]">inventory</span>
               Confirmar Entrada &amp; Atualizar Custos (F8)
-            </button>
+            </Button>
           </div>
         </div>
       </footer>

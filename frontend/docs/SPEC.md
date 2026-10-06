@@ -777,7 +777,42 @@ Após o aprimoramento dos botões principais, o usuário/PO identificou que o bo
 - [x] Status operacionais transformados em pílulas clínicas com pontos circulares iluminados.
 - [x] Gavetas físicas com chips dedicados contendo ícone institucional `shelves`.
 - [x] Links de rodapé de tabelas e dashboards transformados em action pills.
-- [x] Exit Code 0 no `npm run build` e conformidade com `AGENTS.md`.
+---
+
+### 🚀 Sprint 25: Blindagem do Front-end — Prevenção de Duplo Clique, Auto-lock e Resiliência de Ações
+
+**Status:** Concluído com Sucesso (Build & Lint Exit Code 0, Branch feature/frontend-sprint-25).
+
+**Motivação:**
+Em ambiente de balcão e retaguarda de ótica, operadores frequentemente realizam cliques múltiplos e rápidos em botões de ação ("duplo clique"), o que pode gerar requisições concorrentes duplicadas, como emissão duplicada de OS (#10294 e #10295), dupla baixa no Kardex de estoque, disparos repetidos de mensagens no WhatsApp e inserções financeiras incorretas.
+
+**Especificação Técnica:**
+1. **Componente Universal `components/Button.tsx` com Blindagem Atômica:**
+   - Interceptação inteligente de `onClick`: suporte nativo a handlers assíncronos (`async/await` / Promises) com auto-lock instantâneo (`isLoading = true`) enquanto a Promise estiver pendente.
+   - Debounce atômico de proteção (500ms): rejeição síncrona imediata via refs de múltiplos cliques acidentais no mesmo botão.
+   - Estado visual de carregamento integrado com spinner animado (`animate-spin`), preservando a largura do botão sem causar Layout Shift.
+   - Propriedade `disabled` ativada imediatamente no primeiro evento com `pointer-events-none` e cursor apropriado (`cursor-not-allowed`).
+2. **Criação do Hook Utilitário `hooks/useAsyncAction.ts`:**
+   - Hook desacoplado e reutilizável para gerenciar ações com trava de concorrência (`isLoading`, `execute`, `error`, `reset`), garantindo que apenas 1 ciclo execute por vez com notificações clínicas integradas.
+3. **Refatoração das Ações de Mutação Crítica nas Telas:**
+   - **Emissão de OS (`/ordens-de-servico`):** Blindagem dos botões de emissão e envio (`btn-os-emitir-ordem-resumo` e `btn-os-finalizar-enviar-lab`), impedindo criação duplicada da ordem.
+   - **Kardex Entrada NF-e (`/kardex/entrada-nfe`):** Blindagem dos botões `btn-nfe-confirmar-entrada` e `btn-nfe-salvar-rascunho`.
+   - **Kardex Ajuste Manual (`/kardex/ajuste-manual`):** Blindagem do botão de confirmação de baixa por avaria/laboratório (`btn-ajuste-registrar-termo`).
+   - **Notificação WhatsApp (`/ordens-de-servico/notificar-whatsapp`):** Bloqueio de cliques repetidos na cópia de mensagem (`btn-notificar-copiar-texto`).
+   - **Catálogo de Estoque (`/estoque`):** Blindagem do botão de salvar produto no modal manual (`btn-modal-novo-produto-salvar`).
+   - **Fila de Pedidos (`/ordens-de-servico/fila`):** Blindagem da submissão rápida de malote (`btn-fila-bipar`).
+4. **Governança & IDs Semânticos:**
+   - 100% de conformidade com `semantic-ids.md`.
+   - Build e Lint 100% aprovados (`npm run build:frontend` e `npm run lint:frontend`).
+
+**Critérios de Aceite:**
+- [x] Auto-lock e debounce integrados nativamente em `components/Button.tsx`.
+- [x] Hook `hooks/useAsyncAction.ts` criado e tipado.
+- [x] Ações críticas de escrita (Emissão de OS, Entrada NF-e, Ajuste Manual, Modal de Produto, Bip de Malote e Ações de WhatsApp) protegidas contra duplo clique.
+- [x] Spinner e transição visual suave sem Layout Shift durante o processamento.
+- [x] `npm run lint:frontend` executado com Exit Code 0.
+- [x] `npm run build:frontend` executado com Exit Code 0.
+- [x] Validação visual e teste de cliques repetidos verificado.
 
 ---
 

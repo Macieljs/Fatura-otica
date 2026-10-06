@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useOperator } from "@/hooks/useOperator";
 import { useToast } from "@/components/ToastProvider";
 import PageHeader from "@/components/PageHeader";
+import Button from "@/components/Button";
 
 export default function AjusteManualPage() {
   const router = useRouter();
@@ -38,7 +39,8 @@ export default function AjusteManualPage() {
   const saldoProjetado = Math.max(0, saldoAtual - qtdAjuste);
   const impactoFinanceiro = qtdAjuste * custoUnitario;
 
-  const handleRegistrarAjuste = () => {
+  const handleRegistrarAjuste = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
     setSucessoRegistrado(true);
     toast.success(
       `Termo de baixa e ajuste manual registrado com sucesso! Protocolo #AJ-2026-10294 gerado (Saldo: ${saldoAtual} ➔ ${saldoProjetado} un).`,
@@ -456,15 +458,16 @@ export default function AjusteManualPage() {
             >
               Cancelar
             </Link>
-            <button
+            <Button
               id="btn-ajuste-registrar-termo"
-              type="button"
+              variant="primary"
+              size="md"
+              icon="inventory_2"
               onClick={handleRegistrarAjuste}
-              className="px-5 py-2.5 rounded bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-colors shadow-sm flex items-center gap-2 cursor-pointer"
+              loadingText="Registrando Termo Fiscal..."
             >
-              <span className="material-symbols-outlined text-[17px]">inventory_2</span>
               Registrar Ajuste &amp; Emitir Termo de Baixa (F8)
-            </button>
+            </Button>
           </div>
         </div>
       </footer>

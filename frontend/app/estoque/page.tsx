@@ -7,6 +7,7 @@ import { useToast } from "@/components/ToastProvider";
 import PageHeader from "@/components/PageHeader";
 import KpiCard from "@/components/KpiCard";
 import OpticalFrameIcon from "@/components/icons/OpticalFrameIcon";
+import Button from "@/components/Button";
 
 interface FrameItem {
   id: string;
@@ -198,13 +199,16 @@ export default function EstoquePage() {
     setNewProductForm((prev) => ({ ...prev, sku: randomDigits }));
   };
 
+  const [isSavingProduct, setIsSavingProduct] = useState(false);
+
   const handleOpenNewProductModal = () => {
     generateSKU();
     setShowNewProductModal(true);
   };
 
-  const handleSaveNewProduct = (e: React.FormEvent) => {
+  const handleSaveNewProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSavingProduct) return;
     if (!newProductForm.marca.trim() || !newProductForm.referencia.trim()) {
       toast.warning("Informe a marca e a referência do produto para cadastrar.", {
         title: "Campos Obrigatórios",
@@ -212,6 +216,9 @@ export default function EstoquePage() {
       });
       return;
     }
+
+    setIsSavingProduct(true);
+    await new Promise((resolve) => setTimeout(resolve, 400));
     const finalSku = newProductForm.sku.trim() || Math.floor(10000000000 + Math.random() * 90000000000).toString();
     const precoNum = parseFloat(newProductForm.preco.replace(",", ".")) || 0;
     const custoNum = parseFloat(newProductForm.custo.replace(",", ".")) || (precoNum > 0 ? precoNum * 0.45 : 0);
@@ -245,6 +252,7 @@ export default function EstoquePage() {
       custo: "",
       qtd: "1",
     });
+    setIsSavingProduct(false);
 
     toast.success(
       `Produto "${newItem.marca} ${newItem.referencia}" cadastrado com sucesso no estoque livre! SKU: ${newItem.sku}`,
@@ -1042,14 +1050,17 @@ export default function EstoquePage() {
                 >
                   Cancelar
                 </button>
-                <button
+                <Button
                   id="btn-modal-novo-produto-salvar"
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer transition-colors"
+                  variant="primary"
+                  size="md"
+                  icon="save"
+                  isLoading={isSavingProduct}
+                  loadingText="Salvando no Estoque..."
                 >
-                  <span className="material-symbols-outlined text-[16px]">save</span>
                   Salvar no Estoque
-                </button>
+                </Button>
               </div>
             </form>
           </div>
