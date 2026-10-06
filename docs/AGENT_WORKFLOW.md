@@ -127,24 +127,25 @@ O Release promove o artefato testado, identifica migrations aplicáveis e confir
 
 Publicação em staging, configuração de secrets, ambientes e produção dependem do destino definido. O ambiente de produção pode usar proteção do provedor, além da autorização registrada. As possibilidades de aprovação de ambientes no GitHub variam conforme o plano e a visibilidade do repositório; não presumir que essa proteção esteja habilitada. Até essas integrações existirem, o estado máximo verificável localmente é uma candidata revisada, sem afirmar que foi publicada.
 
-## Situação observada em 6 de outubro de 2026
+## Situação observada em 6 de outubro de 2026 — candidata S1-03A
 
 | Verificação | Resultado |
 | --- | --- |
-| Build frontend | Passou na reorganização. |
-| Lint frontend | 8 erros e 6 warnings; precisa de correção antes de passar pelo CI. |
+| Build frontend | Passou na candidata local develop 7d2c205; sem alteração de código frontend. |
+| Lint frontend | Passou na mesma candidata; o diagnóstico inicial de 8 erros/6 warnings é histórico. |
 | Testes frontend | Adiados por decisão do usuário; ausência não bloqueia o frontend nesta fase. |
-| Build backend | Passou sem erros ou warnings. |
-| Testes backend | 3 testes de arquitetura passaram; Domain, Application e Integration ainda vazios. |
-| PRD de identidade | Rascunho, pendente de aprovação; ainda descreve Node.js/Drizzle, divergente dos ADRs .NET. |
-| CI | Workflow local preparado; execução remota depende de commit e push. |
+| Build backend | Release passou sem erros ou warnings na candidata limpa 7d2c205. |
+| Testes backend | Feature aprovado: Architecture3, Domain21, Application6, Integration61; 91/91, zero skips, Domain100%31linhas. PostgreSQL17 real. |
+| Spec de identidade | Sprint01 autorizada; S1-01/02/03A entregues no recorte interno. PRD legado Node/Drizzle não governa esta sprint. |
+| CI | Configurado em develop/main e PRs. O run remoto inicial falhou; resultado local atual passou. Novo resultado remoto deve ser conferido após push. |
+| PR | Criação pelo conector GitHub recusada com403/permissão insuficiente; branch feature publicada e revisão independente versionada. Nenhum PR foi criado. |
 | Publicação | Destino do backend, credenciais, smoke tests e política de promoção precisam de definição/configuração. |
 
 ## Ordem de implantação
 
-1. Corrigir o lint existente e aplicar lint, build, revisão independente e verificação manual ao frontend. Testes automatizados frontend/E2E ficam adiados.
-2. Atualizar o PRD de identidade conforme os ADRs .NET e registrar a aprovação de escopo do usuário.
-3. Executar a primeira fatia vertical: contrato → QA Red → backend/front → integração → testes → revisão.
+1. Fechar a publicação da integração S1-03A em develop e conferir o CI remoto; ver S1-03A-INTEGRATION-REVIEW e STATUS da sprint.
+2. Executar o próximo incremento pronto, S1-03B auditoria de acessos, mantendo contrato → QA Red → Green → gate/revisão.
+3. Entregar rotas Identity e integrar frontend nas fatias seguintes; nenhuma rota de login/cadastro foi implementada em S1-03A. Testes automatizados frontend/E2E permanecem adiados.
 4. Configurar verificações obrigatórias no repositório remoto e proteger a integração, conforme os critérios atuais de cada frente. YAML local não altera regras de branch.
 5. Conectar o ambiente de homologação, definir smoke tests e configurar a promoção autorizada para produção.
 
@@ -156,3 +157,11 @@ Publicação em staging, configuração de secrets, ambientes e produção depen
 - [Ambientes e proteções de deploy](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments)
 - [Cobertura de código no .NET](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage)
 - [Reporter JSON do Playwright](https://playwright.dev/docs/test-reporters#json-reporter)
+
+## Seleção de modelos e contexto
+
+Aplicar [MODEL_ROUTING.md](MODEL_ROUTING.md) em cada delegação. Luna para tarefas simples delimitadas; modelo principal para implementações/revisões críticas. O SM registra seleção, validação e escaladas, envia contexto mínimo suficiente e aplica o modelo na ferramenta. Não alterar critérios de qualidade para economizar consumo.
+
+## Granularidade das execuções
+
+Aplicar [INCREMENTAL_EXECUTION.md](INCREMENTAL_EXECUTION.md). A sprint é o objetivo geral; cada execução resolve um incremento pequeno. O ciclo de qualidade permanece, com evidências do recorte e revisão. Conclusão do incremento, integração em develop e encerramento da sprint são registros distintos. O gate Feature da candidata não foi reduzido.

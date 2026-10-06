@@ -27,3 +27,7 @@ Listar os critérios não aplicáveis e sua justificativa. Uma mudança no códi
 ## Frontend — fase atual
 
 Por decisão do usuário, testes automatizados frontend (unitários/componentes) e E2E ficam adiados. Aplicar lint, build, revisão independente e verificação manual dos fluxos disponíveis, com evidências e limitações registradas. Não criar suítes, instalar runners ou exigir relatórios/gate Frontend nesta fase. Registrar Red/Green e cobertura para o backend conforme seu escopo; os requisitos de backend permanecem.
+
+## Modelo e escopo da revisão
+
+Registrar o modelo solicitado e o risco da revisão conforme `docs/MODEL_ROUTING.md`. Revisão crítica de implementação/segurança/dados usa o modelo principal em agente independente. Luna pode conferir referências/contagens de forma auxiliar, sem substituir esse parecer.

@@ -55,3 +55,11 @@ Registros, logs e relatórios de execução ficam em `artifacts/`, ignorado pelo
 A Sprint 01 de backend está definida em `docs/sprints/SPRINT-01-IDENTITY.md`, com autorização registrada e escopo empresarial de identidade. Esse documento governa o recorte atual; o PRD legado Node/Drizzle em frontend/docs não deve orientar a implementação desta sprint.
 
 Seguir `docs/BRANCH_WORKFLOW.md`: branches de tarefa/worktrees próprios → revisão e gates → `develop`; candidata estável revisada → `main`. Não alterar a branch ou arquivos do checkout de outro terminal. Esta sprint não autoriza deploy.
+
+## Modelos por tarefa
+
+O Scrum Master deve aplicar `docs/MODEL_ROUTING.md`: solicitar `gpt-6-luna` para apoio simples e tarefas pequenas de risco baixo; herdar o modelo principal para implementação/revisão críticas. Classificar antes de delegar, enviar contexto delimitado e registrar modelo solicitado/resultado/escaladas. Escolher o modelo na ferramenta; persona textual não muda o runtime.
+
+## Execuções pequenas
+
+Seguir `docs/INCREMENTAL_EXECUTION.md`: cada run entrega um incremento delimitado com aceite, testes/verificações aplicáveis e revisão. Registrar conclusão do incremento, integração e conclusão da sprint separadamente. Não tentar fechar todos os módulos em uma única execução nem iniciar outro incremento automaticamente ao encerrar o recorte.
