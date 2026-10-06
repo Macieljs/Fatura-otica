@@ -784,7 +784,7 @@ function FilaLaboratorioContent() {
                     <th className="w-[165px] px-3.5 py-3">Laboratório</th>
                     <th className="w-[190px] px-3.5 py-3">Status &amp; Previsão</th>
                     <th className="w-[130px] px-3.5 py-3">Gaveta Física</th>
-                    <th className="w-[235px] px-3.5 py-3 text-right">Ações de Balcão</th>
+                    <th className="w-[140px] px-3.5 py-3 text-right">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -909,7 +909,7 @@ function FilaLaboratorioContent() {
                             </span>
                           </td>
 
-                          {/* Ações Rápidas de Balcão */}
+                          {/* Ações Rápidas de Balcão (Apenas Ícones com Tooltip) */}
                           <td className="px-3.5 py-2.5 sm:py-3 text-right whitespace-nowrap">
                             <div className="flex items-center justify-end gap-1.5">
                               {/* Se OS atrasada, botão de cobrança de laboratório */}
@@ -919,11 +919,11 @@ function FilaLaboratorioContent() {
                                   href={`https://wa.me/5511987654321?text=Ol%C3%A1%20${encodeURIComponent(item.laboratorio)}!%20Cobran%C3%A7a%20urgente%20da%20OS%20%23${item.id}%20do%20paciente%20${encodeURIComponent(item.cliente)}%20que%20est%C3%A1%20atrasada.`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1 ring-2 ring-rose-500/20"
+                                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-rose-500/20 shrink-0"
                                   title="Cobrar Laboratório Parceiro via WhatsApp"
+                                  aria-label="Cobrar Laboratório Parceiro via WhatsApp"
                                 >
-                                  <span className="material-symbols-outlined text-[13px]">warning</span>
-                                  <span>Cobrar Lab</span>
+                                  <span className="material-symbols-outlined text-[17px]">warning</span>
                                 </a>
                               )}
 
@@ -931,22 +931,22 @@ function FilaLaboratorioContent() {
                               <Link
                                 id={`link-fila-notificar-whatsapp-${item.id}`}
                                 href={`/ordens-de-servico/notificar-whatsapp?id=${item.id}`}
-                                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1.5 ring-2 ring-emerald-500/20"
-                                title="Abrir tela dedicada de disparo WhatsApp para o paciente"
+                                className="w-8 h-8 rounded-lg flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-emerald-500/20 shrink-0"
+                                title="Notificar Paciente via WhatsApp"
+                                aria-label="Notificar Paciente via WhatsApp"
                               >
-                                <span className="material-symbols-outlined text-[15px]">chat</span>
-                                <span>Notificar WhatsApp</span>
+                                <span className="material-symbols-outlined text-[18px]">chat</span>
                               </Link>
 
                               {/* Link para Ficha Completa */}
                               <Link
                                 id={`link-fila-ver-ficha-${item.id}`}
                                 href={`/ordens-de-servico/detalhes?id=${item.id}`}
-                                className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] transition-all inline-flex items-center gap-1 shadow-2xs hover:shadow-xs active:scale-95 group cursor-pointer"
-                                title="Ver ficha técnica dióptrica"
+                                className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] transition-all shadow-2xs hover:shadow-xs active:scale-95 group cursor-pointer shrink-0"
+                                title="Ver Ficha Técnica Dióptrica"
+                                aria-label="Ver Ficha Técnica Dióptrica"
                               >
-                                <span>Ficha</span>
-                                <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white group-hover:translate-x-0.5 transition-all">arrow_forward</span>
+                                <span className="material-symbols-outlined text-[17px] text-[#5483B3] group-hover:text-white transition-colors">description</span>
                               </Link>
                             </div>
                           </td>
@@ -1143,46 +1143,46 @@ function FilaLaboratorioContent() {
                                 </div>
 
                                 {/* Rodapé de Ações de Balcão */}
-                                <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
-                                  {item.statusBadgeTipo === "danger" ? (
-                                    <a
-                                      id={`link-gaveta-cobrar-lab-${item.id}`}
-                                      href={`https://wa.me/5511987654321?text=Ol%C3%A1%20${encodeURIComponent(item.laboratorio)}!%20Cobran%C3%A7a%20urgente%20da%20OS%20%23${item.id}%20do%20paciente%20${encodeURIComponent(item.cliente)}%20que%20est%C3%A1%20atrasada.`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1 ring-2 ring-rose-500/20"
-                                      title="Cobrar laboratório via WhatsApp"
-                                    >
-                                      <span className="material-symbols-outlined text-[13px]">warning</span>
-                                      <span>Cobrar Lab</span>
-                                    </a>
-                                  ) : (
-                                    <span className="text-[11px] font-mono font-bold text-slate-900">
-                                      R$ {item.valorTotal.toFixed(2).replace(".", ",")}
-                                    </span>
-                                  )}
+                                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                                    {item.statusBadgeTipo === "danger" ? (
+                                      <a
+                                        id={`link-gaveta-cobrar-lab-${item.id}`}
+                                        href={`https://wa.me/5511987654321?text=Ol%C3%A1%20${encodeURIComponent(item.laboratorio)}!%20Cobran%C3%A7a%20urgente%20da%20OS%20%23${item.id}%20do%20paciente%20${encodeURIComponent(item.cliente)}%20que%20est%C3%A1%20atrasada.`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-7 h-7 rounded-lg flex items-center justify-center bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-rose-500/20 shrink-0"
+                                        title="Cobrar laboratório via WhatsApp"
+                                        aria-label="Cobrar laboratório via WhatsApp"
+                                      >
+                                        <span className="material-symbols-outlined text-[15px]">warning</span>
+                                      </a>
+                                    ) : (
+                                      <span className="text-[11px] font-mono font-bold text-slate-900">
+                                        R$ {item.valorTotal.toFixed(2).replace(".", ",")}
+                                      </span>
+                                    )}
 
-                                  <div className="flex items-center gap-1.5">
-                                    <Link
-                                      id={`link-gaveta-avisar-${item.id}`}
-                                      href={`/ordens-de-servico/notificar-whatsapp?id=${item.id}`}
-                                      className="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs hover:shadow-xs active:scale-95 transition-all inline-flex items-center gap-1 ring-2 ring-emerald-500/20"
-                                      title="Notificar paciente no WhatsApp"
-                                    >
-                                      <span className="material-symbols-outlined text-[14px]">chat</span>
-                                      <span>Avisar</span>
-                                    </Link>
-                                    <Link
-                                      id={`link-gaveta-ficha-${item.id}`}
-                                      href={`/ordens-de-servico/detalhes?id=${item.id}`}
-                                      className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#C1E8FF] hover:border-[#052659] transition-all inline-flex items-center gap-1 shadow-2xs group"
-                                      title="Ver Ficha Técnica"
-                                    >
-                                      <span>Ficha</span>
-                                      <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white group-hover:translate-x-0.5 transition-all">arrow_forward</span>
-                                    </Link>
+                                    <div className="flex items-center gap-1.5">
+                                      <Link
+                                        id={`link-gaveta-avisar-${item.id}`}
+                                        href={`/ordens-de-servico/notificar-whatsapp?id=${item.id}`}
+                                        className="w-7 h-7 rounded-lg flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs hover:shadow-xs active:scale-95 transition-all ring-2 ring-emerald-500/20 shrink-0"
+                                        title="Notificar paciente via WhatsApp"
+                                        aria-label="Notificar paciente via WhatsApp"
+                                      >
+                                        <span className="material-symbols-outlined text-[15px]">chat</span>
+                                      </Link>
+                                      <Link
+                                        id={`link-gaveta-ficha-${item.id}`}
+                                        href={`/ordens-de-servico/detalhes?id=${item.id}`}
+                                        className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#C1E8FF] hover:border-[#052659] transition-all shadow-2xs group cursor-pointer shrink-0"
+                                        title="Ver Ficha Técnica Dióptrica"
+                                        aria-label="Ver Ficha Técnica Dióptrica"
+                                      >
+                                        <span className="material-symbols-outlined text-[15px] text-[#5483B3] group-hover:text-white transition-colors">description</span>
+                                      </Link>
+                                    </div>
                                   </div>
-                                </div>
                               </div>
                             );
                           })}
