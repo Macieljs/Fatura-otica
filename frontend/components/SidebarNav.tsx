@@ -204,7 +204,34 @@ export default function SidebarNav() {
             </button>
           </div>
 
-          {/* Navigation Groups (Posição vertical idêntica nos dois estados) */}
+          {/* Desktop Expand Toggle Button (No Topo da Sidebar Recolhida) */}
+          {collapsed && !forceExpanded && (
+            <div className="px-2 pt-2.5 pb-0.5 flex justify-center relative group">
+              <button
+                id="btn-sidebar-toggle-collapse-collapsed"
+                type="button"
+                onClick={toggleCollapse}
+                className="hidden md:flex w-10 h-7.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/25 transition-colors cursor-pointer items-center justify-center border border-[#5483B3]/30 shadow-2xs"
+              >
+                <span className="material-symbols-outlined text-[18px]">last_page</span>
+              </button>
+              {/* Flyout Tooltip */}
+              <div
+                role="tooltip"
+                className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
+              >
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
+                  <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
+                  <span className="text-[#F0F6FC]">Expandir Menu</span>
+                  <span className="px-1.5 py-0.5 rounded bg-[#5483B3]/30 text-[#C1E8FF] text-[10px] font-mono border border-[#5483B3]/30">
+                    Alt+B
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Navigation Groups */}
           <div className="space-y-4 p-2.5">
             {navGroups.map((group, gIdx) => (
               <div key={gIdx}>
@@ -377,89 +404,43 @@ export default function SidebarNav() {
                   </div>
                 </div>
               </div>
-
-              {/* Botão de Expandir no rodapé na Sidebar Recolhida */}
-              {!forceExpanded && (
-                <div className="relative group flex justify-center pt-1 border-t border-[#021024]/60 w-full">
-                  <button
-                    id="btn-sidebar-toggle-collapse-collapsed"
-                    type="button"
-                    onClick={toggleCollapse}
-                    className="w-9 h-8 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/25 transition-colors cursor-pointer flex items-center justify-center border border-[#5483B3]/30 shadow-2xs"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">last_page</span>
-                  </button>
-                  {/* Flyout Tooltip */}
-                  <div
-                    role="tooltip"
-                    className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
-                  >
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
-                      <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
-                      <span className="text-[#F0F6FC]">Expandir Menu</span>
-                      <span className="px-1.5 py-0.5 rounded bg-[#5483B3]/30 text-[#C1E8FF] text-[10px] font-mono border border-[#5483B3]/30">
-                        Alt+B
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           ) : (
-            <div className="flex flex-col gap-2">
-              <div className="p-2.5 rounded-xl bg-[#031c44] border border-[#7DA0CA]/30 shadow-xs flex items-center justify-between gap-2.5">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs">
-                    {initials}
-                  </div>
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[12px] font-semibold text-white truncate">{operator.name}</span>
-                      {isManager ? (
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 border border-amber-400/40 font-mono">
-                          GERENTE
-                        </span>
-                      ) : (
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 font-mono">
-                          BALCÃO
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-[10px] text-[#C1E8FF]/70 truncate">{operator.role}</div>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                      <span className="text-[9px] font-mono text-emerald-300 font-medium truncate">
-                        Terminal • {operator.branch.split(" - ")[0]}
+            <div className="p-2.5 rounded-xl bg-[#031c44] border border-[#7DA0CA]/30 shadow-xs flex items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs">
+                  {initials}
+                </div>
+                <div className="flex flex-col min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[12px] font-semibold text-white truncate">{operator.name}</span>
+                    {isManager ? (
+                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 border border-amber-400/40 font-mono">
+                        GERENTE
                       </span>
-                    </div>
+                    ) : (
+                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 font-mono">
+                        BALCÃO
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[10px] text-[#C1E8FF]/70 truncate">{operator.role}</div>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span className="text-[9px] font-mono text-emerald-300 font-medium truncate">
+                      Terminal • {operator.branch.split(" - ")[0]}
+                    </span>
                   </div>
                 </div>
-                <Link
-                  id="btn-sidebar-trocar-operador"
-                  href="/login"
-                  title="Sair / Trocar de Terminal"
-                  className="p-1.5 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center flex-shrink-0"
-                >
-                  <span className="material-symbols-outlined text-[18px]">logout</span>
-                </Link>
               </div>
-
-              {!forceExpanded && (
-                <button
-                  id="btn-sidebar-toggle-collapse-footer"
-                  type="button"
-                  onClick={toggleCollapse}
-                  className="w-full py-1.5 px-2.5 rounded-lg text-xs font-medium text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 flex items-center justify-between transition-colors cursor-pointer border border-[#5483B3]/20"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[18px]">first_page</span>
-                    <span>Recolher Menu Lateral</span>
-                  </div>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#021024] text-[#C1E8FF] border border-[#5483B3]/30">
-                    Alt+B
-                  </span>
-                </button>
-              )}
+              <Link
+                id="btn-sidebar-trocar-operador"
+                href="/login"
+                title="Sair / Trocar de Terminal"
+                className="p-1.5 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center flex-shrink-0"
+              >
+                <span className="material-symbols-outlined text-[18px]">logout</span>
+              </Link>
             </div>
           )}
         </div>
