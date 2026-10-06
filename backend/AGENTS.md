@@ -8,3 +8,4 @@ Seguir o PRD aprovado e os critérios de aceite antes de implementar funcionalid
 Executar `dotnet build FaturaOtica.slnx` e `dotnet test FaturaOtica.slnx` nesta pasta. Testes de integração que usam Testcontainers dependem de Docker disponível.
 
 O grafo é compartilhado com o front em `../graphify-out/`. A partir desta pasta, usar `../scripts/graphify.ps1 query "<pergunta>"` ou `../scripts/graphify.ps1 update .`. O script sempre trabalha na raiz do projeto.
+Para refinar identidade, filiais, papéis e responsabilidade comercial da OS, ler também ../docs/IDENTITY_ACCESS_DECISIONS.md. O registro contém decisões confirmadas e pontos pendentes; não equivale à aprovação integral do PRD.
