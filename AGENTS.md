@@ -50,3 +50,8 @@ Não versionar o grafo, caches, marcadores com caminhos da máquina ou arquivos 
 Para tarefas de desenvolvimento e liberação, ler `docs/AGENT_WORKFLOW.md` e `.agents/rules/agent-workflow.md`. O orquestrador delega testes, implementação e revisão independente; usa os modelos em `docs/templates/` para registrar escopo autorizado, estado e evidências.
 O workflow exige identidade da revisão/snapshot e critérios de liberação. Backend mantém testes realmente executados. No frontend atual, por decisão do usuário, testes automatizados e E2E ficam adiados; aplicar lint, build, revisão independente e verificação manual, sem exigir o gate Frontend ou instalar runners. O modo Bootstrap do backend valida preparação e não autoriza entrega funcional. O CI local está em `.github/workflows/quality.yml`; só haverá execução remota depois de versionar e enviar essa configuração ao repositório.
 Registros, logs e relatórios de execução ficam em `artifacts/`, ignorado pelo Git e pelo grafo. A liberação segue `.agents/rules/release-manager.md` e a autorização aplicável ao ambiente.
+## Sprint ativa e integração
+
+A Sprint 01 de backend está definida em `docs/sprints/SPRINT-01-IDENTITY.md`, com autorização registrada e escopo empresarial de identidade. Esse documento governa o recorte atual; o PRD legado Node/Drizzle em frontend/docs não deve orientar a implementação desta sprint.
+
+Seguir `docs/BRANCH_WORKFLOW.md`: branches de tarefa/worktrees próprios → revisão e gates → `develop`; candidata estável revisada → `main`. Não alterar a branch ou arquivos do checkout de outro terminal. Esta sprint não autoriza deploy.
