@@ -775,16 +775,16 @@ function FilaLaboratorioContent() {
         {modoVisualizacao === "tabela" ? (
           <section className="bg-white border border-[#C1E8FF] rounded-2xl overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
-              <table id="table-fila-producao" className="w-full text-left text-sm border-collapse">
+              <table id="table-fila-producao" className="w-full text-left text-sm border-collapse min-w-[1060px]">
                 <thead>
                   <tr className="bg-[#F0F6FC] sticky top-0 z-10 border-b border-[#C1E8FF] text-[11px] font-bold text-[#052659] uppercase tracking-wider">
-                    <th className="px-4 py-3.5">OS</th>
-                    <th className="px-4 py-3.5">Paciente</th>
-                    <th className="px-4 py-3.5">Armação &amp; Lente</th>
-                    <th className="px-4 py-3.5">Laboratório Parceiro</th>
-                    <th className="px-4 py-3.5">Status &amp; Previsão</th>
-                    <th className="px-4 py-3.5">Gaveta Física</th>
-                    <th className="px-4 py-3.5 text-right">Ações de Balcão (1 Clique)</th>
+                    <th className="w-[80px] px-3.5 py-3">OS</th>
+                    <th className="w-[180px] px-3.5 py-3">Paciente</th>
+                    <th className="px-3.5 py-3">Armação &amp; Lente</th>
+                    <th className="w-[165px] px-3.5 py-3">Laboratório</th>
+                    <th className="w-[190px] px-3.5 py-3">Status &amp; Previsão</th>
+                    <th className="w-[130px] px-3.5 py-3">Gaveta Física</th>
+                    <th className="w-[235px] px-3.5 py-3 text-right">Ações de Balcão</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -830,7 +830,7 @@ function FilaLaboratorioContent() {
                           }`}
                         >
                           {/* Coluna 1: OS */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
+                          <td className="px-3.5 py-2.5 sm:py-3 whitespace-nowrap">
                             <Link
                               id={`link-fila-os-${item.id}`}
                               href={`/ordens-de-servico/detalhes?id=${item.id}`}
@@ -843,15 +843,17 @@ function FilaLaboratorioContent() {
                           </td>
 
                           {/* Coluna 2: Paciente */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
-                            <div className="flex flex-col">
-                              <span className="font-bold text-[#052659] text-sm">{item.cliente}</span>
+                          <td className="px-3.5 py-2.5 sm:py-3 whitespace-nowrap">
+                            <div className="flex flex-col min-w-0">
+                              <span className="font-bold text-[#052659] text-sm truncate" title={item.cliente}>
+                                {item.cliente}
+                              </span>
                               <span className="text-xs font-mono text-slate-400">{item.telefone}</span>
                             </div>
                           </td>
 
                           {/* Armação & Lente */}
-                          <td className="px-4 py-3.5 max-w-[240px]">
+                          <td className="px-3.5 py-2.5 sm:py-3 max-w-[280px]">
                             <div className="truncate font-semibold text-slate-800 text-sm" title={item.armacao}>
                               {item.armacao}
                             </div>
@@ -861,15 +863,15 @@ function FilaLaboratorioContent() {
                           </td>
 
                           {/* Laboratório Parceiro */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
+                          <td className="px-3.5 py-2.5 sm:py-3 whitespace-nowrap">
                             <span className="font-medium text-slate-700 text-sm">{item.laboratorio}</span>
                           </td>
 
                           {/* Status & Previsão */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
-                            <div className="flex flex-col gap-1 items-start">
+                          <td className="px-3.5 py-2.5 sm:py-3 whitespace-nowrap">
+                            <div className="flex flex-col gap-0.5 items-start">
                               <span
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-2xs ${
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-2xs ${
                                   item.statusBadgeTipo === "danger"
                                     ? "bg-rose-50 text-rose-800 border-rose-300"
                                     : item.statusBadgeTipo === "warning"
@@ -892,7 +894,7 @@ function FilaLaboratorioContent() {
                                 />
                                 <span>{item.statusBadge}</span>
                               </span>
-                              <span className="inline-flex items-center gap-1 text-[11px] text-[#5483B3] font-mono font-semibold pl-1">
+                              <span className="inline-flex items-center gap-1 text-[11px] text-[#5483B3] font-mono font-medium pl-1">
                                 <span className="material-symbols-outlined text-[13px]">schedule</span>
                                 <span>Previsto: {item.prometido}</span>
                               </span>
@@ -900,7 +902,7 @@ function FilaLaboratorioContent() {
                           </td>
 
                           {/* Gaveta Física */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
+                          <td className="px-3.5 py-2.5 sm:py-3 whitespace-nowrap">
                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-[#F0F6FC] text-[#052659] border border-[#C1E8FF] shadow-2xs">
                               <span className="material-symbols-outlined text-[14px] text-[#5483B3]">shelves</span>
                               <span>{item.gaveta}</span>
@@ -908,7 +910,7 @@ function FilaLaboratorioContent() {
                           </td>
 
                           {/* Ações Rápidas de Balcão */}
-                          <td className="px-4 py-3.5 text-right whitespace-nowrap">
+                          <td className="px-3.5 py-2.5 sm:py-3 text-right whitespace-nowrap">
                             <div className="flex items-center justify-end gap-1.5">
                               {/* Se OS atrasada, botão de cobrança de laboratório */}
                               {item.statusBadgeTipo === "danger" && (
@@ -917,7 +919,7 @@ function FilaLaboratorioContent() {
                                   href={`https://wa.me/5511987654321?text=Ol%C3%A1%20${encodeURIComponent(item.laboratorio)}!%20Cobran%C3%A7a%20urgente%20da%20OS%20%23${item.id}%20do%20paciente%20${encodeURIComponent(item.cliente)}%20que%20est%C3%A1%20atrasada.`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1.5 ring-2 ring-rose-500/20"
+                                  className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1 ring-2 ring-rose-500/20"
                                   title="Cobrar Laboratório Parceiro via WhatsApp"
                                 >
                                   <span className="material-symbols-outlined text-[13px]">warning</span>
@@ -929,7 +931,7 @@ function FilaLaboratorioContent() {
                               <Link
                                 id={`link-fila-notificar-whatsapp-${item.id}`}
                                 href={`/ordens-de-servico/notificar-whatsapp?id=${item.id}`}
-                                className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1.5 ring-2 ring-emerald-500/20"
+                                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1.5 ring-2 ring-emerald-500/20"
                                 title="Abrir tela dedicada de disparo WhatsApp para o paciente"
                               >
                                 <span className="material-symbols-outlined text-[15px]">chat</span>
@@ -940,7 +942,7 @@ function FilaLaboratorioContent() {
                               <Link
                                 id={`link-fila-ver-ficha-${item.id}`}
                                 href={`/ordens-de-servico/detalhes?id=${item.id}`}
-                                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] transition-all inline-flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 group cursor-pointer"
+                                className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] transition-all inline-flex items-center gap-1 shadow-2xs hover:shadow-xs active:scale-95 group cursor-pointer"
                                 title="Ver ficha técnica dióptrica"
                               >
                                 <span>Ficha</span>
