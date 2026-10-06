@@ -1,10 +1,10 @@
 # Sprint 01 — Identidade e acesso empresarial
 
 - Data: 2026-10-06 (America/Fortaleza).
-- Estado: `implementing`. S1-01 e núcleo S1-02 validados; cadastro/ativação/sessões/persistência e integração ainda pendentes. Acompanhar docs/sprints/SPRINT-01-STATUS.md.
+- Estado: `implementing`. S1-01/02/03A integrados em develop; S1-03B passou Feature (149/149), revisão independente e está pronto para integração em develop. Dos 7 itens do backlog, 2 estão totalmente encerrados/integrados (≈29%); se contarmos S1-03 como candidato concluído antes da integração, 3/7 (≈43%). Estimativa por contagem igual, sem pontos/pesos definidos. Cadastro/ativação/sessões e integração de rotas ainda pendentes. Acompanhar docs/sprints/SPRINT-01-STATUS.md e S1-03B-QA.md.
 - Autorização: usuário confirmou iniciar esta sprint, atualizar specs e delegar execução na conversa de 06/10/2026. Reutilizar essa autorização no escopo descrito; não aprovar módulos futuros ou publicação por inferência.
 - Base: `f412f5194b07fb263a1d95f259a25cacea06197f`.
-- Integração: `develop`; implementação em `feature/sprint-01-identity`; estabilidade/release em `main`.
+- Integração: `develop`; incremento atual em `feature/s1-03b-audit`; estabilidade/release em `main`.
 - SM: agente coordenador desta conversa. Frontend/UX: terminal separado, com trabalho preservado.
 
 ## Objetivo
@@ -68,8 +68,8 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 | Item | Entrega | Estado inicial | Dependência |
 | --- | --- | --- | --- |
 | S1-01 | Contrato OpenAPI e modelo Identity, alinhamento ADR/PRD | entregue na branch feature | Esta spec |
-| S1-02 | Políticas de domínio: usuário ativo, papéis e filiais | núcleo validado; integração pendente | Red → Green → revisão comprovados |
-| S1-03 | Persistência/migrations/RLS e auditoria | ready após contrato | Docker/PostgreSQL + QA Red |
+| S1-02 | Políticas de domínio: usuário ativo, papéis e filiais | núcleo validado e integrado | Red → Green → revisão comprovados |
+| S1-03 | Persistência/migrations/RLS e auditoria | 03A integrado; 03B aprovado na branch, develop pendente | PostgreSQL + QA Red + revisão independente |
 | S1-04 | Cadastro pendente, concessão e ativação | ready após contrato | SMTP configurável + S1-02/03 |
 | S1-05 | Login, sessão, refresh/logout e recuperação | ready após contrato | S1-02/03/04 |
 | S1-06 | Cliente TS gerado e passagem para frente UX/frontend | aguardando contrato | Sem implementação visual neste checkout |
@@ -102,4 +102,4 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 
 ## Execução em incrementos — refinamento do plano
 
-Por decisão do usuário, cada run executa somente um incremento pequeno. Os itens03/04/05 foram decompostos em `docs/INCREMENTAL_EXECUTION.md`; S1-01 e núcleoS1-02 já foram entregues nesta etapa inicial. Incremento validado, integração e sprintDone são estados distintos. O próximo incremento de implementação é S1-03A, condicionado a PostgreSQL real disponível; resolver o impedimento do ambiente pode ser uma execução própria. Nenhum critério BDD ou gate Feature foi removido.
+Por decisão do usuário, cada run executa somente um incremento pequeno. Os itens03/04/05 foram decompostos em `docs/INCREMENTAL_EXECUTION.md`; S1-01 e núcleoS1-02 já foram entregues nesta etapa inicial. Incremento validado, integração e sprintDone são estados distintos. S1-03A foi concluído e integrado com PostgreSQL real e CI aprovado. O incremento atual S1-03B está detalhado em S1-03B-AUDIT.md; ambiente e dependências foram conferidos e reutilizados. Nenhum critério BDD ou gate Feature foi removido.
