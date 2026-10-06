@@ -191,17 +191,29 @@ export default function SidebarNav() {
           )}
 
           {/* Navigation Groups */}
-          <div className={`space-y-4 ${collapsed ? "p-2" : "p-3"}`}>
+          <div className={`space-y-3 ${collapsed ? "p-2" : "p-3"}`}>
             {navGroups.map((group, gIdx) => (
               <div key={gIdx}>
-                {!collapsed && (
-                  <div className="px-2.5 pb-1.5 text-[10px] font-bold tracking-wider text-[#7DA0CA] uppercase">
-                    {group.group}
-                  </div>
+                {/* Group Heading (Permanently mounted, fades together) */}
+                <div
+                  aria-hidden={collapsed}
+                  className={`px-2 pb-1 text-[10px] font-bold tracking-wider text-[#7DA0CA] uppercase transition-opacity duration-200 ease-out select-none ${
+                    collapsed ? "opacity-0 h-0 my-0 overflow-hidden pointer-events-none" : "opacity-100"
+                  }`}
+                >
+                  {group.group}
+                </div>
+
+                {/* Collapsed Section Divider */}
+                {gIdx > 0 && (
+                  <div
+                    aria-hidden={!collapsed}
+                    className={`border-t border-[#021024] transition-opacity duration-200 ease-out ${
+                      collapsed ? "my-2 opacity-100" : "my-0 opacity-0 h-0 overflow-hidden"
+                    }`}
+                  />
                 )}
-                {collapsed && gIdx > 0 && (
-                  <div className="my-2 border-t border-[#021024]" />
-                )}
+
                 <nav className="space-y-1">
                   {group.items.map((item, iIdx) => {
                     const active = isItemActive(item.href, item.exact);
@@ -212,7 +224,7 @@ export default function SidebarNav() {
                         href={item.href}
                         prefetch={true}
                         title={collapsed ? `${item.label} ${item.shortcut ? `(${item.shortcut})` : ""}` : undefined}
-                        className={`h-11 rounded-lg relative group flex items-center cursor-pointer active:scale-95 duration-150 transition-colors ${
+                        className={`h-11 rounded-lg relative flex items-center cursor-pointer active:scale-95 duration-150 transition-colors ${
                           collapsed
                             ? "w-11 mx-auto justify-center px-0"
                             : "w-full px-2.5 justify-between font-medium text-[13px]"
@@ -222,7 +234,7 @@ export default function SidebarNav() {
                             : "text-[#C1E8FF] hover:bg-[#5483B3]/25 hover:text-white"
                         }`}
                       >
-                        <div className={`flex items-center pointer-events-none min-w-0 ${collapsed ? "justify-center" : "gap-2.5 flex-1 overflow-hidden"}`}>
+                        <div className={`flex items-center min-w-0 ${collapsed ? "justify-center" : "flex-1 gap-2.5 overflow-hidden"}`}>
                           <span
                             className={`material-symbols-outlined text-[20px] shrink-0 ${
                               active ? "text-white" : "text-[#7DA0CA]"
@@ -230,13 +242,39 @@ export default function SidebarNav() {
                           >
                             {item.icon}
                           </span>
-                          {!collapsed && (
-                            <span className="truncate whitespace-nowrap">{item.label}</span>
-                          )}
+
+                          {/* Unified Text Layer: Permanently mounted in DOM, fades in unison as a single plane */}
+                          <div
+                            aria-hidden={collapsed}
+                            className={`flex items-center justify-between min-w-0 flex-1 transition-opacity duration-200 ease-out select-none ${
+                              collapsed ? "opacity-0 pointer-events-none w-0 overflow-hidden" : "opacity-100"
+                            }`}
+                          >
+                            <span className="truncate whitespace-nowrap text-white font-medium">{item.label}</span>
+                            <div className="flex items-center gap-1 shrink-0 ml-1.5">
+                              {item.badge && (
+                                <span
+                                  className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${
+                                    item.badgeColor || "bg-[#5483B3] text-white"
+                                  }`}
+                                >
+                                  {item.badge}
+                                </span>
+                              )}
+                              {item.shortcut && (
+                                <span className="text-[10px] font-mono text-[#7DA0CA]">
+                                  {item.shortcut}
+                                </span>
+                              )}
+                              {active && !item.badge && !item.shortcut && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                              )}
+                            </div>
+                          </div>
                         </div>
 
                         {/* Collapsed Tooltip / Floating Badge */}
-                        {collapsed ? (
+                        {collapsed && (
                           <>
                             {item.badge && (
                               <span className="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-[#5483B3] text-white text-[9px] font-mono font-bold flex items-center justify-center border border-[#052659]">
@@ -247,24 +285,6 @@ export default function SidebarNav() {
                               <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#C1E8FF]"></span>
                             )}
                           </>
-                        ) : (
-                          <div className="flex items-center gap-1 shrink-0 ml-1.5">
-                            {item.badge && (
-                              <span
-                                className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${item.badgeColor || "bg-[#5483B3] text-white"}`}
-                              >
-                                {item.badge}
-                              </span>
-                            )}
-                            {item.shortcut && (
-                              <span className="text-[10px] font-mono text-[#7DA0CA]">
-                                {item.shortcut}
-                              </span>
-                            )}
-                            {active && !item.badge && !item.shortcut && (
-                              <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-                            )}
-                          </div>
                         )}
                       </Link>
                     );
