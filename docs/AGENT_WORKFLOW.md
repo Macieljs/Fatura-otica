@@ -156,3 +156,11 @@ Publicação em staging, configuração de secrets, ambientes e produção depen
 - [Ambientes e proteções de deploy](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments)
 - [Cobertura de código no .NET](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage)
 - [Reporter JSON do Playwright](https://playwright.dev/docs/test-reporters#json-reporter)
+
+## Seleção de modelos e contexto
+
+Aplicar [MODEL_ROUTING.md](MODEL_ROUTING.md) em cada delegação. Luna para tarefas simples delimitadas; modelo principal para implementações/revisões críticas. O SM registra seleção, validação e escaladas, envia contexto mínimo suficiente e aplica o modelo na ferramenta. Não alterar critérios de qualidade para economizar consumo.
+
+## Granularidade das execuções
+
+Aplicar [INCREMENTAL_EXECUTION.md](INCREMENTAL_EXECUTION.md). A sprint é o objetivo geral; cada execução resolve um incremento pequeno. O ciclo de qualidade permanece, com evidências do recorte e revisão. Conclusão do incremento, integração em develop e encerramento da sprint são registros distintos. O gate Feature da candidata não foi reduzido.
