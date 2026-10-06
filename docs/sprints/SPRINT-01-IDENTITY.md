@@ -1,7 +1,7 @@
 # Sprint 01 — Identidade e acesso empresarial
 
 - Data: 2026-10-06 (America/Fortaleza).
-- Estado: `implementing`. S1-01/02/03A integrados em develop; S1-03B passou Feature (149/149), revisão independente e está pronto para integração em develop. Dos 7 itens do backlog, 2 estão totalmente encerrados/integrados (≈29%); se contarmos S1-03 como candidato concluído antes da integração, 3/7 (≈43%). Estimativa por contagem igual, sem pontos/pesos definidos. Cadastro/ativação/sessões e integração de rotas ainda pendentes. Acompanhar docs/sprints/SPRINT-01-STATUS.md e S1-03B-QA.md.
+- Estado: `implementing`. S1-01/02/03 integrados localmente em develop; S1-03B passou Feature (149/149) e revisão independente. Merge local `9fd17be`; CI remoto do novo SHA pendente. São 3/7 itens principais integrados localmente (≈43%), contados igualmente; backlog sem estimativas de peso/esforço. Cadastro/ativação/sessões e integração de rotas ainda pendentes. Acompanhar docs/sprints/SPRINT-01-STATUS.md e S1-03B-QA.md.
 - Autorização: usuário confirmou iniciar esta sprint, atualizar specs e delegar execução na conversa de 06/10/2026. Reutilizar essa autorização no escopo descrito; não aprovar módulos futuros ou publicação por inferência.
 - Base: `f412f5194b07fb263a1d95f259a25cacea06197f`.
 - Integração: `develop`; incremento atual em `feature/s1-03b-audit`; estabilidade/release em `main`.
@@ -69,7 +69,7 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 | --- | --- | --- | --- |
 | S1-01 | Contrato OpenAPI e modelo Identity, alinhamento ADR/PRD | entregue na branch feature | Esta spec |
 | S1-02 | Políticas de domínio: usuário ativo, papéis e filiais | núcleo validado e integrado | Red → Green → revisão comprovados |
-| S1-03 | Persistência/migrations/RLS e auditoria | 03A integrado; 03B aprovado na branch, develop pendente | PostgreSQL + QA Red + revisão independente |
+| S1-03 | Persistência/migrations/RLS e auditoria | 03A/03B integrados localmente em develop; CI remoto pendente | PostgreSQL + QA Red + revisão independente |
 | S1-04 | Cadastro pendente, concessão e ativação | ready após contrato | SMTP configurável + S1-02/03 |
 | S1-05 | Login, sessão, refresh/logout e recuperação | ready após contrato | S1-02/03/04 |
 | S1-06 | Cliente TS gerado e passagem para frente UX/frontend | aguardando contrato | Sem implementação visual neste checkout |

@@ -1,6 +1,6 @@
 # S1-03B — QA de auditoria de acesso
 
-Estado: Red e Green focados concluídos; Feature final passou 149/149 e revisão independente aprovou o snapshot. Pronto para integrar em develop; evidências abaixo distinguem cada etapa e seus limites.
+Estado: Red e Green concluídos; Feature final passou 149/149 e revisão independente aprovou o snapshot. Integração local em develop `9fd17be`; CI remoto pendente.
 Base: develop `ca5e37865a875504c09d51c30603c3f53dbe4011`; branch `feature/s1-03b-audit`.
 Escopo: AC-14 e AU01–09. PostgreSQL 17 real via fixture existente; runtime não proprietário, sem BYPASSRLS. QA escreve testes; Backend implementa produção. Builds, testes e grafo serializados pelo SM.
 
