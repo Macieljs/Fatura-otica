@@ -7,7 +7,7 @@ import { useSidebar } from "@/context/SidebarContext";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { isCollapsed, isMounted } = useSidebar();
+  const { isCollapsed } = useSidebar();
   const isStandalonePage =
     pathname === "/login" ||
     pathname === "/ativar-conta" ||
@@ -26,9 +26,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <SidebarNav />
       <div 
         id="app-shell-main-wrapper"
-        className={`flex-1 min-w-0 flex flex-col min-h-screen pt-14 md:pt-0 ${
-          isMounted ? "transition-[margin] duration-200 ease-in-out" : ""
-        } ${
+        className={`flex-1 min-w-0 flex flex-col min-h-screen pt-14 md:pt-0 transition-[margin] duration-200 ease-in-out ${
           isCollapsed ? "md:ml-[72px]" : "md:ml-64"
         }`}
       >

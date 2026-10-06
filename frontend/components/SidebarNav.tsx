@@ -27,7 +27,7 @@ export default function SidebarNav() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { operator, isManager } = useOperator();
-  const { isCollapsed, isMounted, toggleCollapse } = useSidebar();
+  const { isCollapsed, toggleCollapse } = useSidebar();
 
   const [prevPathname, setPrevPathname] = useState(pathname);
   if (prevPathname !== pathname) {
@@ -136,47 +136,18 @@ export default function SidebarNav() {
     return (
       <div className="flex flex-col h-full justify-between">
         {/* Top Section */}
-        <div className={`flex flex-col flex-1 min-h-0 ${collapsed ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}>
-          {/* Brand Header: Altura Fixa Rigorosa de 64px (Zero Shift) */}
-          <div className="h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 px-3.5 justify-between overflow-hidden">
-            <Link
-              id="nav-link-brand-home"
-              href="/"
-              prefetch={true}
-              className={`flex items-center min-w-0 cursor-pointer active:scale-95 transition-transform duration-100 ${
-                collapsed ? "justify-center relative group w-full" : "justify-start gap-2.5"
-              }`}
-            >
-              <div className="shrink-0 flex items-center justify-center">
-                <OpticalBrandLogo size="md" showText={false} />
-              </div>
-              <div
-                className={`overflow-hidden transition-all duration-200 whitespace-nowrap ${
-                  collapsed ? "max-w-0 opacity-0 pointer-events-none" : "max-w-[180px] opacity-100 pointer-events-auto"
-                }`}
-              >
-                <div className="flex items-center gap-1.5 leading-none">
-                  <span className="text-[16px] font-bold tracking-tight font-sans text-white">
-                    Fatura <span className="text-[#5483b3] font-black">Ótica</span>
-                  </span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-[#021024] text-[#c1e8ff] border border-[#5483b3]/40">
-                    MATRIZ
-                  </span>
+        <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+          {/* Brand Header */}
+          <div className={`h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 transition-all ${
+            collapsed ? "px-2 justify-center" : "px-4 justify-between"
+          }`}>
+            <Link id="nav-link-brand-home" href="/" prefetch={true} className={`flex items-center cursor-pointer active:scale-95 transition-transform duration-100 ${collapsed ? "justify-center w-full" : ""}`}>
+              {collapsed ? (
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#052659] to-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white shadow-xs">
+                  <OpticalBrandLogo size="sm" showText={false} />
                 </div>
-                <span className="text-[11px] font-mono tracking-tight text-[#7da0ca] mt-0.5 block">
-                  v4.8 Enterprise
-                </span>
-              </div>
-              {collapsed && (
-                <div
-                  role="tooltip"
-                  className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
-                >
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
-                    <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
-                    <span className="text-[#F0F6FC]">Fatura Ótica Enterprise</span>
-                  </div>
-                </div>
+              ) : (
+                <OpticalBrandLogo size="md" subtitle="v4.8 Enterprise" badge="MATRIZ" />
               )}
             </Link>
 
@@ -187,7 +158,7 @@ export default function SidebarNav() {
                 type="button"
                 onClick={toggleCollapse}
                 title="Recolher Menu Lateral [Alt+B]"
-                className="hidden md:flex p-1.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/20 transition-colors cursor-pointer shrink-0"
+                className="hidden md:flex p-1.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/20 transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">first_page</span>
               </button>
@@ -204,46 +175,32 @@ export default function SidebarNav() {
             </button>
           </div>
 
-          {/* Desktop Expand Toggle Button (No Topo da Sidebar Recolhida) */}
+          {/* Desktop Expand Toggle Button (When Collapsed - Centered Perfectly) */}
           {collapsed && !forceExpanded && (
-            <div className="px-2 pt-2.5 pb-0.5 flex justify-center relative group">
+            <div className="px-2 pt-2.5 pb-0.5 flex justify-center">
               <button
                 id="btn-sidebar-toggle-collapse-collapsed"
                 type="button"
                 onClick={toggleCollapse}
+                title="Expandir Menu Lateral [Alt+B]"
                 className="hidden md:flex w-10 h-7.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/25 transition-colors cursor-pointer items-center justify-center border border-[#5483B3]/30 shadow-2xs"
               >
                 <span className="material-symbols-outlined text-[18px]">last_page</span>
               </button>
-              {/* Flyout Tooltip */}
-              <div
-                role="tooltip"
-                className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
-              >
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
-                  <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
-                  <span className="text-[#F0F6FC]">Expandir Menu</span>
-                  <span className="px-1.5 py-0.5 rounded bg-[#5483B3]/30 text-[#C1E8FF] text-[10px] font-mono border border-[#5483B3]/30">
-                    Alt+B
-                  </span>
-                </div>
-              </div>
             </div>
           )}
 
           {/* Navigation Groups */}
-          <div className="space-y-4 p-2.5">
+          <div className={`space-y-4 ${collapsed ? "p-2" : "p-3"}`}>
             {navGroups.map((group, gIdx) => (
               <div key={gIdx}>
-                <div
-                  className={`px-2.5 text-[10px] font-bold tracking-wider text-[#7DA0CA] uppercase overflow-hidden whitespace-nowrap transition-all duration-200 ${
-                    collapsed ? "max-w-0 opacity-0 h-0 pb-0" : "max-w-[180px] opacity-100 h-auto pb-1.5"
-                  }`}
-                >
-                  {group.group}
-                </div>
+                {!collapsed && (
+                  <div className="px-2.5 pb-1.5 text-[10px] font-bold tracking-wider text-[#7DA0CA] uppercase">
+                    {group.group}
+                  </div>
+                )}
                 {collapsed && gIdx > 0 && (
-                  <div className="my-2 border-t border-[#021024]/60" />
+                  <div className="my-2 border-t border-[#021024]" />
                 )}
                 <nav className="space-y-1">
                   {group.items.map((item, iIdx) => {
@@ -254,14 +211,18 @@ export default function SidebarNav() {
                         id={item.id}
                         href={item.href}
                         prefetch={true}
-                        className={`w-full h-11 rounded-lg transition-colors duration-150 relative group flex items-center cursor-pointer active:scale-95 px-3 ${
+                        title={collapsed ? `${item.label} ${item.shortcut ? `(${item.shortcut})` : ""}` : undefined}
+                        className={`rounded-lg transition-all relative group flex items-center cursor-pointer active:scale-95 duration-100 ${
+                          collapsed
+                            ? "h-11 w-11 mx-auto justify-center"
+                            : "w-full px-2.5 py-2 justify-between font-medium text-[13px]"
+                        } ${
                           active
                             ? "bg-[#5483B3] text-white shadow-xs font-semibold"
-                            : "text-[#C1E8FF] hover:bg-[#5483B3]/25 hover:text-white"
+                            : "text-[#C1E8FF] hover:bg-[#5483B3]/25 hover:text-white transition-colors duration-150"
                         }`}
                       >
-                        {/* Ícone fixo centralizado que nunca salta */}
-                        <div className="w-5 h-5 shrink-0 flex items-center justify-center pointer-events-none">
+                        <div className={`flex items-center pointer-events-none ${collapsed ? "justify-center" : "gap-2.5 min-w-0"}`}>
                           <span
                             className={`material-symbols-outlined text-[20px] ${
                               active ? "text-white" : "text-[#7DA0CA]"
@@ -269,16 +230,23 @@ export default function SidebarNav() {
                           >
                             {item.icon}
                           </span>
+                          {!collapsed && <span className="truncate">{item.label}</span>}
                         </div>
 
-                        {/* Rótulo e Badges com fade e max-width suave sem quebras */}
-                        <div
-                          className={`flex items-center justify-between min-w-0 flex-1 ml-2.5 overflow-hidden transition-all duration-200 pointer-events-none ${
-                            collapsed ? "max-w-0 opacity-0" : "max-w-[180px] opacity-100"
-                          }`}
-                        >
-                          <span className="truncate text-[13px] font-medium">{item.label}</span>
-                          <div className="flex items-center gap-1 shrink-0 ml-1.5">
+                        {/* Collapsed Tooltip / Floating Badge */}
+                        {collapsed ? (
+                          <>
+                            {item.badge && (
+                              <span className="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-[#5483B3] text-white text-[9px] font-mono font-bold flex items-center justify-center border border-[#052659]">
+                                {item.badge}
+                              </span>
+                            )}
+                            {active && (
+                              <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#C1E8FF]"></span>
+                            )}
+                          </>
+                        ) : (
+                          <div className="flex items-center gap-1 flex-shrink-0">
                             {item.badge && (
                               <span
                                 className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${item.badgeColor}`}
@@ -295,47 +263,6 @@ export default function SidebarNav() {
                               <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
                             )}
                           </div>
-                        </div>
-
-                        {/* Badges e Flyout Tooltip na Sidebar Recolhida */}
-                        {collapsed && (
-                          <>
-                            {item.badge && (
-                              <span className="absolute -top-1 right-1 h-4 min-w-[16px] px-1 rounded-full bg-[#5483B3] text-white text-[9px] font-mono font-bold flex items-center justify-center border border-[#052659]">
-                                {item.badge}
-                              </span>
-                            )}
-                            {active && (
-                              <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#C1E8FF]"></span>
-                            )}
-
-                            {/* Flyout Tooltip Instantâneo */}
-                            <div
-                              role="tooltip"
-                              className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
-                            >
-                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
-                                <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
-                                <span className="text-[#F0F6FC]">{item.label}</span>
-
-                                {item.shortcut && (
-                                  <span className="px-1.5 py-0.5 rounded bg-[#5483B3]/30 text-[#C1E8FF] text-[10px] font-mono border border-[#5483B3]/30">
-                                    {item.shortcut}
-                                  </span>
-                                )}
-
-                                {item.badge && (
-                                  <span
-                                    className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${
-                                      item.badgeColor || "bg-[#5483B3] text-white"
-                                    }`}
-                                  >
-                                    {item.badge}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </>
                         )}
                       </Link>
                     );
@@ -347,63 +274,26 @@ export default function SidebarNav() {
         </div>
 
         {/* Sidebar Footer User Card */}
-        <div className={`border-t border-[#021024] bg-[#021024]/60 flex-shrink-0 ${collapsed ? "p-2 overflow-visible" : "p-3"}`}>
+        <div className={`border-t border-[#021024] bg-[#021024]/60 flex-shrink-0 ${collapsed ? "p-2" : "p-3"}`}>
           {collapsed ? (
             <div className="flex flex-col items-center gap-2">
-              <div className="relative group flex justify-center">
-                <Link
-                  id="btn-sidebar-user-avatar"
-                  href="/login"
-                  className="relative w-9 h-9 rounded-xl bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shadow-xs hover:border-white transition-all cursor-pointer"
-                >
-                  <span>{initials}</span>
-                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#052659]"></span>
-                </Link>
-                {/* Flyout Tooltip */}
-                <div
-                  role="tooltip"
-                  className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
-                >
-                  <div className="flex flex-col gap-0.5 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
-                    <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[#F0F6FC]">{operator.name}</span>
-                      <span
-                        className={`text-[9px] font-bold px-1.5 py-0.2 rounded font-mono ${
-                          isManager
-                            ? "bg-amber-400/20 text-amber-300 border border-amber-400/40"
-                            : "bg-emerald-400/20 text-emerald-300 border border-emerald-400/40"
-                        }`}
-                      >
-                        {isManager ? "GERENTE" : "BALCÃO"}
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-[#7DA0CA] font-normal">
-                      Terminal • {operator.branch.split(" - ")[0]} • Trocar
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative group flex justify-center">
-                <Link
-                  id="btn-sidebar-trocar-operador"
-                  href="/login"
-                  className="p-1.5 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[18px]">logout</span>
-                </Link>
-                {/* Flyout Tooltip */}
-                <div
-                  role="tooltip"
-                  className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
-                >
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
-                    <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
-                    <span className="text-[#F0F6FC]">Trocar Operador / Sair</span>
-                  </div>
-                </div>
-              </div>
+              <Link
+                id="btn-sidebar-user-avatar"
+                href="/login"
+                title={`${operator.name} • ${operator.role} • Trocar`}
+                className="relative w-9 h-9 rounded-xl bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shadow-xs hover:border-white transition-all cursor-pointer"
+              >
+                <span>{initials}</span>
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#052659]"></span>
+              </Link>
+              <Link
+                id="btn-sidebar-trocar-operador"
+                href="/login"
+                title="Sair / Trocar de Terminal"
+                className="p-1 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">logout</span>
+              </Link>
             </div>
           ) : (
             <div className="p-2.5 rounded-xl bg-[#031c44] border border-[#7DA0CA]/30 shadow-xs flex items-center justify-between gap-2.5">
@@ -468,9 +358,7 @@ export default function SidebarNav() {
       {/* Desktop Persistent Sidebar (Adaptive Collapsible Width) */}
       <aside 
         id="sidebar-nav-desktop-aside"
-        className={`hidden md:flex flex-shrink-0 bg-[#052659] border-r border-[#021024] flex-col fixed top-0 bottom-0 left-0 z-40 select-none ${
-          isMounted ? "transition-[width] duration-200 ease-in-out" : ""
-        } ${
+        className={`hidden md:flex flex-shrink-0 bg-[#052659] border-r border-[#021024] flex-col fixed top-0 bottom-0 left-0 z-40 select-none transition-[width] duration-200 ease-in-out ${
           isCollapsed ? "w-[72px]" : "w-64"
         }`}
       >

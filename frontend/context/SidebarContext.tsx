@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 
 const getInitialCollapsed = (): boolean => {
   if (typeof window !== "undefined") {
@@ -21,30 +21,18 @@ const getInitialCollapsed = (): boolean => {
 
 interface SidebarContextType {
   isCollapsed: boolean;
-  isMounted: boolean;
   toggleCollapse: () => void;
   setCollapsed: (collapsed: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType>({
   isCollapsed: false,
-  isMounted: false,
   toggleCollapse: () => {},
   setCollapsed: () => {},
 });
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(getInitialCollapsed);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    // Habilita as transições CSS apenas após a montagem inicial do layout (Zero Shift)
-    const frameId = requestAnimationFrame(() => {
-      setIsMounted(true);
-    });
-
-    return () => cancelAnimationFrame(frameId);
-  }, []);
 
   const toggleCollapse = useCallback(() => {
     setIsCollapsed((prev) => {
@@ -64,7 +52,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SidebarContext.Provider value={{ isCollapsed, isMounted, toggleCollapse, setCollapsed }}>
+    <SidebarContext.Provider value={{ isCollapsed, toggleCollapse, setCollapsed }}>
       {children}
     </SidebarContext.Provider>
   );
