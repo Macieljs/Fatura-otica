@@ -20,6 +20,32 @@ const DEFAULT_OPERATOR: OperatorData = {
   loginTime: "08:00",
 };
 
+const getInitialOperator = (): OperatorData => {
+  if (typeof window !== "undefined") {
+    try {
+      const stored = localStorage.getItem("fatura_otica_operator");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const isManager =
+          parsed.roleType === "gerente" ||
+          (parsed.role && parsed.role.toLowerCase().includes("gerente")) ||
+          (parsed.name && parsed.name.toLowerCase().includes("carlos"));
+
+        return {
+          name: parsed.name || (isManager ? "Dr. Carlos Ramos" : "Mariana Souza"),
+          role: parsed.role || (isManager ? "Gerente Operacional & Optometrista" : "Consultora de Atendimento"),
+          roleType: isManager ? "gerente" : "consultor",
+          branch: parsed.branch || "Filial Centro - Loja 01 Matriz",
+          loginTime: parsed.loginTime || "08:00",
+        };
+      }
+    } catch {
+      // Ignora erro
+    }
+  }
+  return DEFAULT_OPERATOR;
+};
+
 interface OperatorContextType {
   operator: OperatorData;
   role: UserRole;
@@ -34,7 +60,7 @@ const OperatorContext = createContext<OperatorContextType>({
   role: "gerente",
   isManager: true,
   isConsultant: false,
-  isLoaded: false,
+  isLoaded: true,
   setOperator: () => {},
 });
 
@@ -45,8 +71,8 @@ const OperatorContext = createContext<OperatorContextType>({
  * hydration mismatch entre SSR e cliente.
  */
 export function OperatorProvider({ children }: { children: React.ReactNode }) {
-  const [operator, setOperator] = useState<OperatorData>(DEFAULT_OPERATOR);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [operator, setOperator] = useState<OperatorData>(getInitialOperator);
+  const [isLoaded, setIsLoaded] = useState(true);
 
   const syncFromStorage = useCallback(() => {
     try {
