@@ -28,7 +28,7 @@ Disponibilizar a base de identidade empresarial: perfil cadastrado, acesso autor
 
 - Primeiro dono/admin provisionado por comando administrativo explícito, sem cadastro público e sem senha padrão versionada. Comando deve respeitar tenant configurado e ser idempotente ou rejeitar duplicata de forma segura.
 - Token de ativação/recuperação aleatório, armazenado somente por hash, de uso único, com expiração e revogação. Não é sessão operacional; não dá acesso a endpoints de negócio.
-- Canal de entrega do token: decisão pendente do usuário. Avançar com porta de entrega e lógica independente do provedor; não enviar e-mail, divulgar token em logs ou assumir credenciais externas.
+- Canal confirmado pelo usuário: envio automático por SMTP. Implementar porta de entrega e adaptador SMTP configurável; desenvolvimento usa servidor de captura local para não enviar a destinatários reais. Segredos somente em configuração externa; não divulgar token em logs ou assumir credenciais. Provedor, host, porta, remetente e credenciais de homologação/produção ainda precisam ser configurados.
 - Proposta técnica reversível: ativação 24h; recuperação 15min; JWT 15min conforme ADR; refresh rotativo com validade absoluta de 7 dias, logout revoga sessão. Confirmar/documentar esses parâmetros no contrato, configuráveis, sem implementar remember-device com validade ilimitada.
 - Senhas Argon2id conforme ADR; sem senha/hash/token em DTOs comuns, logs ou listagem de usuários.
 - Recuperação pública retorna resposta genérica para existência/inexistência de conta; rate limiting e auditoria sem credenciais.
@@ -70,7 +70,7 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 | S1-01 | Contrato OpenAPI e modelo Identity, alinhamento ADR/PRD | ready | Esta spec |
 | S1-02 | Políticas de domínio: usuário ativo, papéis e filiais | ready após contrato | QA Red antes do Dev |
 | S1-03 | Persistência/migrations/RLS e auditoria | ready após contrato | Docker/PostgreSQL + QA Red |
-| S1-04 | Cadastro pendente, concessão e ativação | ready após contrato | Canal de entrega + S1-02/03 |
+| S1-04 | Cadastro pendente, concessão e ativação | ready após contrato | SMTP configurável + S1-02/03 |
 | S1-05 | Login, sessão, refresh/logout e recuperação | ready após contrato | S1-02/03/04 |
 | S1-06 | Cliente TS gerado e passagem para frente UX/frontend | aguardando contrato | Sem implementação visual neste checkout |
 | S1-07 | Integração, revisão independente e candidata develop | aguardando entregas | Gate Feature completo |
@@ -95,6 +95,7 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 ## Impedimentos iniciais
 
 - Docker instalado, motor Linux indisponível na verificação de início. Integração real e DoD bloqueados até servidor Docker/PostgreSQL estar disponível.
-- Canal de entrega de ativação/recuperação pendente. Independência de provedor permite avançar em contrato/domínio.
+- SMTP confirmado; configuração real de envio ainda indisponível. Contrato/domínio e adaptador com servidor de captura local podem avançar; não declarar e-mail real entregue sem evidência.
 - PRD antigo em frontend/docs ainda descreve Node/Drizzle e modelos incompatíveis. Esta spec governa somente a Sprint 01; módulos futuros permanecem em refinamento.
 - Proteções remotas de develop/main e ambiente de homologação não configurados/verificados. YAML não impõe revisão nem deploy automaticamente.
+
