@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOperator } from "@/hooks/useOperator";
 import { useToast } from "@/components/ToastProvider";
+import PageHeader from "@/components/PageHeader";
 
 interface SugestaoItem {
   id: string;
@@ -199,49 +200,40 @@ export default function SugestoesCompraPage() {
 
   return (
     <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-28 text-[#021024]">
-      {/* Top Bar Contextual */}
-      <div className="bg-[#FFFFFF] border-b border-[#7DA0CA] px-4 sm:px-6 lg:px-8 py-4">
-        <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-xs text-[#5483B3] font-medium">
-              <Link id="link-sugestoes-breadcrumb-kardex" href="/kardex" className="hover:underline flex items-center gap-1 text-[#052659]">
-                <span className="material-symbols-outlined text-[15px]">arrow_back</span>
-                Kardex
-              </Link>
-              <span>/</span>
-              <span>Planejamento &amp; Compras</span>
-              <span>/</span>
-              <span>Sugestões de Reposição</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#052659]">
-                Sugestões de Compra &amp; Reposição Automática
-              </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#C1E8FF] text-[#052659] border border-[#7DA0CA]">
-                Lote #REP-2026-W43 • 5 Fornecedores Mapeados
-              </span>
-            </div>
-            <p className="text-xs text-slate-600">
-              Cálculo algorítmico baseado no Ponto de Pedido (PP), giro de estoque dos últimos 30 dias e tempo de entrega dos fornecedores ópticos.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="px-3 py-1 rounded text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">
+      {/* 1. CABEÇALHO PADRONIZADO DA TELA */}
+      <PageHeader
+        id="header-sugestoes-compra"
+        icon="shopping_cart"
+        title="Sugestões de Compra & Reposição Automática"
+        badge={
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#C1E8FF] text-[#052659] border border-[#7DA0CA]">
+            Lote #REP-2026-W43 • 5 Fornecedores
+          </span>
+        }
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: "Kardex", href: "/kardex", id: "link-sugestoes-breadcrumb-kardex" },
+          { label: "Planejamento & Compras" },
+          { label: "Sugestões de Reposição" },
+        ]}
+        subtitle="Cálculo algorítmico baseado no Ponto de Pedido (PP), giro de 30 dias e tempo de entrega dos fornecedores"
+        actions={
+          <div className="flex items-center gap-2.5">
+            <span className="px-3 py-1 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Reposição Inteligente Ativa
+              Reposição Ativa
             </span>
             <Link
               id="link-sugestoes-voltar-kardex"
               href="/kardex"
-              className="px-3.5 py-1.5 rounded text-xs font-semibold bg-[#FFFFFF] border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] transition-colors inline-flex items-center gap-1"
+              className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl text-xs font-bold border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] bg-white transition-all shadow-2xs cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-              Voltar ao Kardex
+              <span className="material-symbols-outlined text-[16px] text-[#5483B3]">arrow_back</span>
+              <span>Voltar ao Kardex</span>
             </Link>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {pedidosGeradosSucesso && (
@@ -267,34 +259,93 @@ export default function SugestoesCompraPage() {
           </div>
         )}
 
-        {/* Faixa de KPIs Executivos de Reposição */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-1">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">SKUs em Ruptura Crítica</span>
-            <div className="text-2xl font-bold font-mono text-rose-700">7 Itens</div>
-            <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#FEF2F2] text-[#B91C1C] border border-red-200">
-              Estoque Zero ou Abaixo do Mínimo
-            </span>
+        {/* Faixa de KPIs Executivos de Reposição (Padrão Kardex/Dashboard) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Card 1 */}
+          <div className="bg-white border border-rose-200 hover:border-rose-300 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between space-y-3 group">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-[11px] font-bold text-rose-700 uppercase tracking-wider">
+                SKUs em Ruptura Crítica
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <span className="material-symbols-outlined text-[18px]">emergency</span>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl sm:text-3xl font-mono font-bold text-rose-700 tracking-tight leading-none">7</span>
+                <span className="text-xs sm:text-sm font-sans font-semibold text-rose-600 leading-none">itens</span>
+              </div>
+            </div>
+            <div className="pt-2 border-t border-rose-100 flex items-center gap-1.5 text-xs text-rose-700 font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+              <span>Estoque Zero ou Abaixo do Mínimo</span>
+            </div>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-1">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Itens em Ponto de Pedido</span>
-            <div className="text-2xl font-bold font-mono text-amber-700">18 Itens</div>
-            <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#FFFBEB] text-[#B45309] border border-amber-200">
-              Giro Acelerado Últimos 30 Dias
-            </span>
+          {/* Card 2 */}
+          <div className="bg-white border border-amber-200 hover:border-amber-300 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between space-y-3 group">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
+                Itens em Ponto de Pedido
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <span className="material-symbols-outlined text-[18px]">shopping_cart_checkout</span>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl sm:text-3xl font-mono font-bold text-amber-800 tracking-tight leading-none">18</span>
+                <span className="text-xs sm:text-sm font-sans font-semibold text-amber-700 leading-none">itens</span>
+              </div>
+            </div>
+            <div className="pt-2 border-t border-amber-100 flex items-center gap-1.5 text-xs text-amber-800 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+              <span>Giro Acelerado Últimos 30 Dias</span>
+            </div>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-1">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Investimento Total Sugerido</span>
-            <div className="text-2xl font-bold font-mono text-[#052659]">R$ 28.450,00</div>
-            <span className="text-[11px] text-slate-500 font-medium">Custo Médio Negociado em Lote</span>
+          {/* Card 3 */}
+          <div className="bg-white border border-[#C1E8FF] hover:border-[#5483B3] rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between space-y-3 group">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-[11px] font-bold text-[#5483B3] uppercase tracking-wider">
+                Investimento Total Sugerido
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-[#F0F6FC] text-[#5483B3] border border-[#C1E8FF] flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <span className="material-symbols-outlined text-[18px]">payments</span>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl sm:text-3xl font-mono font-bold text-[#052659] tracking-tight leading-none">R$ 28.450,00</span>
+              </div>
+            </div>
+            <div className="pt-2 border-t border-slate-100 flex items-center gap-1.5 text-xs text-slate-500">
+              <span className="material-symbols-outlined text-[15px] text-[#5483B3]">percent</span>
+              <span>Custo Médio Negociado em Lote</span>
+            </div>
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#7DA0CA] rounded-lg p-4 space-y-1">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Lead Time Médio</span>
-            <div className="text-2xl font-bold font-mono text-[#052659]">3.8 Dias</div>
-            <span className="text-[11px] text-slate-500 font-medium">Fornecedores nacionais &amp; surfaçagem</span>
+          {/* Card 4 */}
+          <div className="bg-white border border-[#C1E8FF] hover:border-[#5483B3] rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between space-y-3 group">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-[11px] font-bold text-[#5483B3] uppercase tracking-wider">
+                Lead Time Médio
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-[#F0F6FC] text-[#5483B3] border border-[#C1E8FF] flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <span className="material-symbols-outlined text-[18px]">local_shipping</span>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl sm:text-3xl font-mono font-bold text-[#052659] tracking-tight leading-none">3.8</span>
+                <span className="text-xs sm:text-sm font-sans font-semibold text-[#5483B3] leading-none">dias</span>
+              </div>
+            </div>
+            <div className="pt-2 border-t border-slate-100 flex items-center gap-1.5 text-xs text-slate-500">
+              <span className="material-symbols-outlined text-[15px] text-emerald-600">verified</span>
+              <span>Fornecedores nacionais &amp; surfaçagem</span>
+            </div>
           </div>
         </div>
 

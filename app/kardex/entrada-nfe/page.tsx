@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useToast } from "@/components/ToastProvider";
+import PageHeader from "@/components/PageHeader";
 
 interface ItemNFe {
   id: string;
@@ -106,47 +107,39 @@ export default function EntradaNFePage() {
 
   return (
     <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-28 text-[#021024]">
-      {/* Top Bar Contextual */}
-      <div className="bg-[#FFFFFF] border-b border-[#7DA0CA] px-4 sm:px-6 lg:px-8 py-4">
-        <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-xs text-[#5483B3] font-medium">
-              <Link id="link-nfe-breadcrumb-kardex" href="/kardex" className="hover:underline flex items-center gap-1 text-[#052659]">
-                <span className="material-symbols-outlined text-[15px]">arrow_back</span>
-                Kardex
-              </Link>
-              <span>/</span>
-              <span>Entrada de Mercadorias (NF-e)</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#052659]">
-                Recebimento e Importação Fiscal de NF-e
-              </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#C1E8FF] text-[#052659] border border-[#7DA0CA]">
-                Aguardando Conciliação
-              </span>
-            </div>
-            <p className="text-xs text-slate-600">
-              Conferência física às cegas, conciliação de itens de fornecedor com catálogo e cálculo automatizado de custo médio ponderado.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="px-3 py-1 rounded text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">
+      {/* 1. CABEÇALHO PADRONIZADO DA TELA */}
+      <PageHeader
+        id="header-entrada-nfe"
+        icon="receipt_long"
+        title="Recebimento e Importação Fiscal de NF-e"
+        badge={
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#C1E8FF] text-[#052659] border border-[#7DA0CA]">
+            Aguardando Conciliação
+          </span>
+        }
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: "Kardex", href: "/kardex", id: "link-nfe-breadcrumb-kardex" },
+          { label: "Entrada de Mercadorias (NF-e)" },
+        ]}
+        subtitle="Conferência física às cegas, conciliação de itens de fornecedor com catálogo e cálculo automatizado de custo médio ponderado"
+        actions={
+          <div className="flex items-center gap-2.5">
+            <span className="px-3 py-1 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              SEFAZ / Produção Homologada
+              SEFAZ Homologada
             </span>
             <Link
               id="link-nfe-voltar-kardex"
               href="/kardex"
-              className="px-3 py-1.5 rounded text-xs font-semibold bg-[#FFFFFF] border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] transition-colors inline-flex items-center gap-1"
+              className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl text-xs font-bold border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] bg-white transition-all shadow-2xs cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-              Voltar ao Kardex
+              <span className="material-symbols-outlined text-[16px] text-[#5483B3]">arrow_back</span>
+              <span>Voltar ao Kardex</span>
             </Link>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {confirmadoSucesso && (

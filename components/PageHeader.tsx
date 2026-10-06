@@ -41,9 +41,9 @@ export default function PageHeader({
   return (
     <header
       id={id}
-      className={`sticky top-14 md:top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#7DA0CA]/30 px-4 sm:px-6 py-3 min-h-[68px] shadow-xs flex items-center transition-all ${className}`}
+      className={`sticky top-14 md:top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#7DA0CA]/30 px-4 sm:px-6 py-2.5 min-h-[64px] shadow-xs flex items-center transition-all ${className}`}
     >
-      <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-3 min-w-0">
+      <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-2.5 min-w-0">
         {/* Lado Esquerdo: Breadcrumb / Voltar + Ícone + Título + Subtítulo */}
         <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
           {/* Botão Voltar (se fornecido) */}
@@ -52,19 +52,19 @@ export default function PageHeader({
               <Link
                 id={backId || `${id}-link-voltar`}
                 href={backHref}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-[#052659] hover:bg-[#F0F6FC] transition-colors text-xs font-semibold whitespace-nowrap shrink-0 border border-transparent hover:border-[#7DA0CA]/30"
+                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-slate-600 hover:text-[#052659] hover:bg-[#F0F6FC] transition-colors text-xs font-semibold whitespace-nowrap shrink-0 border border-transparent hover:border-[#7DA0CA]/30"
               >
-                <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                <span className="material-symbols-outlined text-[17px]">arrow_back</span>
                 <span className="hidden sm:inline">{backLabel}</span>
               </Link>
-              <div className="h-5 w-px bg-[#7DA0CA]/30 shrink-0"></div>
+              <div className="h-4 w-px bg-[#7DA0CA]/30 shrink-0"></div>
             </>
           )}
 
           {/* Ícone de Destaque (se fornecido) */}
           {icon && (
-            <div className="w-9 h-9 rounded-lg bg-[#052659] text-white flex items-center justify-center shrink-0 shadow-2xs">
-              <span className="material-symbols-outlined text-xl">{icon}</span>
+            <div className="w-8 h-8 rounded-lg bg-[#052659] text-white flex items-center justify-center shrink-0 shadow-2xs">
+              <span className="material-symbols-outlined text-lg">{icon}</span>
             </div>
           )}
 
@@ -98,8 +98,8 @@ export default function PageHeader({
             )}
 
             {/* Linha Principal do Título */}
-            <div className="flex items-center gap-2 whitespace-nowrap">
-              <h1 className="text-sm sm:text-base lg:text-lg font-bold text-[#052659] tracking-tight leading-snug whitespace-nowrap">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-base sm:text-lg lg:text-xl font-extrabold text-[#052659] tracking-tight leading-snug">
                 {title}
               </h1>
               {badge && <div className="shrink-0 inline-flex items-center">{badge}</div>}
@@ -107,7 +107,7 @@ export default function PageHeader({
 
             {/* Subtítulo ou Metadados Clínicos */}
             {subtitle && (
-              <div className="text-[11px] sm:text-xs text-[#5483B3] flex items-center gap-1.5 mt-0.5 whitespace-nowrap">
+              <div className="text-[11px] sm:text-xs text-[#5483B3] flex items-center gap-1.5 mt-0.5 flex-wrap">
                 {typeof subtitle === "string" ? (
                   <span>{subtitle}</span>
                 ) : (

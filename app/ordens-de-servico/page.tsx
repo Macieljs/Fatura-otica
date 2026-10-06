@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useToast } from "@/components/ToastProvider";
 import PageHeader from "@/components/PageHeader";
 import OsStepper from "@/components/OsStepper";
+import SelectableCard from "@/components/SelectableCard";
 
 interface PrescriptionEye {
   esf: string;
@@ -436,6 +437,12 @@ export default function OrdensDeServicoPage() {
       {/* 1. TOP COMPONENTIZED HEADER & ADAPTIVE STEPPER */}
       <PageHeader
         id="header-ordens-de-servico"
+        icon="add_circle"
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: "Ordens de Serviço", href: "/ordens-de-servico/fila" },
+          { label: "Nova Ordem de Serviço" },
+        ]}
         backHref="/"
         backLabel="Dashboard"
         backId="link-os-voltar-dashboard"
@@ -1251,33 +1258,42 @@ export default function OrdensDeServicoPage() {
 
         {/* STEP 3: ARMAÇÃO & LENTES */}
         {currentStep === 3 && (
-          <section className="bg-white rounded-xl border border-[#d0e2f2] shadow-xs p-6 space-y-6">
-            <div className="border-b border-[#d0e2f2] pb-4 flex items-center justify-between">
+          <section className="bg-white rounded-2xl border border-[#C1E8FF] shadow-xs p-6 space-y-6">
+            <div className="border-b border-[#C1E8FF] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h2 className="text-lg font-bold text-[#052659]">3. Escolha da Armação & Lentes Oftálmicas</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Selecione peças do estoque livre e defina o bloco e tratamentos</p>
+                <h2 className="text-lg font-bold text-[#052659] flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[20px] text-[#5483B3]">visibility</span>
+                  <span>3. Escolha da Armação &amp; Lentes Oftálmicas</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">Selecione peças do estoque livre e defina o bloco e tratamentos homologados</p>
               </div>
-              <span className="px-2.5 py-1 rounded bg-[#c1e8ff]/60 text-[#052659] text-xs font-semibold border border-[#7da0ca]/40">
-                Estoque Sincronizado
+              <span className="px-3 py-1 rounded-full bg-[#F0F6FC] text-[#052659] text-xs font-bold border border-[#C1E8FF] flex items-center gap-1.5 self-start sm:self-auto">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Estoque Livre Conectado</span>
               </span>
             </div>
 
             {/* Armações Selector */}
             <div className="space-y-3">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Armação Escolhida (Catálogo de Estoque Livre)
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-[#052659] uppercase tracking-wider">
+                  Armação Escolhida (Catálogo de Estoque Livre)
+                </label>
+                <span className="text-[11px] text-[#5483B3] font-medium">3 opções disponíveis para prova</span>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                  { sku: "78985201104", marca: "Ray-Ban", ref: "RX5228 Tartaruga 54-18", preco: 890.0 },
-                  { sku: "78985201120", marca: "Oakley", ref: "OX8156 Satin Black 55-16", preco: 620.0 },
-                  { sku: "78985201107", marca: "Emporio Armani", ref: "EA3147 Azul Translúcido", preco: 920.0 },
+                  { sku: "78985201104", marca: "Ray-Ban", ref: "RX5228 Tartaruga Clássica 54-18", preco: 890.0, estoque: "14 em estoque", tipo: "Acetato Masculino" },
+                  { sku: "78985201120", marca: "Oakley", ref: "OX8156 Satin Black 55-16", preco: 620.0, estoque: "6 em estoque", tipo: "O-Matter Esportivo" },
+                  { sku: "78985201107", marca: "Emporio Armani", ref: "EA3147 Azul Translúcido 53-17", preco: 920.0, estoque: "1 em estoque (Último)", tipo: "Acetato Premium" },
                 ].map((frame) => {
                   const isSelected = selectedFrame.sku === frame.sku;
                   return (
-                    <div
+                    <SelectableCard
                       key={frame.sku}
                       id={`card-os-armacao-${frame.sku}`}
+                      isSelected={isSelected}
                       onClick={() =>
                         setSelectedFrame({
                           sku: frame.sku,
@@ -1286,107 +1302,105 @@ export default function OrdensDeServicoPage() {
                           preco: frame.preco,
                         })
                       }
-                      className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                        isSelected
-                          ? "border-[#052659] bg-[#c1e8ff]/20 shadow-xs"
-                          : "border-[#d0e2f2] bg-white hover:border-[#7da0ca]"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-[#052659]">{frame.marca}</span>
-                        <span className="text-xs font-mono font-bold text-slate-800">
-                          R$ {frame.preco.toFixed(2).replace(".", ",")}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-600 font-medium">{frame.ref}</p>
-                      <span className="text-[10px] font-mono text-[#5483b3] mt-2 block">SKU: {frame.sku}</span>
-                    </div>
+                      title={frame.marca}
+                      subtitle={frame.ref}
+                      description={frame.tipo}
+                      code={`SKU: ${frame.sku}`}
+                      badge={frame.estoque}
+                      badgeVariant={frame.estoque.includes("Último") ? "warning" : "neutral"}
+                      price={frame.preco}
+                    />
                   );
                 })}
               </div>
             </div>
 
             {/* Lentes Selector */}
-            <div className="space-y-3 pt-4 border-t border-[#d0e2f2]">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Bloco de Lentes (Calculado para a Prescrição)
-              </label>
+            <div className="space-y-3 pt-5 border-t border-[#C1E8FF]">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-[#052659] uppercase tracking-wider">
+                  Bloco de Lentes Oftálmicas (Calculado para a Prescrição)
+                </label>
+                <span className="text-[11px] text-[#5483B3] font-medium">Cálculo de transposição validado</span>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
                   {
                     marca: "Essilor",
                     modelo: "Varilux Comfort Max Crizal Sapphire HR",
-                    tipo: "Multifocal Digital Campo Amplo",
+                    tipo: "Multifocal Digital Campo Amplo • Índice 1.60",
                     preco: 1250.0,
+                    badge: "Laboratório Essilor SP",
                   },
                   {
                     marca: "Hoya",
                     modelo: "Hoyalux ID MySelf Poly 1.59 HVLL",
-                    tipo: "Multifocal Premium Personalizada",
+                    tipo: "Multifocal Premium Personalizada • Proteção UV400",
                     preco: 1680.0,
+                    badge: "Lab Hoya Brasil",
                   },
                 ].map((lens) => {
                   const isSelected = selectedLens.modelo === lens.modelo;
                   return (
-                    <div
+                    <SelectableCard
                       key={lens.modelo}
                       id={`card-os-lente-${lens.marca.toLowerCase()}`}
+                      isSelected={isSelected}
                       onClick={() => setSelectedLens(lens)}
-                      className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                        isSelected
-                          ? "border-[#052659] bg-[#c1e8ff]/20 shadow-xs"
-                          : "border-[#d0e2f2] bg-white hover:border-[#7da0ca]"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-[#052659]">{lens.marca}</span>
-                        <span className="text-xs font-mono font-bold text-slate-800">
-                          R$ {lens.preco.toFixed(2).replace(".", ",")}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-700 font-bold">{lens.modelo}</p>
-                      <span className="text-[11px] text-[#5483b3] mt-1 block">{lens.tipo}</span>
-                    </div>
+                      title={lens.marca}
+                      subtitle={lens.modelo}
+                      description={lens.tipo}
+                      badge={lens.badge}
+                      badgeVariant="info"
+                      price={lens.preco}
+                    />
                   );
                 })}
               </div>
             </div>
 
-            {/* Tratamentos adicionais */}
-            <div className="space-y-3 pt-4 border-t border-[#d0e2f2]">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Tratamentos Adicionais (+ R$ 90,00 cada)
-              </label>
-              <div className="flex flex-wrap gap-2">
+            {/* Tratamentos Adicionais */}
+            <div className="space-y-3 pt-5 border-t border-[#C1E8FF]">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-[#052659] uppercase tracking-wider">
+                  Tratamentos Antirreflexo &amp; Proteções (+ R$ 90,00 cada)
+                </label>
+                <span className="text-[11px] font-mono text-[#5483B3] font-bold">
+                  {selectedTreatments.length} selecionado(s) (+ R$ {(selectedTreatments.length * 90).toFixed(2).replace(".", ",")})
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2.5">
                 {[
-                  "Antirreflexo Crizal HR",
-                  "Filtro Luz Azul Blue UV",
-                  "Fotossensível Transitions Gen S",
-                  "Camada Oleofóbica Antiaderente",
+                  { id: "crizal-hr", nome: "Antirreflexo Crizal HR" },
+                  { id: "blue-uv", nome: "Filtro Luz Azul Blue UV" },
+                  { id: "transitions", nome: "Fotossensível Transitions Gen S" },
+                  { id: "oleofobico", nome: "Camada Oleofóbica Antiaderente" },
                 ].map((treatment, idx) => {
-                  const isChecked = selectedTreatments.includes(treatment);
+                  const isChecked = selectedTreatments.includes(treatment.nome);
                   return (
                     <button
-                      key={treatment}
+                      key={treatment.id}
                       id={`btn-os-tratamento-${idx}`}
                       type="button"
                       onClick={() => {
                         setSelectedTreatments((prev) =>
-                          prev.includes(treatment)
-                            ? prev.filter((t) => t !== treatment)
-                            : [...prev, treatment]
+                          prev.includes(treatment.nome)
+                            ? prev.filter((t) => t !== treatment.nome)
+                            : [...prev, treatment.nome]
                         );
                       }}
-                      className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                      className={`px-4 py-2.5 rounded-xl border text-xs font-semibold transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-2xs select-none hover:-translate-y-0.5 ${
                         isChecked
-                          ? "bg-[#052659] text-white border-[#052659] shadow-2xs"
-                          : "bg-white text-slate-600 border-[#d0e2f2] hover:bg-[#f0f6fc]"
+                          ? "bg-[#052659] text-white border-[#052659] shadow-xs"
+                          : "bg-white text-[#052659] border-[#C1E8FF] hover:bg-[#F0F6FC] hover:border-[#5483B3]"
                       }`}
                     >
-                      <span className="material-symbols-outlined text-[15px]">
+                      <span className="material-symbols-outlined text-[16px]">
                         {isChecked ? "check_box" : "check_box_outline_blank"}
                       </span>
-                      <span>{treatment}</span>
+                      <span>{treatment.nome}</span>
                     </button>
                   );
                 })}

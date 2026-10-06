@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useMemo, Suspense } from "react";
 import { useToast } from "@/components/ToastProvider";
+import PageHeader from "@/components/PageHeader";
+import KpiCard from "@/components/KpiCard";
 
 interface OSItem {
   id: string;
@@ -445,8 +447,8 @@ function FilaLaboratorioContent() {
       gavetaNumero: "Gaveteiro 01",
       titulo: "Pronto na Gaveta (Retirada no Balcão)",
       subtitulo: "Óculos conferidos e prontos para entrega imediata ao cliente no balcão",
-      cor: "bg-emerald-500",
-      badgeCor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      cor: "bg-emerald-600",
+      badgeCor: "bg-emerald-50 text-emerald-800 border-emerald-200",
       icone: "inventory_2",
     },
     {
@@ -454,8 +456,8 @@ function FilaLaboratorioContent() {
       gavetaNumero: "Gaveteiro 02",
       titulo: "Chegou / Conferir Lensômetro",
       subtitulo: "Malote entregue na loja aguardando conferência dióptrica rápida",
-      cor: "bg-indigo-500",
-      badgeCor: "bg-indigo-50 text-indigo-700 border-indigo-200",
+      cor: "bg-[#052659]",
+      badgeCor: "bg-slate-100 text-slate-800 border-slate-200",
       icone: "visibility",
     },
     {
@@ -463,8 +465,8 @@ function FilaLaboratorioContent() {
       gavetaNumero: "Gaveteiro 03",
       titulo: "Em Produção / Montagem",
       subtitulo: "Em processo de surfaçagem, blocagem e montagem de aro",
-      cor: "bg-[#5483B3]",
-      badgeCor: "bg-[#F0F6FC] text-[#052659] border-[#C1E8FF]",
+      cor: "bg-slate-700",
+      badgeCor: "bg-slate-100 text-slate-800 border-slate-200",
       icone: "precision_manufacturing",
     },
     {
@@ -472,51 +474,33 @@ function FilaLaboratorioContent() {
       gavetaNumero: "Gaveteiro 04",
       titulo: "No Laboratório Externo",
       subtitulo: "Ordens enviadas e em trânsito com laboratórios terceirizados",
-      cor: "bg-rose-500",
-      badgeCor: "bg-rose-50 text-rose-700 border-rose-200",
+      cor: "bg-slate-600",
+      badgeCor: "bg-slate-100 text-slate-800 border-slate-200",
       icone: "local_shipping",
     },
   ];
 
   return (
     <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-20 text-[#021024]">
-      {/* Top Header & Breadcrumbs */}
-      <div className="bg-[#FFFFFF] border-b border-[#7DA0CA] px-6 lg:px-10 py-4">
-        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-xs text-[#5483B3] font-medium">
-              <Link id="link-fila-breadcrumb-dashboard" href="/" className="hover:underline flex items-center gap-1 text-[#052659]">
-                <span className="material-symbols-outlined text-[15px]">arrow_back</span>
-                Dashboard
-              </Link>
-              <span>/</span>
-              <span>Ordens de Serviço</span>
-              <span>/</span>
-              <span>Central de Pedidos &amp; Balcão</span>
-            </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#052659] flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#052659] text-[26px]">storefront</span>
-                Central de Pedidos &amp; Acompanhamento de Laboratório
-              </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#C1E8FF] text-[#052659] border border-[#7DA0CA]">
-                {ordens.length} Pedidos Ativos
-              </span>
-            </div>
-            <p className="text-xs text-slate-600">
-              Controle de malotes de laboratórios terceirizados, conferência de chegada e automação de WhatsApp de balcão.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <Link
-              id="link-fila-nova-os"
-              href="/ordens-de-servico"
-              className="px-4 py-2 rounded bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-colors shadow-xs inline-flex items-center gap-1.5"
-            >
-              <span className="material-symbols-outlined text-[16px]">add_circle</span>
-              + Nova OS (F2)
-            </Link>
+      {/* 1. CABEÇALHO PADRONIZADO DA TELA */}
+      <PageHeader
+        id="header-fila-pedidos"
+        icon="assignment"
+        title="Central de Pedidos & Acompanhamento de Laboratório"
+        badge={
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#052659] text-white border border-[#052659] shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-emerald-300/40 animate-pulse" />
+            <span>{ordens.length} Pedidos Ativos</span>
+          </span>
+        }
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: "Ordens de Serviço" },
+          { label: "Central de Pedidos & Balcão" },
+        ]}
+        subtitle="Controle de malotes de laboratórios terceirizados, conferência de chegada e automação de WhatsApp"
+        actions={
+          <>
             <button
               id="btn-fila-imprimir-romaneio"
               type="button"
@@ -529,28 +513,37 @@ function FilaLaboratorioContent() {
                   }
                 )
               }
-              className="px-3.5 py-2 rounded text-xs font-semibold bg-[#FFFFFF] border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+              className="h-9 px-3.5 rounded-xl text-xs font-bold bg-[#5483B3] hover:bg-[#052659] text-white transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#5483B3]/25 inline-flex items-center gap-1.5 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[16px]">local_shipping</span>
-              Emitir Romaneio de Envio
+              <span className="material-symbols-outlined text-[16px] text-white">local_shipping</span>
+              <span>Emitir Romaneio</span>
             </button>
-          </div>
-        </div>
-      </div>
+
+            <Link
+              id="link-fila-nova-os"
+              href="/ordens-de-servico"
+              className="h-9 px-4 rounded-xl bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#052659]/20 inline-flex items-center gap-1.5 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[16px] text-[#C1E8FF]">add_circle</span>
+              <span>+ Nova OS (F2)</span>
+            </Link>
+          </>
+        }
+      />
 
       <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-10 py-4 sm:py-6 space-y-4 sm:space-y-6">
         {/* Barra de Recepção Rápida de Malote em 1 Bip */}
-        <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 shadow-sm">
+        <div className="bg-white border border-[#C1E8FF] rounded-2xl p-4 sm:p-5 shadow-xs">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#F0F6FC] border border-[#7DA0CA]/60 flex items-center justify-center text-[#052659] shrink-0">
-                <span className="material-symbols-outlined text-[24px]">barcode_scanner</span>
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-xl bg-[#052659] flex items-center justify-center text-white shadow-xs shrink-0">
+                <span className="material-symbols-outlined text-[22px]">barcode_scanner</span>
               </div>
               <div>
-                <h3 className="text-xs font-bold text-[#052659] uppercase tracking-wide flex items-center gap-1.5">
+                <h3 className="text-xs font-bold text-[#052659] uppercase tracking-wider flex items-center gap-1.5">
                   Recepção Rápida de Malote do Laboratório (1 Bip)
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 mt-0.5">
                   Bipe o código do envelope entregue pelo motoboy para dar entrada na gaveta e liberar aviso ao cliente.
                 </p>
               </div>
@@ -564,16 +557,16 @@ function FilaLaboratorioContent() {
                   value={inputMalote}
                   onChange={(e) => setInputMalote(e.target.value)}
                   placeholder="Bipar ou digitar OS (ex: 10298)..."
-                  className="w-full h-9 pl-3 pr-12 rounded border border-[#7DA0CA] text-xs font-mono font-semibold bg-[#F0F6FC] text-[#052659] focus:bg-[#FFFFFF] focus:outline-none focus:ring-1 focus:ring-[#5483B3]"
+                  className="w-full h-9.5 pl-3.5 pr-12 rounded-xl border border-[#7DA0CA]/60 text-xs font-mono font-bold bg-[#F0F6FC]/60 text-[#052659] placeholder:text-slate-400 focus:bg-white focus:border-[#5483B3] focus:outline-none focus:ring-2 focus:ring-[#5483B3]/20 transition-all"
                 />
-                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400 bg-[#FFFFFF] px-1.5 py-0.5 rounded border border-[#7DA0CA]/50">
+                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-[#5483B3] bg-white px-1.5 py-0.5 rounded border border-[#7DA0CA]/40">
                   [F4]
                 </span>
               </div>
               <button
                 id="btn-fila-bipar"
                 type="submit"
-                className="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors inline-flex items-center justify-center gap-1.5 shadow-xs shrink-0 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-all inline-flex items-center justify-center gap-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#052659]/20 shrink-0 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">qr_code_scanner</span>
                 <span>Dar Entrada</span>
@@ -582,7 +575,7 @@ function FilaLaboratorioContent() {
           </div>
 
           {mensagemSucessoBip && (
-            <div className="mt-3 p-3 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-medium flex items-center justify-between">
+            <div className="mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-medium flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-emerald-600 text-[18px]">check_circle</span>
                 <span>{mensagemSucessoBip}</span>
@@ -599,46 +592,75 @@ function FilaLaboratorioContent() {
           )}
         </div>
 
-        {/* Faixa de KPIs Executivos de Loja de Balcão (Prioridade do Cliente Primeiro) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Prontos p/ Retirada na Loja</span>
-            <div className="text-2xl font-bold font-mono text-emerald-700">4 Pedidos</div>
-            <span className="text-[11px] text-slate-500">Gavetas G-01 a G-05</span>
-          </div>
-
-          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Avisos WhatsApp Enviados</span>
-            <div className="text-2xl font-bold font-mono text-[#052659]">8 Notificados</div>
-            <span className="inline-block px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#F0FDF4] text-[#15803D] border border-emerald-200">
-              Taxa de Resposta: 92%
-            </span>
-          </div>
-
-          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">Atrasados pelo Lab</span>
-            <div className="text-2xl font-bold font-mono text-red-600">2 Pedidos</div>
-            <a
-              id="link-fila-kpi-cobrar-lab"
-              href="https://wa.me/5511987654321?text=Ol%C3%A1%20Laborat%C3%B3rio!%20Gostaria%20de%20cobrar%20posi%C3%A7%C3%A3o%20urgente%20dos%20pedidos%20em%20atraso%20da%20Fatura%20%C3%93tica."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF2F2] text-[#B91C1C] border border-red-200 hover:bg-red-100 transition-colors"
-            >
-              <span className="material-symbols-outlined text-[13px]">warning</span>
-              <span>Cobrar Fornecedor via WhatsApp</span>
-            </a>
-          </div>
-
-          <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-4 space-y-1 shadow-sm hover:shadow-md transition-shadow">
-            <span className="text-[11px] font-semibold text-[#5483B3] uppercase">No Laboratório Externo</span>
-            <div className="text-2xl font-bold font-mono text-[#052659]">6 Pedidos</div>
-            <span className="text-[11px] text-slate-500">Essilor (3), Hoya (2), Lab Lux (1)</span>
-          </div>
+        {/* Faixa de KPIs Executivos de Loja de Balcão (Unificada via KpiCard) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <KpiCard
+            id="card-fila-prontos-retirada"
+            title="Prontos p/ Retirada"
+            value="4"
+            unit="pedidos"
+            icon="inventory_2"
+            footerLeft={
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <span className="material-symbols-outlined text-[15px] text-[#5483B3]">shelves</span>
+                <span>Gavetas G-01 a G-05</span>
+              </div>
+            }
+          />
+          <KpiCard
+            id="card-fila-avisos-whatsapp"
+            title="Avisos WhatsApp"
+            value="8"
+            unit="notificados"
+            icon="chat"
+            footerLeft={
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F0F6FC] text-[#052659] border border-[#C1E8FF]">
+                Taxa de Resposta: 92%
+              </span>
+            }
+          />
+          <KpiCard
+            id="card-fila-atrasados-lab"
+            title="Atrasados pelo Lab"
+            value="2"
+            unit="pedidos"
+            icon="warning"
+            iconVariant="danger"
+            badge={
+              <span className="text-[10px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">
+                Atenção
+              </span>
+            }
+            footerLeft={
+              <a
+                id="link-fila-kpi-cobrar-lab"
+                href="https://wa.me/5511987654321?text=Ol%C3%A1%20Laborat%C3%B3rio!%20Gostaria%20de%20cobrar%20posi%C3%A7%C3%A3o%20urgente%20dos%20pedidos%20em%20atraso%20da%20Fatura%20%C3%93tica."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-[#052659] hover:text-rose-700 inline-flex items-center gap-1 transition-colors"
+              >
+                <span>Cobrar via WhatsApp</span>
+                <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+              </a>
+            }
+          />
+          <KpiCard
+            id="card-fila-no-lab-externo"
+            title="No Lab Externo"
+            value="6"
+            unit="pedidos"
+            icon="precision_manufacturing"
+            footerLeft={
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <span className="material-symbols-outlined text-[15px] text-[#5483B3]">factory</span>
+                <span className="truncate">Essilor (3) • Hoya (2) • Lab Lux (1)</span>
+              </div>
+            }
+          />
         </div>
 
         {/* Barra de Filtros, Pesquisa e Seletor de Modo de Visualização */}
-        <div className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl p-3.5 flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3.5 shadow-sm">
+        <div className="bg-white border border-[#C1E8FF] rounded-2xl p-3.5 flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3.5 shadow-xs">
           {/* Pills de Filtro de Estágio com rolagem horizontal suave no mobile/tablet */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 xl:pb-0 scrollbar-none w-full xl:w-auto shrink-0">
             {[
@@ -653,10 +675,10 @@ function FilaLaboratorioContent() {
                 id={`btn-fila-filtro-${f.id}`}
                 type="button"
                 onClick={() => setFiltroColuna(f.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors border cursor-pointer shrink-0 ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border cursor-pointer shrink-0 ${
                   filtroColuna === f.id
-                    ? "bg-[#052659] text-white border-[#052659] shadow-2xs"
-                    : "bg-[#FFFFFF] text-[#052659] border-[#C1E8FF]/80 hover:bg-[#F0F6FC]"
+                    ? "bg-[#052659] text-white border-[#052659] shadow-xs"
+                    : "bg-white text-[#052659] border-[#C1E8FF] hover:bg-[#F0F6FC] hover:border-[#7DA0CA]"
                 }`}
               >
                 {f.label}
@@ -668,7 +690,7 @@ function FilaLaboratorioContent() {
             {/* Campo de Pesquisa Rápida Estruturada */}
             <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 sm:flex-initial">
               <div className="relative w-full sm:w-72 lg:w-80">
-                <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-[#5483B3]">
+                <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-slate-400">
                   search
                 </span>
                 <input
@@ -677,14 +699,14 @@ function FilaLaboratorioContent() {
                   value={busca}
                   onChange={(e) => setBusca(e.target.value)}
                   placeholder="Buscar OS, cliente, lab:essilor, status:atrasado..."
-                  className="w-full h-8.5 pl-8 pr-7 rounded-lg border border-[#C1E8FF]/80 text-xs bg-[#FFFFFF] text-[#021024] focus:border-[#5483B3] focus:ring-2 focus:ring-[#5483B3]/40 transition-all shadow-2xs"
+                  className="w-full h-8.5 pl-8 pr-7 rounded-xl border border-[#C1E8FF] text-xs bg-white text-[#052659] placeholder:text-[#5483B3]/60 focus:border-[#5483B3] focus:ring-2 focus:ring-[#C1E8FF] transition-all shadow-2xs"
                 />
                 {busca && (
                   <button
                     id="btn-fila-limpar-busca-icone"
                     type="button"
                     onClick={() => setBusca("")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#052659] p-0.5 cursor-pointer"
                     title="Limpar busca"
                   >
                     <span className="material-symbols-outlined text-[14px]">close</span>
@@ -694,7 +716,7 @@ function FilaLaboratorioContent() {
 
               {/* Chips de Atalhos de Busca Rápida */}
               <div className="flex items-center gap-1 flex-wrap">
-                <span className="text-[10px] text-slate-400 font-bold uppercase">Atalhos:</span>
+                <span className="text-[10px] text-[#5483B3] font-bold uppercase">Atalhos:</span>
                 {[
                   { label: "lab:essilor", q: "lab:essilor" },
                   { label: "lab:hoya", q: "lab:hoya" },
@@ -707,7 +729,7 @@ function FilaLaboratorioContent() {
                     id={`btn-chip-busca-${chip.q.replace(":", "-")}`}
                     type="button"
                     onClick={() => setBusca((prev) => (prev ? `${prev} ${chip.q}` : chip.q))}
-                    className="px-1.5 py-0.2 rounded bg-[#F0F6FC] hover:bg-[#dce9f8] text-[#052659] border border-[#7DA0CA]/50 font-mono text-[9px] font-semibold transition-colors cursor-pointer"
+                    className="px-1.5 py-0.5 rounded bg-[#F0F6FC] hover:bg-[#C1E8FF]/60 text-[#052659] border border-[#C1E8FF]/60 font-mono text-[9px] font-semibold transition-colors cursor-pointer"
                   >
                     +{chip.label}
                   </button>
@@ -716,15 +738,15 @@ function FilaLaboratorioContent() {
             </div>
 
             {/* Alternador de Modo: Tabela vs. Gavetas/Kanban */}
-            <div className="flex items-center rounded-lg border border-[#7DA0CA] overflow-hidden bg-[#F0F6FC] shrink-0 self-start sm:self-center">
+            <div className="flex items-center rounded-xl border border-[#C1E8FF] overflow-hidden bg-[#F0F6FC] p-1 shrink-0 self-start sm:self-center shadow-2xs">
               <button
                 id="btn-fila-view-tabela"
                 type="button"
                 onClick={() => setModoVisualizacao("tabela")}
-                className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 text-xs flex items-center gap-1.5 rounded-lg transition-all cursor-pointer ${
                   modoVisualizacao === "tabela"
-                    ? "bg-[#052659] text-white"
-                    : "text-[#052659] hover:bg-[#FFFFFF]"
+                    ? "bg-[#052659] text-white shadow-xs font-bold"
+                    : "text-[#5483B3] hover:text-[#052659] font-semibold"
                 }`}
                 title="Visualização em Tabela Ágil"
               >
@@ -735,10 +757,10 @@ function FilaLaboratorioContent() {
                 id="btn-fila-view-kanban"
                 type="button"
                 onClick={() => setModoVisualizacao("kanban")}
-                className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 text-xs flex items-center gap-1.5 rounded-lg transition-all cursor-pointer ${
                   modoVisualizacao === "kanban"
-                    ? "bg-[#052659] text-white"
-                    : "text-[#052659] hover:bg-[#FFFFFF]"
+                    ? "bg-[#052659] text-white shadow-xs font-bold"
+                    : "text-[#5483B3] hover:text-[#052659] font-semibold"
                 }`}
                 title="Visualização por Gavetas e Estágios"
               >
@@ -751,23 +773,24 @@ function FilaLaboratorioContent() {
 
         {/* 1. VISUALIZAÇÃO PADRÃO: TABELA ÁGIL DE ALTA DENSIDADE */}
         {modoVisualizacao === "tabela" ? (
-          <section className="bg-[#FFFFFF] border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-sm">
+          <section className="bg-white border border-[#C1E8FF] rounded-2xl overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
-              <table id="table-fila-producao" className="w-full text-left text-xs border-collapse">
+              <table id="table-fila-producao" className="w-full text-left text-sm border-collapse">
                 <thead>
-                  <tr className="bg-[#F0F6FC] sticky top-0 z-10 border-b border-[#C1E8FF]/80 text-[11px] font-bold text-[#052659] uppercase shadow-2xs">
-                    <th className="px-4 py-3">OS &amp; Paciente</th>
-                    <th className="px-4 py-3">Armação &amp; Lente</th>
-                    <th className="px-4 py-3">Laboratório Parceiro</th>
-                    <th className="px-4 py-3">Status &amp; Previsão</th>
-                    <th className="px-4 py-3">Gaveta Física</th>
-                    <th className="px-4 py-3 text-right">Ações de Balcão (1 Clique)</th>
+                  <tr className="bg-[#F0F6FC] sticky top-0 z-10 border-b border-[#C1E8FF] text-[11px] font-bold text-[#052659] uppercase tracking-wider">
+                    <th className="px-4 py-3.5">OS</th>
+                    <th className="px-4 py-3.5">Paciente</th>
+                    <th className="px-4 py-3.5">Armação &amp; Lente</th>
+                    <th className="px-4 py-3.5">Laboratório Parceiro</th>
+                    <th className="px-4 py-3.5">Status &amp; Previsão</th>
+                    <th className="px-4 py-3.5">Gaveta Física</th>
+                    <th className="px-4 py-3.5 text-right">Ações de Balcão (1 Clique)</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#F0F6FC]">
+                <tbody className="divide-y divide-slate-100">
                   {ordensFiltradas.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center text-xs text-slate-500 space-y-2">
+                      <td colSpan={7} className="py-12 text-center text-xs text-slate-500 space-y-2">
                         <span className="material-symbols-outlined text-3xl text-slate-400 block mx-auto">
                           search_off
                         </span>
@@ -801,70 +824,92 @@ function FilaLaboratorioContent() {
                           className={`transition-colors duration-150 cursor-default ${
                             isHighlighted
                               ? "bg-amber-100/80 ring-2 ring-amber-500/50"
-                              : "hover:bg-[#C1E8FF]/15"
+                              : item.statusBadgeTipo === "danger"
+                              ? "bg-rose-50/30 hover:bg-rose-50/60"
+                              : "hover:bg-slate-50"
                           }`}
                         >
-                          {/* OS & Paciente */}
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono font-bold text-xs text-[#052659] bg-[#F0F6FC] px-1.5 py-0.5 rounded border border-[#7DA0CA]/50">
-                                OS #{item.id}
-                              </span>
-                              <div className="flex flex-col">
-                                <span className="font-bold text-slate-900">{item.cliente}</span>
-                                <span className="text-[11px] font-mono text-slate-500">{item.telefone}</span>
-                              </div>
+                          {/* Coluna 1: OS */}
+                          <td className="px-4 py-3.5 whitespace-nowrap">
+                            <Link
+                              id={`link-fila-os-${item.id}`}
+                              href={`/ordens-de-servico/detalhes?id=${item.id}`}
+                              className="font-mono font-bold text-xs text-[#052659] hover:text-white bg-[#F0F6FC] hover:bg-[#052659] px-2.5 py-1 rounded-lg border border-[#C1E8FF] hover:border-[#052659] transition-all inline-flex items-center gap-1 shadow-2xs hover:shadow-xs group cursor-pointer"
+                              title="Ver ficha técnica dióptrica"
+                            >
+                              <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white transition-colors">tag</span>
+                              <span>{item.id}</span>
+                            </Link>
+                          </td>
+
+                          {/* Coluna 2: Paciente */}
+                          <td className="px-4 py-3.5 whitespace-nowrap">
+                            <div className="flex flex-col">
+                              <span className="font-bold text-[#052659] text-sm">{item.cliente}</span>
+                              <span className="text-xs font-mono text-slate-400">{item.telefone}</span>
                             </div>
                           </td>
 
                           {/* Armação & Lente */}
-                          <td className="px-4 py-3 max-w-[240px]">
-                            <div className="truncate font-medium text-slate-800" title={item.armacao}>
+                          <td className="px-4 py-3.5 max-w-[240px]">
+                            <div className="truncate font-semibold text-slate-800 text-sm" title={item.armacao}>
                               {item.armacao}
                             </div>
-                            <div className="truncate text-[11px] text-slate-500" title={item.lente}>
+                            <div className="truncate text-xs text-[#5483B3]" title={item.lente}>
                               {item.lente}
                             </div>
                           </td>
 
                           {/* Laboratório Parceiro */}
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            <span className="font-medium text-slate-700">{item.laboratorio}</span>
+                          <td className="px-4 py-3.5 whitespace-nowrap">
+                            <span className="font-medium text-slate-700 text-sm">{item.laboratorio}</span>
                           </td>
 
                           {/* Status & Previsão */}
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            <div className="flex flex-col gap-0.5">
+                          <td className="px-4 py-3.5 whitespace-nowrap">
+                            <div className="flex flex-col gap-1 items-start">
                               <span
-                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border w-fit ${
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-2xs ${
                                   item.statusBadgeTipo === "danger"
-                                    ? "bg-[#FEF2F2] text-[#B91C1C] border-[#F87171]"
+                                    ? "bg-rose-50 text-rose-800 border-rose-300"
                                     : item.statusBadgeTipo === "warning"
-                                    ? "bg-[#FFFBEB] text-[#B45309] border-[#FCD34D]"
-                                    : item.statusBadgeTipo === "info"
-                                    ? "bg-[#EFF6FF] text-[#1D4ED8] border-[#93C5FD]"
-                                    : "bg-[#F0FDF4] text-[#15803D] border-[#86EFAC]"
+                                    ? "bg-amber-50 text-amber-800 border-amber-300"
+                                    : item.statusBadgeTipo === "success"
+                                    ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                    : "bg-[#F0F6FC] text-[#052659] border-[#C1E8FF]"
                                 }`}
                               >
-                                <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
-                                {item.statusBadge}
+                                <span
+                                  className={`w-2 h-2 rounded-full shrink-0 ${
+                                    item.statusBadgeTipo === "danger"
+                                      ? "bg-rose-500 ring-2 ring-rose-200"
+                                      : item.statusBadgeTipo === "warning"
+                                      ? "bg-amber-500 ring-2 ring-amber-200"
+                                      : item.statusBadgeTipo === "success"
+                                      ? "bg-emerald-500 ring-2 ring-emerald-200"
+                                      : "bg-[#5483B3] ring-2 ring-[#C1E8FF]"
+                                  }`}
+                                />
+                                <span>{item.statusBadge}</span>
                               </span>
-                              <span className="text-[10px] text-slate-500 font-mono">
-                                Previsto: {item.prometido}
+                              <span className="inline-flex items-center gap-1 text-[11px] text-[#5483B3] font-mono font-semibold pl-1">
+                                <span className="material-symbols-outlined text-[13px]">schedule</span>
+                                <span>Previsto: {item.prometido}</span>
                               </span>
                             </div>
                           </td>
 
                           {/* Gaveta Física */}
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-[#F0F6FC] border border-[#7DA0CA]/50 text-[#052659]">
-                              {item.gaveta}
+                          <td className="px-4 py-3.5 whitespace-nowrap">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-[#F0F6FC] text-[#052659] border border-[#C1E8FF] shadow-2xs">
+                              <span className="material-symbols-outlined text-[14px] text-[#5483B3]">shelves</span>
+                              <span>{item.gaveta}</span>
                             </span>
                           </td>
 
                           {/* Ações Rápidas de Balcão */}
-                          <td className="px-4 py-3 text-right whitespace-nowrap">
-                            <div className="flex items-center justify-end gap-2">
+                          <td className="px-4 py-3.5 text-right whitespace-nowrap">
+                            <div className="flex items-center justify-end gap-1.5">
                               {/* Se OS atrasada, botão de cobrança de laboratório */}
                               {item.statusBadgeTipo === "danger" && (
                                 <a
@@ -872,10 +917,10 @@ function FilaLaboratorioContent() {
                                   href={`https://wa.me/5511987654321?text=Ol%C3%A1%20${encodeURIComponent(item.laboratorio)}!%20Cobran%C3%A7a%20urgente%20da%20OS%20%23${item.id}%20do%20paciente%20${encodeURIComponent(item.cliente)}%20que%20est%C3%A1%20atrasada.`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="px-2.5 py-1 rounded text-xs font-bold bg-[#FEF2F2] text-[#B91C1C] border border-[#F87171] hover:bg-red-100 transition-colors inline-flex items-center gap-1"
+                                  className="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1.5 ring-2 ring-rose-500/20"
                                   title="Cobrar Laboratório Parceiro via WhatsApp"
                                 >
-                                  <span className="material-symbols-outlined text-[14px]">warning</span>
+                                  <span className="material-symbols-outlined text-[13px]">warning</span>
                                   <span>Cobrar Lab</span>
                                 </a>
                               )}
@@ -884,10 +929,10 @@ function FilaLaboratorioContent() {
                               <Link
                                 id={`link-fila-notificar-whatsapp-${item.id}`}
                                 href={`/ordens-de-servico/notificar-whatsapp?id=${item.id}`}
-                                className="px-2.5 py-1 rounded text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-colors inline-flex items-center gap-1"
+                                className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1.5 ring-2 ring-emerald-500/20"
                                 title="Abrir tela dedicada de disparo WhatsApp para o paciente"
                               >
-                                <span className="material-symbols-outlined text-[14px] text-emerald-600">chat</span>
+                                <span className="material-symbols-outlined text-[15px]">chat</span>
                                 <span>Notificar WhatsApp</span>
                               </Link>
 
@@ -895,11 +940,11 @@ function FilaLaboratorioContent() {
                               <Link
                                 id={`link-fila-ver-ficha-${item.id}`}
                                 href={`/ordens-de-servico/detalhes?id=${item.id}`}
-                                className="px-2 py-1 rounded text-xs font-semibold bg-[#F0F6FC] text-[#052659] border border-[#7DA0CA] hover:bg-[#dce9f8] transition-colors inline-flex items-center gap-0.5"
+                                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] transition-all inline-flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 group cursor-pointer"
                                 title="Ver ficha técnica dióptrica"
                               >
                                 <span>Ficha</span>
-                                <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white group-hover:translate-x-0.5 transition-all">arrow_forward</span>
                               </Link>
                             </div>
                           </td>
@@ -1006,36 +1051,56 @@ function FilaLaboratorioContent() {
                               <div
                                 key={item.id}
                                 id={`card-fila-gaveta-${item.id}`}
-                                className={`p-4 rounded-xl border transition-all duration-200 flex flex-col justify-between space-y-3 shadow-xs hover:shadow-md ${
+                                className={`p-4 rounded-xl border transition-all duration-200 flex flex-col justify-between space-y-3 shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
                                   isHighlighted
                                     ? "border-amber-400 bg-amber-50/90 ring-2 ring-amber-300"
-                                    : "border-[#C1E8FF]/80 bg-[#FFFFFF] hover:border-[#052659]"
+                                    : item.statusBadgeTipo === "danger"
+                                    ? "border-slate-200 border-l-4 border-l-rose-500 bg-white hover:border-slate-400"
+                                    : "border-slate-200 bg-white hover:border-[#052659]"
                                 }`}
                               >
                                 {/* Topo do Card */}
-                                <div className="flex items-center justify-between gap-2 pb-2 border-b border-[#F0F6FC]">
+                                <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
                                   <div className="flex items-center gap-2">
-                                    <span className="font-mono font-bold text-xs text-[#052659] bg-[#F0F6FC] px-2 py-0.5 rounded border border-[#C1E8FF] whitespace-nowrap">
-                                      OS #{item.id}
-                                    </span>
+                                    <Link
+                                      id={`link-gaveta-os-${item.id}`}
+                                      href={`/ordens-de-servico/detalhes?id=${item.id}`}
+                                      className="font-mono font-bold text-xs text-[#052659] hover:text-white bg-[#F0F6FC] hover:bg-[#052659] px-2 py-0.5 rounded-md border border-[#C1E8FF] transition-all inline-flex items-center gap-1 group shadow-2xs"
+                                      title="Ver Ficha Técnica"
+                                    >
+                                      <span className="material-symbols-outlined text-[12px] text-[#5483B3] group-hover:text-white transition-colors">tag</span>
+                                      <span>{item.id}</span>
+                                    </Link>
                                     <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
                                       {item.prometido}
                                     </span>
                                   </div>
-                                  <span
-                                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold border truncate max-w-[55%] text-right shrink-0 ${
-                                      item.statusBadgeTipo === "danger"
-                                        ? "bg-[#FEF2F2] text-[#B91C1C] border-[#F87171]"
-                                        : item.statusBadgeTipo === "warning"
-                                        ? "bg-[#FFFBEB] text-[#B45309] border-[#FCD34D]"
-                                        : item.statusBadgeTipo === "info"
-                                        ? "bg-[#EFF6FF] text-[#1D4ED8] border-[#93C5FD]"
-                                        : "bg-[#F0FDF4] text-[#15803D] border-[#86EFAC]"
-                                    }`}
-                                    title={item.statusBadge}
-                                  >
-                                    {item.statusBadge}
-                                  </span>
+                                  <div className="flex items-center shrink-0">
+                                    <span
+                                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold border shadow-2xs ${
+                                        item.statusBadgeTipo === "danger"
+                                          ? "bg-rose-50 text-rose-800 border-rose-300"
+                                          : item.statusBadgeTipo === "warning"
+                                          ? "bg-amber-50 text-amber-800 border-amber-300"
+                                          : item.statusBadgeTipo === "success"
+                                          ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                          : "bg-[#F0F6FC] text-[#052659] border-[#C1E8FF]"
+                                      }`}
+                                    >
+                                      <span
+                                        className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                          item.statusBadgeTipo === "danger"
+                                            ? "bg-rose-500"
+                                            : item.statusBadgeTipo === "warning"
+                                            ? "bg-amber-500"
+                                            : item.statusBadgeTipo === "success"
+                                            ? "bg-emerald-500"
+                                            : "bg-[#5483B3]"
+                                        }`}
+                                      />
+                                      <span>{item.statusBadge}</span>
+                                    </span>
+                                  </div>
                                 </div>
 
                                 {/* Dados do Paciente */}
@@ -1068,26 +1133,29 @@ function FilaLaboratorioContent() {
                                   </div>
                                   <div className="text-[10px] text-slate-400 font-mono pl-5 pt-0.5 flex items-center justify-between">
                                     <span>{item.laboratorio}</span>
-                                    <span className="font-bold text-[#5483B3]">{item.gaveta}</span>
+                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-white text-[#052659] border border-[#C1E8FF] shadow-2xs">
+                                      <span className="material-symbols-outlined text-[12px] text-[#5483B3]">shelves</span>
+                                      <span>{item.gaveta}</span>
+                                    </span>
                                   </div>
                                 </div>
 
                                 {/* Rodapé de Ações de Balcão */}
-                                <div className="pt-2 border-t border-[#F0F6FC] flex items-center justify-between gap-2">
+                                <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
                                   {item.statusBadgeTipo === "danger" ? (
                                     <a
                                       id={`link-gaveta-cobrar-lab-${item.id}`}
                                       href={`https://wa.me/5511987654321?text=Ol%C3%A1%20${encodeURIComponent(item.laboratorio)}!%20Cobran%C3%A7a%20urgente%20da%20OS%20%23${item.id}%20do%20paciente%20${encodeURIComponent(item.cliente)}%20que%20est%C3%A1%20atrasada.`}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#FEF2F2] text-[#B91C1C] border border-[#F87171] hover:bg-red-100 transition-colors inline-flex items-center gap-1 shadow-2xs"
-                                      title="Cobrar laboratório"
+                                      className="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all inline-flex items-center gap-1 ring-2 ring-rose-500/20"
+                                      title="Cobrar laboratório via WhatsApp"
                                     >
-                                      <span className="material-symbols-outlined text-[14px]">warning</span>
+                                      <span className="material-symbols-outlined text-[13px]">warning</span>
                                       <span>Cobrar Lab</span>
                                     </a>
                                   ) : (
-                                    <span className="text-[11px] font-mono font-bold text-[#052659]">
+                                    <span className="text-[11px] font-mono font-bold text-slate-900">
                                       R$ {item.valorTotal.toFixed(2).replace(".", ",")}
                                     </span>
                                   )}
@@ -1096,19 +1164,20 @@ function FilaLaboratorioContent() {
                                     <Link
                                       id={`link-gaveta-avisar-${item.id}`}
                                       href={`/ordens-de-servico/notificar-whatsapp?id=${item.id}`}
-                                      className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-colors inline-flex items-center gap-1 shadow-2xs"
+                                      className="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs hover:shadow-xs active:scale-95 transition-all inline-flex items-center gap-1 ring-2 ring-emerald-500/20"
                                       title="Notificar paciente no WhatsApp"
                                     >
-                                      <span className="material-symbols-outlined text-[14px] text-emerald-600">chat</span>
+                                      <span className="material-symbols-outlined text-[14px]">chat</span>
                                       <span>Avisar</span>
                                     </Link>
                                     <Link
                                       id={`link-gaveta-ficha-${item.id}`}
                                       href={`/ordens-de-servico/detalhes?id=${item.id}`}
-                                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#F0F6FC] text-[#052659] border border-[#7DA0CA] hover:bg-[#dce9f8] transition-colors inline-flex items-center gap-0.5 shadow-2xs"
+                                      className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#C1E8FF] hover:border-[#052659] transition-all inline-flex items-center gap-1 shadow-2xs group"
+                                      title="Ver Ficha Técnica"
                                     >
                                       <span>Ficha</span>
-                                      <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+                                      <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white group-hover:translate-x-0.5 transition-all">arrow_forward</span>
                                     </Link>
                                   </div>
                                 </div>

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOperator } from "@/hooks/useOperator";
 import { useToast } from "@/components/ToastProvider";
+import PageHeader from "@/components/PageHeader";
 
 export default function AjusteManualPage() {
   const router = useRouter();
@@ -94,50 +95,39 @@ export default function AjusteManualPage() {
 
   return (
     <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-28 text-[#021024]">
-      {/* Context Top Bar */}
-      <div className="bg-[#FFFFFF] border-b border-[#7DA0CA] px-4 sm:px-6 lg:px-8 py-4">
-        <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-xs text-[#5483B3] font-medium">
-              <Link id="link-ajuste-breadcrumb-kardex" href="/kardex" className="hover:underline flex items-center gap-1 text-[#052659]">
-                <span className="material-symbols-outlined text-[15px]">arrow_back</span>
-                Kardex
-              </Link>
-              <span>/</span>
-              <span>Movimentações</span>
-              <span>/</span>
-              <span>Lançamento de Ajuste Manual</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#052659]">
-                Lançamento de Ajuste Manual &amp; Baixa por Avaria Clínica
-              </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#FEF2F2] text-[#B91C1C] border border-[#F87171]">
-                Protocolo Fiscal Ativo
-              </span>
-            </div>
-            <p className="text-xs text-slate-600">
-              Registro formal de perdas, quebras em laboratório de montagem, ajustes de contagem de inventário físico ou devoluções extraordinárias.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              id="link-ajuste-voltar-kardex"
-              href="/kardex"
-              className="px-3.5 py-1.5 rounded text-xs font-semibold bg-[#FFFFFF] border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] transition-colors inline-flex items-center gap-1"
-            >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-              Voltar ao Kardex
-            </Link>
-          </div>
-        </div>
-      </div>
+      {/* 1. CABEÇALHO PADRONIZADO DA TELA */}
+      <PageHeader
+        id="header-ajuste-manual"
+        icon="tune"
+        title="Lançamento de Ajuste Manual & Baixa por Avaria Clínica"
+        badge={
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-300">
+            Protocolo Fiscal Ativo
+          </span>
+        }
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: "Kardex", href: "/kardex", id: "link-ajuste-breadcrumb-kardex" },
+          { label: "Movimentações" },
+          { label: "Lançamento de Ajuste Manual" },
+        ]}
+        subtitle="Registro formal de perdas, quebras em laboratório de montagem, contagem de inventário físico ou devoluções"
+        actions={
+          <Link
+            id="link-ajuste-voltar-kardex"
+            href="/kardex"
+            className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl text-xs font-bold border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] bg-white transition-all shadow-2xs cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px] text-[#5483B3]">arrow_back</span>
+            <span>Voltar ao Kardex</span>
+          </Link>
+        }
+      />
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Banner de Conformidade Fiscal */}
-        <div className="p-3.5 rounded-lg bg-[#FFFBEB] border border-[#FCD34D] text-[#92400E] flex items-center gap-3 text-xs font-medium">
-          <span className="material-symbols-outlined text-[#B45309] text-[20px] shrink-0">shield</span>
+        <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 flex items-center gap-3 text-xs font-medium">
+          <span className="material-symbols-outlined text-amber-600 text-[20px] shrink-0">shield</span>
           <span>
             <strong>Atenção:</strong> Toda movimentação manual gera evento irrevogável no Kardex auditável com assinatura digital e hash fiscal do operador (SHA-256).
           </span>

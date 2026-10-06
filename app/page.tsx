@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useOperator } from "@/hooks/useOperator";
 import PageHeader from "@/components/PageHeader";
+import KpiCard from "@/components/KpiCard";
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -283,6 +284,10 @@ export default function Home() {
       <PageHeader
         id="header-dash-executivo"
         icon={isManager ? "domain" : "badge"}
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: isManager ? "Painel Executivo" : "Painel de Atendimento" },
+        ]}
         title={
           <>
             {isManager ? "Painel Executivo" : "Painel de Atendimento"}
@@ -291,13 +296,14 @@ export default function Home() {
         }
         badge={
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="shrink-0 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#C1E8FF] text-[#052659] border border-[#7DA0CA]/50 inline-flex items-center">
-              {operator.branch.split(" - ")[0].toUpperCase()}
+            <span className="shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-[#052659] text-white border border-[#052659] inline-flex items-center gap-1 shadow-2xs">
+              <span className="material-symbols-outlined text-[13px] text-[#C1E8FF]">storefront</span>
+              <span>{operator.branch.split(" - ")[0].toUpperCase()}</span>
             </span>
             {isConsultant && (
-              <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                TURNO ATIVO
+                <span>TURNO ATIVO</span>
               </span>
             )}
           </div>
@@ -360,11 +366,11 @@ export default function Home() {
             <button
               id="btn-dash-atualizar"
               onClick={handleRefresh}
-              className="h-9 px-3 rounded-lg border border-[#7DA0CA]/60 bg-white hover:bg-[#F0F6FC] text-[#052659] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+              className="h-9 px-3.5 rounded-xl bg-[#5483B3] hover:bg-[#052659] text-white text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#5483B3]/25"
               type="button"
             >
               <span
-                className={`material-symbols-outlined text-[17px] text-[#5483B3] ${
+                className={`material-symbols-outlined text-[17px] text-white ${
                   isRefreshing ? "animate-spin" : ""
                 }`}
               >
@@ -376,7 +382,7 @@ export default function Home() {
             <Link
               id="btn-dash-nova-os"
               href="/ordens-de-servico"
-              className="h-9 px-3.5 rounded-lg bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer whitespace-nowrap"
+              className="h-9 px-4 rounded-xl bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#052659]/20 cursor-pointer whitespace-nowrap"
             >
               <span className="material-symbols-outlined text-[18px] text-[#C1E8FF]">add_circle</span>
               <span>Nova OS [F2]</span>
@@ -386,233 +392,120 @@ export default function Home() {
       />
 
       {/* Main Container */}
-      <main className="p-6 lg:p-8 space-y-6 max-w-[1720px] w-full mx-auto">
+      <main className="p-4 sm:p-5 lg:p-6 space-y-4 sm:space-y-5 max-w-[1720px] w-full mx-auto">
         {/* ========================================================================= */}
         {/* SECTION 1: TOP KPI STRIP (ROLE-AWARE) */}
         {/* ========================================================================= */}
         {isManager ? (
-          /* GERENTE: 6-KPI STRIP EXECUTIVA FINANCEIRA */
+          /* GERENTE: 6-KPI STRIP EXECUTIVA FINANCEIRA UNIFICADA */
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-            {/* KPI 1: Faturamento Hoje */}
-            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
-                  <span>Faturamento Hoje</span>
-                  <span className="material-symbols-outlined text-[#052659] text-base">point_of_sale</span>
-                </div>
-                <div className="mt-2 text-2xl font-mono font-bold text-[#052659] tracking-tight">
-                  R$ 6.850,00
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-bold text-emerald-700">
-                  <span className="material-symbols-outlined text-sm">trending_up</span>
-                  <span>+22% vs ontem</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-[#F0F6FC]">
-                <div className="flex justify-between text-[10px] font-mono text-[#5483B3] mb-1">
-                  <span>Meta Mês: 70%</span>
-                  <span>R$ 150k</span>
-                </div>
-                <div className="w-full h-1.5 rounded-full bg-[#E2E8F0] overflow-hidden">
-                  <div className="h-full rounded-full bg-[#052659]" style={{ width: "70%" }}></div>
-                </div>
-              </div>
-            </div>
-
-            {/* KPI 2: Ticket Médio Diário */}
-            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
-                  <span>Ticket Médio</span>
-                  <span className="material-symbols-outlined text-[#052659] text-base">receipt_long</span>
-                </div>
-                <div className="mt-2 text-2xl font-mono font-bold text-[#052659] tracking-tight">
-                  R$ 685,00
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-bold text-emerald-700">
-                  <span className="material-symbols-outlined text-sm">trending_up</span>
-                  <span>+8.4% vs meta</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] text-[10px] text-[#5483B3] flex items-center justify-between">
-                <span>10 vendas no período</span>
-                <span className="font-mono font-bold text-[#052659]">AR: 80%</span>
-              </div>
-            </div>
-
-            {/* KPI 3: Saldo a Receber */}
-            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
-                  <span>Saldo a Receber</span>
-                  <span className="material-symbols-outlined text-[#052659] text-base">account_balance_wallet</span>
-                </div>
-                <div className="mt-2 text-2xl font-mono font-bold text-[#052659] tracking-tight">
-                  R$ 14.820,00
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-medium text-amber-700">
-                  <span className="material-symbols-outlined text-sm">schedule</span>
-                  <span>Retiradas pendentes</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] text-[10px] text-[#5483B3] flex items-center justify-between">
-                <span>Cartão 12x: 65%</span>
-                <span className="font-mono font-bold text-[#052659]">Pix: 35%</span>
-              </div>
-            </div>
-
-            {/* KPI 4: Laboratório no Prazo */}
-            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
-                  <span>Lab no Prazo</span>
-                  <span className="material-symbols-outlined text-[#052659] text-base">precision_manufacturing</span>
-                </div>
-                <div className="mt-2 text-2xl font-mono font-bold text-[#052659] tracking-tight">
-                  94.2%
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-bold text-emerald-700">
-                  <span className="material-symbols-outlined text-sm">verified</span>
-                  <span>Meta de SLA atingida</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] text-[10px] text-[#5483B3] flex items-center justify-between">
-                <span>51 OSs em lab externo</span>
-                <span className="font-mono font-bold text-amber-700">3 atrasos</span>
-              </div>
-            </div>
-
-            {/* KPI 5: Ordens em Produção */}
-            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
-                  <span>Ordens em Fila</span>
-                  <span className="material-symbols-outlined text-[#052659] text-base">assignment</span>
-                </div>
-                <div className="mt-2 text-2xl font-mono font-bold text-[#052659] tracking-tight">
-                  28 OSs
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-medium text-[#5483B3]">
-                  <span>12 montagem • 16 terceirizadas</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] text-[10px] text-[#5483B3] flex items-center justify-between">
-                <span>Capacidade de montagem</span>
-                <span className="font-mono font-bold text-[#052659]">82% ocupada</span>
-              </div>
-            </div>
-
-            {/* KPI 6: Retiradas Pendentes */}
-            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
-                  <span>Prontos p/ Retirada</span>
-                  <span className="material-symbols-outlined text-emerald-700 text-base">storefront</span>
-                </div>
-                <div className="mt-2 text-2xl font-mono font-bold text-emerald-700 tracking-tight">
-                  7 óculos
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-bold text-emerald-700">
-                  <span className="material-symbols-outlined text-sm">chat</span>
-                  <span>WhatsApp disparado</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] text-[10px] text-[#5483B3] flex items-center justify-between">
-                <span>Saldo gaveta: R$ 4.890</span>
-                <Link id="link-dash-kpi-ver-balcao" href="/ordens-de-servico/fila" className="font-bold text-[#052659] hover:underline">
-                  Ver balcão
-                </Link>
-              </div>
-            </div>
+            <KpiCard
+              id="card-dash-faturamento-hoje"
+              title="Faturamento Hoje"
+              value="R$ 6.850,00"
+              icon="point_of_sale"
+              trend={{ text: "+22% vs ontem", isPositive: true, icon: "trending_up" }}
+              progressPercent={70}
+              footerLeft="Meta Mês: 70%"
+              footerRight={<span className="font-mono font-bold text-[#052659]">R$ 150k</span>}
+            />
+            <KpiCard
+              id="card-dash-ticket-medio"
+              title="Ticket Médio"
+              value="R$ 685,00"
+              icon="receipt_long"
+              trend={{ text: "+8.4% vs meta", isPositive: true, icon: "trending_up" }}
+              footerLeft="10 vendas no período"
+              footerRight={<span className="font-mono font-bold text-[#052659]">AR: 80%</span>}
+            />
+            <KpiCard
+              id="card-dash-saldo-receber"
+              title="Saldo a Receber"
+              value="R$ 14.820,00"
+              icon="account_balance_wallet"
+              iconVariant="warning"
+              trend={{ text: "Retiradas pendentes", isNeutral: true, icon: "schedule" }}
+              footerLeft="Cartão 12x: 65%"
+              footerRight={<span className="font-mono font-bold text-[#052659]">Pix: 35%</span>}
+            />
+            <KpiCard
+              id="card-dash-lab-prazo"
+              title="Lab no Prazo"
+              value="94.2%"
+              icon="precision_manufacturing"
+              iconVariant="success"
+              trend={{ text: "Meta de SLA atingida", isPositive: true, icon: "verified" }}
+              footerLeft="51 OSs em lab externo"
+              footerRight={<span className="font-mono font-bold text-amber-700">3 atrasos</span>}
+            />
+            <KpiCard
+              id="card-dash-ordens-fila"
+              title="Ordens em Fila"
+              value="28"
+              unit="OSs"
+              icon="assignment"
+              trend={{ text: "12 montagem • 16 terceirizadas", isNeutral: true }}
+              footerLeft="Capacidade montagem"
+              footerRight={<span className="font-mono font-bold text-[#052659]">82% ocupada</span>}
+            />
+            <KpiCard
+              id="card-dash-prontos-retirada"
+              title="Prontos p/ Retirada"
+              value="7"
+              unit="óculos"
+              icon="storefront"
+              trend={{ text: "WhatsApp disparado", isPositive: true }}
+              footerLeft="Saldo gaveta: R$ 4.890"
+              footerHref="/ordens-de-servico/fila"
+              footerActionLabel="Ver balcão"
+            />
           </section>
         ) : (
-          /* CONSULTOR: 4-KPI STRIP OPERACIONAL DE BALCÃO (CLEAN) */
+          /* CONSULTOR: 4-KPI STRIP OPERACIONAL DE BALCÃO UNIFICADA */
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Card 1: Minhas OSs em Aberto */}
-            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
-                  <span>Minhas OSs em Aberto</span>
-                  <span className="material-symbols-outlined text-[#052659] text-base">assignment</span>
-                </div>
-                <div className="mt-2 text-3xl font-mono font-bold text-[#052659] tracking-tight">
-                  8 <span className="text-sm font-sans font-medium text-[#5483B3]">ordens</span>
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-bold text-emerald-700">
-                  <span className="material-symbols-outlined text-sm">trending_up</span>
-                  <span>+2 vs semana anterior</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] flex items-center justify-between text-[11px]">
-                <span className="text-slate-500">Todas com prazo ativo</span>
-                <span className="font-bold text-emerald-600 font-mono">100% no prazo</span>
-              </div>
-            </div>
-
-            {/* Card 2: Prontas para Retirada */}
-            <div className="bg-white rounded-xl border border-emerald-200/80 bg-emerald-50/30 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-emerald-400 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-emerald-800 text-[11px] font-bold uppercase tracking-wider">
-                  <span>Prontas para Retirada</span>
-                  <span className="material-symbols-outlined text-emerald-700 text-base">shopping_bag</span>
-                </div>
-                <div className="mt-2 text-3xl font-mono font-bold text-emerald-800 tracking-tight">
-                  3 <span className="text-sm font-sans font-medium text-emerald-700">óculos</span>
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-bold text-emerald-700">
-                  <span className="material-symbols-outlined text-sm">chat</span>
-                  <span>WhatsApp disparado</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-emerald-100 flex items-center justify-between text-[11px]">
-                <span className="text-emerald-800">Gaveta de Balcão 01</span>
-                <Link id="link-dash-kpi-entregar-oculos" href="/ordens-de-servico/fila" className="font-bold text-emerald-800 hover:underline">
-                  Entregar óculos →
-                </Link>
-              </div>
-            </div>
-
-            {/* Card 3: Aguardando Validação / Receita */}
-            <div className="bg-white rounded-xl border border-amber-200/80 bg-amber-50/30 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-400 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-amber-800 text-[11px] font-bold uppercase tracking-wider">
-                  <span>Aguardando Confirmação</span>
-                  <span className="material-symbols-outlined text-amber-700 text-base">hourglass_top</span>
-                </div>
-                <div className="mt-2 text-3xl font-mono font-bold text-amber-900 tracking-tight">
-                  2 <span className="text-sm font-sans font-medium text-amber-700">pendências</span>
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-medium text-amber-800">
-                  <span className="material-symbols-outlined text-sm">warning</span>
-                  <span>1 pendente DNP • 1 receita</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-amber-100 flex items-center justify-between text-[11px]">
-                <span className="text-amber-800 font-medium">Requer contato cliente</span>
-                <span className="font-bold text-amber-900 font-mono">Ação pendente</span>
-              </div>
-            </div>
-
-            {/* Card 4: Meus Atendimentos Hoje */}
-            <div className="bg-white rounded-xl border border-[#C1E8FF]/60 p-4 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#5483B3]/80 transition-all">
-              <div>
-                <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider">
-                  <span>Meus Atendimentos Hoje</span>
-                  <span className="material-symbols-outlined text-[#052659] text-base">person_check</span>
-                </div>
-                <div className="mt-2 text-3xl font-mono font-bold text-[#052659] tracking-tight">
-                  14 <span className="text-sm font-sans font-medium text-[#5483B3]">pacientes</span>
-                </div>
-                <div className="flex items-center gap-1 mt-1 text-xs font-bold text-emerald-700">
-                  <span className="material-symbols-outlined text-sm">trending_up</span>
-                  <span>+4 atendimentos vs ontem</span>
-                </div>
-              </div>
-              <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] flex items-center justify-between text-[11px]">
-                <span className="text-[#5483B3]">Ritmo de vendas ótimo</span>
-                <span className="font-bold text-[#052659] font-mono">Turno 70%</span>
-              </div>
-            </div>
+            <KpiCard
+              id="card-dash-minhas-oss"
+              title="Minhas OSs em Aberto"
+              value="8"
+              unit="ordens"
+              icon="assignment"
+              trend={{ text: "+2 vs semana anterior", isPositive: true, icon: "trending_up" }}
+              footerLeft="Todas com prazo ativo"
+              footerRight={<span className="font-bold text-emerald-600 font-mono">100% no prazo</span>}
+            />
+            <KpiCard
+              id="card-dash-prontas-retirada"
+              title="Prontas para Retirada"
+              value="3"
+              unit="óculos"
+              icon="shopping_bag"
+              iconVariant="success"
+              trend={{ text: "WhatsApp disparado", isPositive: true }}
+              footerLeft="Gaveta de Balcão 01"
+              footerHref="/ordens-de-servico/fila"
+              footerActionLabel="Entregar óculos"
+            />
+            <KpiCard
+              id="card-dash-aguardando-confirmacao"
+              title="Aguardando Confirmação"
+              value="2"
+              unit="pendências"
+              icon="hourglass_top"
+              iconVariant="warning"
+              trend={{ text: "1 pendente DNP • 1 receita", isNeutral: true, icon: "warning" }}
+              footerLeft="Requer contato cliente"
+              footerRight={<span className="font-bold text-amber-700 font-mono">Ação pendente</span>}
+            />
+            <KpiCard
+              id="card-dash-atendimentos-hoje"
+              title="Meus Atendimentos Hoje"
+              value="14"
+              unit="pacientes"
+              icon="person_check"
+              trend={{ text: "+4 atendimentos vs ontem", isPositive: true, icon: "trending_up" }}
+              footerLeft="Ritmo de vendas ótimo"
+              footerRight={<span className="font-bold text-[#052659] font-mono">Turno 70%</span>}
+            />
           </section>
         )}
 
@@ -815,7 +708,7 @@ export default function Home() {
                   <Link
                     id="btn-dash-consultor-nova-os"
                     href="/ordens-de-servico"
-                    className="h-8 px-3 rounded-lg bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto shadow-2xs"
+                    className="h-8 px-3.5 rounded-lg bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all self-start sm:self-auto ring-2 ring-[#052659]/20"
                   >
                     <span className="material-symbols-outlined text-sm">add</span>
                     <span>Nova Venda</span>
@@ -823,44 +716,67 @@ export default function Home() {
                 </div>
 
                 {/* Table of Consultant Orders */}
-                <div className="mt-3 overflow-x-auto border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-2xs">
-                  <table id="table-dash-consultor-minhas-ordens" className="w-full text-left border-collapse text-xs">
+                <div className="mt-3 overflow-x-auto border border-[#C1E8FF] rounded-2xl overflow-hidden shadow-2xs">
+                  <table id="table-dash-consultor-minhas-ordens" className="w-full text-left border-collapse text-sm">
                     <thead>
-                      <tr className="h-9 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF]/80 uppercase">
-                        <th className="px-3">OS / Cliente</th>
-                        <th className="px-3 hidden md:table-cell">Armação &amp; Lente</th>
-                        <th className="px-2 text-center">Status</th>
-                        <th className="px-3 text-right">Ação Balcão</th>
+                      <tr className="h-10 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF] uppercase">
+                        <th className="px-4 py-3">OS</th>
+                        <th className="px-4 py-3">Paciente</th>
+                        <th className="px-4 py-3 hidden md:table-cell">Armação &amp; Lente</th>
+                        <th className="px-3 py-3 text-center">Status</th>
+                        <th className="px-4 py-3 text-right">Ação Balcão</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#F0F6FC]">
+                    <tbody className="divide-y divide-slate-100">
                       {consultantOrders.map((ord) => (
-                        <tr key={ord.id} className="h-13 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
-                          <td className="px-3 py-2 font-medium">
-                            <div className="font-bold text-[#052659]">{ord.cliente}</div>
-                            <div className="font-mono text-[11px] text-[#5483B3] flex items-center gap-1">
-                              <span>{ord.os}</span>
-                              <span className="text-slate-300">•</span>
-                              <span>Prazo: {ord.prazo}</span>
-                            </div>
-                          </td>
-                          <td className="px-3 py-2 hidden md:table-cell">
-                            <div className="truncate max-w-[220px] font-semibold text-[#052659]">{ord.armacao}</div>
-                            <div className="truncate max-w-[220px] text-[11px] text-slate-500">{ord.lente}</div>
-                          </td>
-                          <td className="px-2 py-2 text-center">
-                            <span
-                              className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border font-mono ${ord.badgeColor}`}
+                        <tr key={ord.id} className="h-16 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
+                          <td className="px-4 py-3.5 whitespace-nowrap">
+                            <Link
+                              id={`link-dash-consultant-os-${ord.id}`}
+                              href={`/ordens-de-servico/detalhes?id=${ord.id}`}
+                              className="font-mono font-bold text-xs text-[#052659] hover:text-white bg-[#F0F6FC] hover:bg-[#052659] px-2.5 py-1 rounded-lg border border-[#C1E8FF] hover:border-[#052659] transition-all inline-flex items-center gap-1 shadow-2xs hover:shadow-xs group cursor-pointer"
+                              title="Ver Ficha Técnica"
                             >
-                              {ord.statusLabel}
+                              <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white transition-colors">tag</span>
+                              <span>{ord.os}</span>
+                            </Link>
+                          </td>
+                          <td className="px-4 py-3.5 font-medium whitespace-nowrap">
+                            <div className="font-bold text-sm text-[#052659]">{ord.cliente}</div>
+                            <div className="font-mono text-xs text-slate-400 mt-0.5">Prazo: {ord.prazo}</div>
+                          </td>
+                          <td className="px-4 py-3.5 hidden md:table-cell">
+                            <div className="truncate max-w-[240px] font-semibold text-sm text-slate-800">{ord.armacao}</div>
+                            <div className="truncate max-w-[240px] text-xs text-slate-500 mt-0.5">{ord.lente}</div>
+                          </td>
+                          <td className="px-3 py-3.5 text-center whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-2xs ${
+                                ord.status === "pronto"
+                                  ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                  : ord.status === "receita"
+                                  ? "bg-amber-50 text-amber-800 border-amber-300"
+                                  : "bg-[#F0F6FC] text-[#052659] border-[#C1E8FF]"
+                              }`}
+                            >
+                              <span
+                                className={`w-2 h-2 rounded-full shrink-0 ${
+                                  ord.status === "pronto"
+                                    ? "bg-emerald-500 ring-2 ring-emerald-200"
+                                    : ord.status === "receita"
+                                    ? "bg-amber-500 ring-2 ring-amber-200"
+                                    : "bg-[#5483B3] ring-2 ring-[#C1E8FF]"
+                                }`}
+                              />
+                              <span>{ord.statusLabel}</span>
                             </span>
                           </td>
-                          <td className="px-3 py-2 text-right">
+                          <td className="px-4 py-3.5 text-right whitespace-nowrap">
                             {ord.status === "pronto" ? (
                               <Link
                                 id={`btn-dash-notificar-os-${ord.id}`}
                                 href={`/ordens-de-servico/notificar-whatsapp?id=${ord.id}`}
-                                className="h-7 px-2.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs inline-flex items-center gap-1 transition-colors shadow-2xs"
+                                className="h-8 px-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-emerald-500/20"
                                 title="Notificar retirada via WhatsApp"
                               >
                                 <span className="material-symbols-outlined text-[15px]">chat</span>
@@ -870,7 +786,7 @@ export default function Home() {
                               <Link
                                 id={`btn-dash-validar-dnp-${ord.id}`}
                                 href="/ordens-de-servico"
-                                className="h-7 px-2.5 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs inline-flex items-center gap-1 transition-colors"
+                                className="h-8 px-3.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-amber-500/20"
                               >
                                 <span className="material-symbols-outlined text-[15px]">edit_document</span>
                                 <span>Validar DNP</span>
@@ -878,11 +794,11 @@ export default function Home() {
                             ) : (
                               <Link
                                 id={`btn-dash-ver-os-${ord.id}`}
-                                href="/ordens-de-servico/fila"
-                                className="h-7 px-2.5 rounded border border-[#7DA0CA]/60 hover:bg-[#F0F6FC] text-[#052659] font-bold text-xs inline-flex items-center gap-1 transition-colors"
+                                href={`/ordens-de-servico/detalhes?id=${ord.id}`}
+                                className="h-8 px-3 rounded-lg bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] font-bold text-xs inline-flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 transition-all group"
                               >
-                                <span>Ver OS</span>
-                                <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+                                <span>Ficha</span>
+                                <span className="material-symbols-outlined text-[14px] text-[#5483B3] group-hover:text-white group-hover:translate-x-0.5 transition-all">arrow_forward</span>
                               </Link>
                             )}
                           </td>
@@ -895,9 +811,13 @@ export default function Home() {
 
               <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] flex items-center justify-between text-xs text-[#5483B3]">
                 <span>5 ordens listadas • 3 prontas para entrega</span>
-                <Link id="link-dash-consultor-ver-fila-completa" href="/ordens-de-servico/fila" className="font-bold text-[#052659] hover:underline flex items-center gap-1">
+                <Link
+                  id="link-dash-consultor-ver-fila-completa"
+                  href="/ordens-de-servico/fila"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-[#052659] hover:text-white bg-[#F0F6FC] hover:bg-[#052659] border border-[#C1E8FF] hover:border-[#052659] transition-all shadow-2xs group cursor-pointer"
+                >
                   <span>Abrir Fila de Ordens Completa</span>
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  <span className="material-symbols-outlined text-sm text-[#5483B3] group-hover:text-white group-hover:translate-x-0.5 transition-all">arrow_forward</span>
                 </Link>
               </div>
             </div>
@@ -983,9 +903,9 @@ export default function Home() {
         )}
 
         {/* ========================================================================= */}
-        {/* SECTION 3: BOTTOM GRID (ROLE-AWARE) */}
+        {/* SECTION 3: BOTTOM GRID (ROLE-AWARE - APENAS GERENTE) */}
         {/* ========================================================================= */}
-        {isManager ? (
+        {isManager && (
           /* GERENTE: ACOMPANHAMENTO PRIORITÁRIO + METAS DA EQUIPE */
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Column: Acompanhamento Prioritário de Balcão (7 cols) */}
@@ -1006,65 +926,87 @@ export default function Home() {
               </div>
 
               {/* Compact Clinical Worklist Table */}
-              <div className="mt-3 overflow-x-auto border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-2xs">
-                <table id="table-dash-acompanhamento-prioritario" className="w-full text-left border-collapse text-xs">
+              <div className="mt-3 overflow-x-auto border border-[#C1E8FF] rounded-xl overflow-hidden shadow-2xs">
+                <table id="table-dash-acompanhamento-prioritario" className="w-full text-left border-collapse text-sm">
                   <thead>
-                    <tr className="h-9 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF]/80 uppercase">
-                      <th className="px-3">OS</th>
-                      <th className="px-3">Cliente / Paciente</th>
-                      <th className="px-3">Prescrição / Lente</th>
-                      <th className="px-2 text-center">Etapa Atual</th>
-                      <th className="px-2 text-center">Prazo</th>
-                      <th className="px-3 text-right">Ação</th>
+                    <tr className="h-10 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF] uppercase">
+                      <th className="px-4 py-3">OS</th>
+                      <th className="px-4 py-3">Cliente / Paciente</th>
+                      <th className="px-4 py-3">Prescrição / Lente</th>
+                      <th className="px-3 py-3 text-center">Etapa Atual</th>
+                      <th className="px-3 py-3 text-center">Prazo</th>
+                      <th className="px-4 py-3 text-right">Ação</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F0F6FC]">
                     {priorityOrders.map((order) => (
-                      <tr key={order.id} className="h-12 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
-                        <td className="px-3 font-mono font-bold text-[#052659]">#{order.id}</td>
-                        <td className="px-3 font-medium text-[#052659]">
+                      <tr key={order.id} className="h-14 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
+                        <td className="px-4 py-3.5 whitespace-nowrap">
+                          <Link
+                            id={`link-dash-prioritaria-os-${order.id}`}
+                            href={`/ordens-de-servico/detalhes?id=${order.id}`}
+                            className="font-mono font-bold text-xs text-[#052659] hover:text-white bg-[#F0F6FC] hover:bg-[#052659] px-2.5 py-1 rounded-lg border border-[#C1E8FF] hover:border-[#052659] transition-all inline-flex items-center gap-1 shadow-2xs hover:shadow-xs group cursor-pointer"
+                            title="Ver Ficha Técnica"
+                          >
+                            <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white transition-colors">tag</span>
+                            <span>{order.id}</span>
+                          </Link>
+                        </td>
+                        <td className="px-4 py-3.5 font-medium">
                           <div className="flex items-center gap-1.5">
-                            <span>{order.cliente}</span>
+                            <span className="font-bold text-sm text-[#052659]">{order.cliente}</span>
                             {order.prioridade === "VIP" && (
-                              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-purple-100 text-purple-800 border border-purple-200">
+                              <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-50 text-purple-800 border border-purple-200">
                                 VIP
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="px-3 text-[#5483B3] truncate max-w-[180px]">{order.tipo}</td>
-                        <td className="px-2 text-center">
+                        <td className="px-4 py-3.5 text-xs text-[#5483B3] truncate max-w-[180px]">{order.tipo}</td>
+                        <td className="px-3 py-3.5 text-center whitespace-nowrap">
                           <span
-                            className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-2xs ${
                               order.etapaType === "success"
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-300"
                                 : order.etapaType === "warning"
-                                ? "bg-amber-50 text-amber-700 border-amber-200"
-                                : "bg-blue-50 text-blue-700 border-blue-200"
+                                ? "bg-amber-50 text-amber-800 border-amber-300"
+                                : "bg-[#F0F6FC] text-[#052659] border-[#C1E8FF]"
                             }`}
                           >
-                            {order.etapa}
+                            <span
+                              className={`w-2 h-2 rounded-full shrink-0 ${
+                                order.etapaType === "success"
+                                  ? "bg-emerald-500 ring-2 ring-emerald-200"
+                                  : order.etapaType === "warning"
+                                  ? "bg-amber-500 ring-2 ring-amber-200"
+                                  : "bg-[#5483B3] ring-2 ring-[#C1E8FF]"
+                              }`}
+                            />
+                            <span>{order.etapa}</span>
                           </span>
                         </td>
-                        <td className="px-2 text-center">
+                        <td className="px-3 py-3.5 text-center whitespace-nowrap">
                           <span
-                            className={`font-mono font-semibold text-[11px] ${
+                            className={`inline-flex items-center gap-1 font-mono text-xs font-bold px-2 py-0.5 rounded-md ${
                               order.atrasoType === "danger"
-                                ? "text-red-600 font-bold"
+                                ? "text-rose-800 bg-rose-50 border border-rose-200"
                                 : order.atrasoType === "warning"
-                                ? "text-amber-600 font-bold"
-                                : "text-emerald-700"
+                                ? "text-amber-800 bg-amber-50 border border-amber-200"
+                                : "text-emerald-800 bg-emerald-50 border border-emerald-200"
                             }`}
                           >
-                            {order.atraso}
+                            <span className="material-symbols-outlined text-[13px]">
+                              {order.atrasoType === "danger" ? "error" : order.atrasoType === "warning" ? "schedule" : "check_circle"}
+                            </span>
+                            <span>{order.atraso}</span>
                           </span>
                         </td>
-                        <td className="px-3 text-right">
+                        <td className="px-4 py-3.5 text-right whitespace-nowrap">
                           {order.etapa === "Pronto Retirada" ? (
                             <Link
                               id={`btn-dash-prioritaria-avisar-${order.id}`}
                               href={`/ordens-de-servico/notificar-whatsapp?id=${order.id}`}
-                              className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs inline-flex items-center gap-1 transition-colors"
+                              className="h-8 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs inline-flex items-center gap-1 transition-all shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-emerald-500/20"
                             >
                               <span className="material-symbols-outlined text-sm">chat</span>
                               <span>Avisar</span>
@@ -1073,9 +1015,9 @@ export default function Home() {
                             <Link
                               id={`btn-dash-prioritaria-ver-${order.id}`}
                               href={`/ordens-de-servico/fila?destaque=${order.id}`}
-                              className="px-2.5 py-1 rounded border border-[#7DA0CA]/60 hover:bg-[#F0F6FC] text-[#052659] font-bold text-xs inline-flex items-center gap-1 transition-colors"
+                              className="h-8 px-3 rounded-lg bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] font-bold text-xs inline-flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 transition-all group"
                             >
-                              <span className="material-symbols-outlined text-sm">visibility</span>
+                              <span className="material-symbols-outlined text-sm text-[#5483B3] group-hover:text-white transition-colors">visibility</span>
                               <span>Ver</span>
                             </Link>
                           )}
@@ -1092,10 +1034,10 @@ export default function Home() {
                 <Link
                   id="link-dash-prioritario-abrir-balcao"
                   href="/ordens-de-servico/fila"
-                  className="font-bold text-[#052659] hover:underline flex items-center gap-1"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-[#052659] hover:text-white bg-[#F0F6FC] hover:bg-[#052659] border border-[#C1E8FF] hover:border-[#052659] transition-all shadow-2xs group cursor-pointer"
                 >
                   <span>Abrir Balcão Completo</span>
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  <span className="material-symbols-outlined text-sm text-[#5483B3] group-hover:text-white group-hover:translate-x-0.5 transition-all">arrow_forward</span>
                 </Link>
               </div>
             </div>
@@ -1181,196 +1123,6 @@ export default function Home() {
                   <span>Pedir</span>
                   <span className="material-symbols-outlined text-sm">arrow_forward</span>
                 </Link>
-              </div>
-            </div>
-          </section>
-        ) : (
-          /* CONSULTOR: ACOMPANHAMENTO PRIORITÁRIO + SLA DOS LABORATÓRIOS (ESSENCIAL P/ ATENDIMENTO) */
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Column: Acompanhamento Prioritário de Balcão (7 cols) */}
-            <div className="lg:col-span-7 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#F0F6FC] gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#052659]">notifications_active</span>
-                  <h2 className="text-base font-bold text-[#052659]">Acompanhamento Prioritário de Balcão</h2>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200">
-                    1 Atraso Crítico
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    1 Pronto Entrega
-                  </span>
-                </div>
-              </div>
-
-              {/* Compact Clinical Worklist Table */}
-              <div className="mt-3 overflow-x-auto border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-2xs">
-                <table id="table-dash-consultor-prioritarias" className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="h-9 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF]/80 uppercase">
-                      <th className="px-3">OS</th>
-                      <th className="px-3">Cliente / Paciente</th>
-                      <th className="px-3">Prescrição / Lente</th>
-                      <th className="px-2 text-center">Etapa Atual</th>
-                      <th className="px-2 text-center">Prazo</th>
-                      <th className="px-3 text-right">Ação</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#F0F6FC]">
-                    {priorityOrders.map((order) => (
-                      <tr key={order.id} className="h-12 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
-                        <td className="px-3 font-mono font-bold text-[#052659]">#{order.id}</td>
-                        <td className="px-3 font-medium text-[#052659]">
-                          <div className="flex items-center gap-1.5">
-                            <span>{order.cliente}</span>
-                            {order.prioridade === "VIP" && (
-                              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-purple-100 text-purple-800 border border-purple-200">
-                                VIP
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-3 text-[#5483B3] truncate max-w-[180px]">{order.tipo}</td>
-                        <td className="px-2 text-center">
-                          <span
-                            className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${
-                              order.etapaType === "success"
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                : order.etapaType === "warning"
-                                ? "bg-amber-50 text-amber-700 border-amber-200"
-                                : "bg-blue-50 text-blue-700 border-blue-200"
-                            }`}
-                          >
-                            {order.etapa}
-                          </span>
-                        </td>
-                        <td className="px-2 text-center">
-                          <span
-                            className={`font-mono font-semibold text-[11px] ${
-                              order.atrasoType === "danger"
-                                ? "text-red-600 font-bold"
-                                : order.atrasoType === "warning"
-                                ? "text-amber-600 font-bold"
-                                : "text-emerald-700"
-                            }`}
-                          >
-                            {order.atraso}
-                          </span>
-                        </td>
-                        <td className="px-3 text-right">
-                          {order.etapa === "Pronto Retirada" ? (
-                            <Link
-                              id={`btn-dash-consultor-prioritaria-avisar-${order.id}`}
-                              href={`/ordens-de-servico/notificar-whatsapp?id=${order.id}`}
-                              className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs inline-flex items-center gap-1 transition-colors"
-                            >
-                              <span className="material-symbols-outlined text-sm">chat</span>
-                              <span>Avisar</span>
-                            </Link>
-                          ) : (
-                            <Link
-                              id={`btn-dash-consultor-prioritaria-ver-${order.id}`}
-                              href={`/ordens-de-servico/fila?destaque=${order.id}`}
-                              className="px-2.5 py-1 rounded border border-[#7DA0CA]/60 hover:bg-[#F0F6FC] text-[#052659] font-bold text-xs inline-flex items-center gap-1 transition-colors"
-                            >
-                              <span className="material-symbols-outlined text-sm">visibility</span>
-                              <span>Ver</span>
-                            </Link>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="mt-3 pt-2 border-t border-[#F0F6FC] flex items-center justify-between text-xs">
-                <span className="text-[#5483B3]">Prioridade máxima para pacientes aguardando</span>
-                <Link
-                  id="link-dash-consultor-abrir-fila-bottom"
-                  href="/ordens-de-servico/fila"
-                  className="font-bold text-[#052659] hover:underline flex items-center gap-1"
-                >
-                  <span>Abrir Fila Completa</span>
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right Column: SLA dos Laboratórios Externos (5 cols - Essencial para o Consultor passar prazos) */}
-            <div className="lg:col-span-5 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-[#F0F6FC]">
-                  <div>
-                    <h2 className="text-base font-bold text-[#052659]">Prazos &amp; SLA dos Laboratórios</h2>
-                    <p className="text-xs text-[#5483B3]">Consulta rápida para promessa de entrega ao cliente</p>
-                  </div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#C1E8FF] text-[#052659]">
-                    PRODUÇÃO
-                  </span>
-                </div>
-
-                <div className="mt-3 overflow-x-auto border border-[#C1E8FF]/60 rounded-xl overflow-hidden shadow-2xs">
-                  <table id="table-dash-consultor-sla-labs" className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="h-9 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF]/80 uppercase">
-                        <th className="px-3">Laboratório</th>
-                        <th className="px-2 text-center">Prazo Médio</th>
-                        <th className="px-2 text-center">Pontualidade</th>
-                        <th className="px-3 text-right">Contato</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#F0F6FC]">
-                      {labs.map((lab) => (
-                        <tr key={lab.nome} className="h-12 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
-                          <td className="px-3 font-semibold text-[#052659]">
-                            <div className="flex items-center gap-1.5">
-                              <span
-                                className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                                  lab.status === "atraso" ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
-                                }`}
-                              ></span>
-                              <div className="truncate max-w-[130px]">{lab.nome}</div>
-                            </div>
-                          </td>
-                          <td className="px-2 text-center font-mono font-bold text-[#052659]">
-                            {lab.sla}
-                          </td>
-                          <td className="px-2 text-center">
-                            <span
-                              className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold border ${
-                                lab.status === "atraso"
-                                  ? "bg-amber-50 text-amber-700 border-amber-200"
-                                  : "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              }`}
-                            >
-                              {lab.pontualidade}
-                            </span>
-                          </td>
-                          <td className="px-3 text-right">
-                            <a
-                              href={`https://wa.me/55${lab.contato}?text=Ol%C3%A1%2C%20gostaria%20de%20consultar%20o%20prazo%20de%20uma%20OS.`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-1 rounded-lg hover:bg-[#F0F6FC] text-[#5483B3] hover:text-emerald-600 transition-colors inline-block"
-                              title="Contato via WhatsApp"
-                            >
-                              <span className="material-symbols-outlined text-base">chat</span>
-                            </a>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div className="mt-4 p-3 bg-[#F0F6FC] rounded-xl border border-[#C1E8FF]/60 flex items-center justify-between text-xs text-[#5483B3]">
-                <div className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-sm text-[#052659]">info</span>
-                  <span>Oriente o cliente sempre com +1 dia útil de margem de montagem.</span>
-                </div>
               </div>
             </div>
           </section>

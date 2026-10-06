@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useToast } from "@/components/ToastProvider";
+import PageHeader from "@/components/PageHeader";
 
 interface OSDetalhe {
   id: string;
@@ -129,43 +130,39 @@ function DetalheOSContent() {
 
   return (
     <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-28 text-[#021024]">
-      {/* Top Bar Contextual */}
-      <div className="bg-[#FFFFFF] border-b border-[#7DA0CA] px-4 sm:px-6 lg:px-8 py-4">
-        <div className="max-w-[1500px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-xs text-[#5483B3] font-medium">
-              <Link id="link-os-detalhe-voltar-fila" href="/ordens-de-servico/fila" className="hover:underline flex items-center gap-1 text-[#052659]">
-                <span className="material-symbols-outlined text-[15px]">arrow_back</span>
-                Fila de Laboratório
-              </Link>
-              <span>/</span>
-              <span>OS #{os.id}</span>
-            </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#052659]">
-                Ordem de Serviço #{os.id} — {os.cliente}
-              </h1>
-              <span
-                className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
-                  os.statusBadgeTipo === "danger"
-                    ? "bg-[#FEF2F2] text-[#B91C1C] border-[#F87171]"
-                    : os.statusBadgeTipo === "warning"
-                    ? "bg-[#FFFBEB] text-[#B45309] border-[#FCD34D]"
-                    : "bg-[#EFF6FF] text-[#1D4ED8] border-[#93C5FD]"
-                }`}
-              >
-                {os.statusBadge}
-              </span>
-            </div>
-            <div className="flex items-center gap-3 text-xs text-slate-600">
-              <span>Criada em: <strong>{os.dataAbertura}</strong></span>
-              <span>•</span>
-              <span>Promessa de Entrega: <strong className="text-rose-700">{os.prometido}</strong></span>
-              <span>•</span>
-              <span>CPF: <span className="font-mono">{os.cpf}</span></span>
-            </div>
+      {/* 1. CABEÇALHO PADRONIZADO DA TELA */}
+      <PageHeader
+        id="header-os-detalhes"
+        icon="visibility"
+        title={`Ordem de Serviço #${os.id} — ${os.cliente}`}
+        badge={
+          <span
+            className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+              os.statusBadgeTipo === "danger"
+                ? "bg-rose-50 text-rose-800 border-rose-300"
+                : os.statusBadgeTipo === "warning"
+                ? "bg-amber-50 text-amber-800 border-amber-300"
+                : "bg-[#EFF6FF] text-[#1D4ED8] border-[#93C5FD]"
+            }`}
+          >
+            {os.statusBadge}
+          </span>
+        }
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: "Fila de Laboratório", href: "/ordens-de-servico/fila", id: "link-os-detalhe-voltar-fila" },
+          { label: `OS #${os.id}` },
+        ]}
+        subtitle={
+          <div className="flex items-center gap-3 text-xs text-[#5483B3] flex-wrap">
+            <span>Criada em: <strong className="text-[#052659]">{os.dataAbertura}</strong></span>
+            <span>•</span>
+            <span>Promessa de Entrega: <strong className="text-rose-700">{os.prometido}</strong></span>
+            <span>•</span>
+            <span>CPF: <span className="font-mono text-[#052659]">{os.cpf}</span></span>
           </div>
-
+        }
+        actions={
           <div className="flex items-center gap-2.5 flex-wrap">
             <button
               id="btn-os-detalhe-imprimir-job-ticket"
@@ -176,10 +173,10 @@ function DetalheOSContent() {
                   icon: "print",
                 })
               }
-              className="px-3.5 py-2 rounded border border-[#7DA0CA] bg-[#FFFFFF] hover:bg-[#F0F6FC] text-[#052659] text-xs font-semibold transition-colors inline-flex items-center gap-1.5"
+              className="h-9 px-3.5 inline-flex items-center gap-1.5 rounded-xl border border-[#7DA0CA] bg-white hover:bg-[#F0F6FC] text-[#052659] text-xs font-bold transition-all shadow-2xs cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[16px]">print</span>
-              Job Ticket (Bandeja)
+              <span className="material-symbols-outlined text-[16px] text-[#5483B3]">print</span>
+              <span>Job Ticket (Bandeja)</span>
             </button>
             <button
               id="btn-os-detalhe-concluir-montagem"
@@ -191,14 +188,14 @@ function DetalheOSContent() {
                   icon: "fact_check",
                 });
               }}
-              className="px-4 py-2 rounded bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-colors shadow-xs inline-flex items-center gap-1.5"
+              className="h-9 px-4 inline-flex items-center gap-1.5 rounded-xl bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
             >
               <span className="material-symbols-outlined text-[16px]">check_circle</span>
-              Concluir Montagem
+              <span>Concluir Montagem</span>
             </button>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {apontamentoConcluido && (

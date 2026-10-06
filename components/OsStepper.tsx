@@ -47,7 +47,7 @@ export default function OsStepper({
                 isActive
                   ? "bg-[#052659] text-white font-bold shadow-xs"
                   : isPast
-                  ? "text-emerald-700 hover:bg-emerald-50 font-medium cursor-pointer"
+                  ? "text-slate-700 hover:bg-slate-200/60 font-medium cursor-pointer"
                   : isAccessible
                   ? "text-slate-600 hover:bg-white font-medium cursor-pointer"
                   : "text-slate-400 opacity-50 cursor-not-allowed"
@@ -58,7 +58,7 @@ export default function OsStepper({
                   isActive
                     ? "bg-white text-[#052659]"
                     : isPast
-                    ? "bg-emerald-600 text-white"
+                    ? "bg-slate-600 text-white"
                     : "border border-slate-300 text-slate-500"
                 }`}
               >
@@ -83,7 +83,7 @@ export default function OsStepper({
             {idx < steps.length - 1 && (
               <div
                 className={`w-3 sm:w-4 h-0.5 rounded-full transition-colors shrink-0 ${
-                  currentStep > step ? "bg-emerald-400" : "bg-[#7DA0CA]/30"
+                  currentStep > step ? "bg-slate-400" : "bg-slate-200"
                 }`}
               />
             )}

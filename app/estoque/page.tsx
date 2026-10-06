@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useOperator } from "@/hooks/useOperator";
 import { useToast } from "@/components/ToastProvider";
+import PageHeader from "@/components/PageHeader";
+import KpiCard from "@/components/KpiCard";
 
 interface FrameItem {
   id: string;
@@ -310,124 +312,173 @@ export default function EstoquePage() {
   }, [catalogItems, activeTab]);
 
   return (
-    <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-4 sm:gap-6">
-      {/* 1. CABEÇALHO DA TELA & BOTÕES DE AÇÃO (SEM KPIS PARA MAXIMIZAR ESPAÇO) */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-outline-variant p-5 rounded-xl shadow-xs">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-primary tracking-tight">Catálogo de Estoque Livre</h1>
-            <span className="px-2 py-0.5 bg-surface-container text-primary font-mono-data text-xs font-semibold rounded-md border border-outline-variant">
-              KARDEX LIVRE
-            </span>
-          </div>
-          <p className="text-sm text-secondary mt-1">
-            Visão operacional de inventário disponível para venda e montagem em laboratório
-          </p>
-        </div>
-
-        {/* Botões de Ação Alinhados à Direita */}
-        <div className="flex flex-wrap items-center gap-2.5 self-end md:self-auto">
-          <button
-            id="btn-estoque-exportar-excel"
-            type="button"
-            onClick={() =>
-              toast.success("Relatório de inventário do estoque livre exportado com sucesso (XLSX).", {
-                title: "Exportação Concluída",
-                icon: "table_view",
-              })
-            }
-            className="h-9 px-3.5 rounded-lg border border-outline-variant bg-white text-on-surface hover:bg-slate-50 transition-colors text-xs font-semibold flex items-center gap-2 shadow-xs cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[18px] text-secondary">table_view</span>
-            Exportar Excel
-          </button>
-
-          {/* Botão de Cadastro Rápido de Novo Produto */}
-          <button
-            id="btn-estoque-novo-produto"
-            type="button"
-            onClick={handleOpenNewProductModal}
-            className="h-9 px-3.5 rounded-lg bg-[#5483B3] hover:bg-[#052659] text-white transition-colors text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[18px]">add_box</span>
-            + Novo Produto
-          </button>
-
-          {/* Link para Entrada por NF-e */}
-          <Link
-            id="btn-estoque-nova-entrada"
-            href="/kardex/entrada-nfe"
-            className="h-9 px-4 rounded-lg bg-[#052659] hover:bg-[#021024] text-white transition-colors text-xs font-bold flex items-center gap-2 shadow-xs cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[18px]">receipt_long</span>
-            + Entrada NF-e XML
-          </Link>
-        </div>
-      </div>
-
-      {/* 2. BARRA DE CONTROLE: ABAS DE CATEGORIA + BARRA DE BUSCA ULTRA LARGA */}
-      <div className="bg-white border border-outline-variant rounded-xl p-4 flex flex-col gap-4 shadow-xs">
-        {/* Abas de Categoria + Última Conciliação */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/60 pb-3">
-          <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-20 text-[#021024]">
+      {/* 1. CABEÇALHO PADRONIZADO DA TELA */}
+      <PageHeader
+        id="header-estoque-catalogo"
+        icon="inventory_2"
+        title="Catálogo de Estoque Livre"
+        badge={
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#052659] text-white font-mono text-xs font-bold rounded-full border border-[#052659] shadow-2xs">
+            <span className="material-symbols-outlined text-[13px] text-[#C1E8FF]">inventory_2</span>
+            <span>KARDEX LIVRE</span>
+          </span>
+        }
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: "Estoque & Logística" },
+          { label: "Catálogo Livre" },
+        ]}
+        subtitle="Visão operacional de inventário disponível para venda e montagem em laboratório"
+        actions={
+          <>
             <button
-              id="tab-estoque-armacoes"
-              onClick={() => setActiveTab("armacoes")}
-              className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2.5 transition-colors ${
-                activeTab === "armacoes"
-                  ? "bg-surface-container text-primary border-b-2 border-primary-container"
-                  : "text-secondary hover:text-on-surface hover:bg-surface-container-low"
-              }`}
+              id="btn-estoque-exportar-excel"
+              type="button"
+              onClick={() =>
+                toast.success("Relatório de inventário do estoque livre exportado com sucesso (XLSX).", {
+                  title: "Exportação Concluída",
+                  icon: "table_view",
+                })
+              }
+              className="h-9 px-3.5 rounded-xl bg-[#5483B3] hover:bg-[#052659] text-white transition-all text-xs font-bold flex items-center gap-2 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 cursor-pointer ring-2 ring-[#5483B3]/25"
             >
-              <span>Armações</span>
-              <span className={`px-2 py-0.5 rounded-full text-xs font-mono font-semibold ${
-                activeTab === "armacoes" ? "bg-primary-container text-on-primary" : "bg-slate-100 text-slate-600"
-              }`}>
-                {counts.armacoes}
-              </span>
+              <span className="material-symbols-outlined text-[17px] text-white">table_view</span>
+              <span>Exportar Excel</span>
             </button>
 
             <button
-              id="tab-estoque-lentes"
-              onClick={() => setActiveTab("lentes")}
-              className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2.5 transition-colors ${
-                activeTab === "lentes"
-                  ? "bg-surface-container text-primary border-b-2 border-primary-container"
-                  : "text-secondary hover:text-on-surface hover:bg-surface-container-low"
-              }`}
+              id="btn-estoque-novo-produto"
+              type="button"
+              onClick={handleOpenNewProductModal}
+              className="h-9 px-3.5 rounded-xl bg-[#5483B3] hover:bg-[#052659] text-white transition-all text-xs font-bold flex items-center gap-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 cursor-pointer ring-2 ring-[#5483B3]/20"
             >
-              <span>Lentes Prontas</span>
-              <span className={`px-2 py-0.5 rounded-full text-xs font-mono font-semibold ${
-                activeTab === "lentes" ? "bg-primary-container text-on-primary" : "bg-slate-100 text-slate-600"
-              }`}>
-                {counts.lentes}
-              </span>
+              <span className="material-symbols-outlined text-[18px]">add_box</span>
+              <span>+ Novo Produto</span>
             </button>
 
-            <button
-              id="tab-estoque-contato"
-              onClick={() => setActiveTab("contato")}
-              className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2.5 transition-colors ${
-                activeTab === "contato"
-                  ? "bg-surface-container text-primary border-b-2 border-primary-container"
-                  : "text-secondary hover:text-on-surface hover:bg-surface-container-low"
-              }`}
+            <Link
+              id="btn-estoque-nova-entrada"
+              href="/kardex/entrada-nfe"
+              className="h-9 px-4 rounded-xl bg-[#052659] hover:bg-[#021024] text-white transition-all text-xs font-bold flex items-center gap-2 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 cursor-pointer ring-2 ring-[#052659]/20"
             >
-              <span>Lentes de Contato</span>
-              <span className={`px-2 py-0.5 rounded-full text-xs font-mono font-semibold ${
-                activeTab === "contato" ? "bg-primary-container text-on-primary" : "bg-slate-100 text-slate-600"
-              }`}>
-                {counts.contato}
-              </span>
-            </button>
-          </div>
+              <span className="material-symbols-outlined text-[18px]">receipt_long</span>
+              <span>+ Entrada NF-e XML</span>
+            </Link>
+          </>
+        }
+      />
 
-          <div id="badge-estoque-ultima-conciliacao" className="flex items-center gap-2 text-secondary font-mono-data text-xs pr-1 whitespace-nowrap">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="material-symbols-outlined text-[16px] text-[#5483b3]">sync</span>
-            <span>Última conciliação: <strong className="text-primary font-mono">Hoje às 14:32:09</strong></span>
-          </div>
+      {/* 2. CONTEÚDO PRINCIPAL */}
+      <main className="max-w-7xl 2xl:max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* Faixa de Indicadores Rápidos de Estoque Livre (Unificada via KpiCard) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <KpiCard
+            id="card-estoque-total-armacoes"
+            title="Armações em Estoque"
+            value={counts.armacoes}
+            unit="modelos"
+            icon="eyeglasses"
+            trend={{ text: "8 itens em estoque livre", isPositive: true }}
+            footerLeft="Disponíveis para venda"
+            footerHref="#tab-estoque-armacoes"
+            footerActionLabel="Ver catálogo"
+          />
+          <KpiCard
+            id="card-estoque-lentes-prontas"
+            title="Lentes em Estoque"
+            value={counts.lentes}
+            unit="pares"
+            icon="lens"
+            trend={{ text: "Visão Simples & Antirreflexo", isNeutral: true }}
+            footerLeft="Prontas para montagem"
+          />
+          <KpiCard
+            id="card-estoque-alerta-critico"
+            title="Alerta de Reposição"
+            value="3"
+            unit="abaixo do mín."
+            icon="warning"
+            iconVariant="warning"
+            trend={{ text: "Reposição imediata", isNeutral: true }}
+            footerLeft="3 marcas sob demanda"
+            footerHref="/kardex/sugestoes-compra"
+            footerActionLabel="Comprar [F8]"
+          />
+          <KpiCard
+            id="card-estoque-valor-total"
+            title="Valor em Inventário"
+            value="R$ 18.420"
+            unit="custo"
+            icon="payments"
+            trend={{ text: "Margem média 52%", isPositive: true, icon: "trending_up" }}
+            footerLeft="Conciliação: Hoje"
+            footerRight={<span className="font-mono font-bold text-[#052659]">100% Auditado</span>}
+          />
         </div>
+        {/* BARRA DE CONTROLE: ABAS DE CATEGORIA + BARRA DE BUSCA ULTRA LARGA */}
+        <div className="bg-white border border-[#C1E8FF] rounded-2xl p-5 flex flex-col gap-4 shadow-xs">
+          {/* Abas de Categoria + Última Conciliação */}
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#C1E8FF]/60 pb-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                id="tab-estoque-armacoes"
+                onClick={() => setActiveTab("armacoes")}
+                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors cursor-pointer ${
+                  activeTab === "armacoes"
+                    ? "bg-[#052659] text-white shadow-xs"
+                    : "text-[#5483B3] hover:text-[#052659] hover:bg-[#F0F6FC]"
+                }`}
+              >
+                <span>Armações</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  activeTab === "armacoes" ? "bg-white/20 text-white" : "bg-[#F0F6FC] text-[#5483B3] border border-[#C1E8FF]"
+                }`}>
+                  {counts.armacoes}
+                </span>
+              </button>
+
+              <button
+                id="tab-estoque-lentes"
+                onClick={() => setActiveTab("lentes")}
+                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors cursor-pointer ${
+                  activeTab === "lentes"
+                    ? "bg-[#052659] text-white shadow-xs"
+                    : "text-[#5483B3] hover:text-[#052659] hover:bg-[#F0F6FC]"
+                }`}
+              >
+                <span>Lentes Prontas</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  activeTab === "lentes" ? "bg-white/20 text-white" : "bg-[#F0F6FC] text-[#5483B3] border border-[#C1E8FF]"
+                }`}>
+                  {counts.lentes}
+                </span>
+              </button>
+
+              <button
+                id="tab-estoque-contato"
+                onClick={() => setActiveTab("contato")}
+                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-colors cursor-pointer ${
+                  activeTab === "contato"
+                    ? "bg-[#052659] text-white shadow-xs"
+                    : "text-[#5483B3] hover:text-[#052659] hover:bg-[#F0F6FC]"
+                }`}
+              >
+                <span>Lentes de Contato</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  activeTab === "contato" ? "bg-white/20 text-white" : "bg-[#F0F6FC] text-[#5483B3] border border-[#C1E8FF]"
+                }`}>
+                  {counts.contato}
+                </span>
+              </button>
+            </div>
+
+            <div id="badge-estoque-ultima-conciliacao" className="flex items-center gap-2 text-[#5483B3] font-mono text-xs pr-1 whitespace-nowrap">
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span className="material-symbols-outlined text-[16px] text-[#5483B3]">sync</span>
+              <span>Última conciliação: <strong className="text-[#052659] font-mono">Hoje às 14:32:09</strong></span>
+            </div>
+          </div>
 
         {/* Barra de Busca Full-Width + Atalhos + Filtros */}
         <div className="flex flex-col lg:flex-row items-center gap-3">
@@ -554,10 +605,10 @@ export default function EstoquePage() {
                       key={item.id}
                       className={`transition-colors duration-150 cursor-default ${
                         isCritical
-                          ? "bg-rose-50/70 hover:bg-rose-100/70 border-l-4 border-l-rose-600"
+                          ? "bg-amber-50/30 hover:bg-amber-50/60 border-l-3 border-l-amber-500"
                           : isZero
-                          ? "bg-slate-50/80 hover:bg-slate-100/80 opacity-80"
-                          : "hover:bg-[#C1E8FF]/15 bg-white"
+                          ? "bg-slate-50/80 hover:bg-slate-100/80 opacity-70"
+                          : "hover:bg-slate-50 bg-white"
                       }`}
                     >
                       <td className="px-4 py-4 text-center whitespace-nowrap">
@@ -570,16 +621,24 @@ export default function EstoquePage() {
                         />
                       </td>
 
-                      <td className="px-4 py-4 font-mono-data font-semibold text-primary whitespace-nowrap">
-                        {item.sku}
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <Link
+                          id={`link-estoque-sku-${item.id}`}
+                          href={`/kardex?sku=${item.sku}`}
+                          className="font-mono font-bold text-xs text-[#052659] hover:text-white bg-[#F0F6FC] hover:bg-[#052659] px-2.5 py-1 rounded-lg border border-[#C1E8FF] hover:border-[#052659] transition-all inline-flex items-center gap-1 shadow-2xs hover:shadow-xs group cursor-pointer"
+                          title="Inspecionar no Kardex"
+                        >
+                          <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white transition-colors">qr_code</span>
+                          <span>{item.sku}</span>
+                        </Link>
                       </td>
 
                       <td className="px-4 py-4 font-bold text-on-surface whitespace-nowrap">
                         <div className="flex items-center gap-1.5">
                           <span>{item.marca}</span>
                           {isCritical && (
-                            <span className="material-symbols-outlined text-rose-600 text-[18px]" title="Reposição urgente!">
-                              priority_high
+                            <span className="material-symbols-outlined text-amber-600 text-[16px]" title="Ponto de pedido atingido">
+                              info
                             </span>
                           )}
                         </div>
@@ -600,25 +659,25 @@ export default function EstoquePage() {
                       {/* DESTAQUE VISUAL DE QUANTIDADE 1 OU 0 */}
                       <td className="px-4 py-4 text-right whitespace-nowrap">
                         {isCritical ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-rose-600 text-white font-mono-data text-xs font-bold shadow-xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
-                            1 un - Crítico / Repor
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-300 font-mono text-xs font-bold shadow-2xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
+                            1 un (Crítico)
                           </span>
                         ) : isZero ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-rose-100 text-rose-800 border border-rose-200 font-mono-data text-xs font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-800 border border-rose-200 font-mono text-xs font-bold shadow-2xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                             0 un (Esgotado)
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 font-mono-data font-semibold text-slate-800">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-900 border border-emerald-200 font-mono text-xs font-bold shadow-2xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
                             {item.qtd} un
                           </span>
                         )}
                       </td>
 
                       <td className={`px-4 py-4 text-right font-mono-data font-semibold whitespace-nowrap ${
-                        isZero ? "line-through text-slate-400" : isCritical ? "font-bold text-rose-950" : "text-slate-800"
+                        isZero ? "line-through text-slate-400" : isCritical ? "font-bold text-slate-900" : "text-slate-800"
                       }`}>
                         R$ {item.preco.toFixed(2).replace(".", ",")}
                       </td>
@@ -629,7 +688,7 @@ export default function EstoquePage() {
                             R$ {item.custo?.toFixed(2).replace(".", ",") || "—"}
                           </td>
                           <td className="px-4 py-4 text-center whitespace-nowrap">
-                            <span className="px-2 py-0.5 rounded text-xs font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold font-mono bg-[#F0F6FC] text-[#052659] border border-[#C1E8FF] shadow-2xs">
                               {item.margem || "—"}
                             </span>
                           </td>
@@ -640,11 +699,11 @@ export default function EstoquePage() {
                         <Link
                           id={`link-estoque-kardex-${item.id}`}
                           href="/kardex"
-                          className="h-8 px-3 rounded-lg border border-outline-variant bg-white hover:bg-primary-container hover:text-on-primary text-primary text-xs font-semibold transition-all inline-flex items-center gap-1.5 shadow-2xs"
+                          className="h-8 px-3 rounded-lg bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 group cursor-pointer"
                           title="Ver movimentações no Kardex"
                         >
-                          <span className="material-symbols-outlined text-[15px]">manage_search</span>
-                          Kardex
+                          <span className="material-symbols-outlined text-[15px] text-[#5483B3] group-hover:text-white transition-colors">manage_search</span>
+                          <span>Kardex</span>
                         </Link>
                       </td>
                     </tr>
@@ -997,5 +1056,6 @@ export default function EstoquePage() {
         </div>
       )}
     </main>
+    </div>
   );
 }

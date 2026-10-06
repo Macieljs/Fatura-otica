@@ -468,6 +468,319 @@ Com base no relatório de consultoria de UX/UI, implementar uma elevação visua
 
 ---
 
+### 🎨 Sprint 17: Governança Visual, Despoluição Cromática & Separação Arquitetural do Kardex
+
+**Status:** Concluído (Entregue na Sprint 17 & Validado no DoD).
+
+**Motivação:**
+Após feedback dos usuários e Product Owner sobre fadiga visual causada por excesso simultâneo de cores concorrentes (badges de status multicoloridos, 15 botões verdes repetitivos de WhatsApp por tela, cards destoantes no Dashboard) e pela sobrecarga cognitiva no Kardex (mistura indevida do extrato de movimentações com tabelas de compras), foi estabelecida a governança visual rigorosa para resgatar a elegância clínica, a paleta oficial azul e o foco funcional de cada tela.
+
+**Especificação Técnica:**
+1. **Reativação da Identidade da Paleta Azul nos Cabeçalhos Estruturais:**
+   - **Âncoras de Marca:** Aplicação consistente dos tokens Deep Navy (`#052659`), Cerulean (`#5483B3`), Sky Accent (`#7DA0CA`), Crystal Ice (`#C1E8FF`) e Ice Surface (`#F0F6FC`) nos Breadcrumbs, títulos `h1`, badges de contagem e botões de ação nas rotas de Balcão e Kardex.
+   - **Cabeçalhos de Tabelas (`<thead>`):** Fundo suave `#F0F6FC`, borda divisória `#C1E8FF` e rótulos em caixa alta com `#052659` font-bold.
+2. **Padronização dos Indicadores de Balcão no Dashboard (`app/page.tsx`):**
+   - Harmonização visual do card "Prontos p/ Retirada": ícone superior e número principal em Deep Navy (`#052659`), eliminando o verde excessivo que quebrava o padrão dos outros 5 cards de KPI.
+   - Micro-indicador discreto com ponto verde de 1.5px e texto `#5483B3`.
+3. **Separação Arquitetural e Limpeza do Kardex (`app/kardex/page.tsx`):**
+   - **Remoção da Tabela de Compras:** Eliminado o bloco amarelo de reposição em lote da tela do Kardex, centralizando a rotina de compras na rota dedicada `/kardex/sugestoes-compra`.
+   - **Destaque Cromático Apenas nas Setas Direcionais:**
+     - Entrada (`↓`): Seta em verde esmeralda (`text-emerald-600`), texto em neutro de alto contraste (`text-slate-800`).
+     - Saída (`↑`): Seta em coral/rose suave (`text-rose-500`), texto em neutro (`text-slate-800`).
+     - Ajuste/Avaria (`⇄`): Ícone direcional em âmbar (`text-amber-500`), texto em neutro (`text-slate-800`).
+   - Cards superiores do Kardex simplificados em 4 KPIs (SKUs Ativos, Entradas NF-e, Saídas Balcão/OS e Ponto de Reposição com link direto).
+4. **Governança de IDs Semânticos & Responsividade:**
+   - 100% dos elementos interativos preservam IDs únicos conforme `semantic-ids.md`.
+   - Layouts com suporte a telas de balcão (1366px) até Ultrawide (2560px).
+
+**Critérios de Aceite:**
+- [x] Cabeçalhos, breadcrumbs e ações restaurados com a paleta oficial de azuis (#052659, #5483B3, #7DA0CA, #C1E8FF).
+- [x] Tabela de compras e checkboxes removidos de `/kardex`, deixando a tela 100% focada no Ledger de movimentações.
+- [x] Cor semântica na coluna Operação do Kardex restrita estritamente às setas direcionais, sem badges coloridos pesados.
+- [x] Card de Prontos p/ Retirada no Dashboard harmonizado com Deep Navy (#052659).
+- [x] 100% de conformidade com IDs semânticos únicos (`semantic-ids.md`).
+- [x] `npm run build` executado com Exit Code 0 (15 rotas estáticas pré-renderizadas sem erros).
+
+---
+
+### 📐 Sprint 18: Padronização de Tabelas pelo Padrão Ouro do Catálogo & Despoluição do Dashboard
+
+**Status:** Concluído (Entregue na Sprint 18 & Validado no DoD).
+
+**Motivação:**
+Com o crescimento das funcionalidades de balcão e gestão, algumas tabelas do sistema apresentavam tipografia excessivamente reduzida (`text-xs`), densidade claustrofóbica e sobrecarga de informações duplicadas no Dashboard (seção redundante para o perfil Consultor). Foi solicitada a padronização global com base na tabela de Catálogo de Estoque (`/estoque`), reconhecida pelo usuário como a mais legível, visual e clara do sistema.
+
+**Especificação Técnica:**
+1. **Padronização Global pelo Modelo Ouro do Catálogo (`/estoque`):**
+   - **Tipografia:** Dados primários de títulos, clientes e produtos padronizados em `text-sm` (14px font-bold/font-semibold), metadados secundários em `text-xs font-mono` (`#5483B3` / `#7DA0CA`), e cabeçalhos em `text-[11px] font-bold uppercase` com `bg-[#F0F6FC]` e borda `#C1E8FF`.
+   - **Espaçamento e Respiração de Linhas:** Altura padronizada de linhas (`py-3.5` a `py-4`, ~56px), eliminando sensação de aperto e proporcionando leitura ágil em telas de balcão.
+   - **Status Discretos com Indicador Ponto:** Substituição de caixas sólidas coloridas por pontos semânticos (`w-2 h-2 rounded-full`) acompanhados de rótulo tipográfico legível e sutil.
+   - **Ações de Balcão:** Botões refinados com cantos arredondados (`rounded-xl`), altura confortável (`h-8` a `h-8.5`), com alto contraste e respeito estrito à paleta azul oficial.
+2. **Despoluição Operacional do Dashboard (`app/page.tsx`):**
+   - No perfil **Consultor de Balcão**, eliminação da Seção 3 duplicada que repetia ordens atrasadas/prontas e tabelas de SLA de laboratórios sob a Seção 2.
+   - Foco total nas Minhas Ordens Ativas (Seção 2) com tabela ampla, tipografia `text-sm`, status limpos e botões diretos de "Notificar WhatsApp", "Validar DNP" e "Ficha Técnica".
+   - No perfil **Gerente**, Seção 3 mantida e padronizada com o novo layout `text-sm` e `py-3.5`.
+3. **Harmonização da Fila de Produção (`app/ordens-de-servico/fila/page.tsx`):**
+   - Tabela `table-fila-producao` elevada de `text-xs` para `text-sm`.
+   - Nomes de pacientes em `text-sm font-bold text-[#052659]`.
+   - Armações e lentes com tipografia respirada e botões de ação em pílula `rounded-xl`.
+4. **Harmonização do Extrato e Cards Executivos do Kardex (`app/kardex/page.tsx`):**
+   - **Cards de KPI com Vida e Presença Executiva:** Substituição dos mini-cards horizontais compactos por 4 cards executivos verticais no mesmo formato do Dashboard (`p-5`), métrica proeminente (`text-3xl font-mono font-bold`), ícones em squircles suaves com gradiente (`from-[#F0F6FC] to-[#C1E8FF]/50`, `from-emerald-50`, `from-amber-50`), micro-indicadores dinâmicos de tendência (`+18 novos itens`, `12 notas fiscais importadas`, `Abaixo do estoque de segurança`) e rodapés com links de ação direta (*Ver estoque*, *Importar XML*, *Ver fila OS*, *Pedir agora*).
+   - **Ledger de Movimentações:** Tabela `table-kardex-ledger-movimentacoes` ajustada para `py-3.5` em todas as células, com descrição do SKU em `text-sm font-bold text-[#052659]` e saldo em destaque mono.
+5. **Governança de IDs Semânticos & Compilação:**
+   - 100% de conformidade com IDs semânticos únicos (`semantic-ids.md`).
+   - `npm run build` executado com Exit Code 0 (15 rotas estáticas pré-renderizadas).
+
+**Critérios de Aceite:**
+- [x] Tabela de Fila de Produção e Dashboard Consultor promovidas para tipografia `text-sm` com padding `py-3.5`.
+- [x] Seção 3 duplicada do Dashboard despoluída no perfil Consultor, eliminando redundância visual.
+- [x] Tabela do Kardex com espaçamento generoso `py-3.5` e alinhamento visual com o padrão Catálogo.
+- [x] Cards superiores do Kardex ampliados e enriquecidos com a mesma estrutura vertical, presença executiva e dinamismo do Dashboard.
+- [x] Identidade visual da paleta azul da aplicação preservada sem perda de sofisticação (avaliada por UX).
+- [x] 100% de conformidade com IDs semânticos únicos.
+- [x] Compilação estática de produção bem-sucedida sem erros (`npm run build`).
+
+---
+
+### 📱 Sprint 19: Estúdio Interativo de Comunicação WhatsApp & Simulador Conversacional Vivo
+
+**Status:** Concluído (Entregue na Sprint 19 & Validado no DoD).
+
+**Motivação:**
+A tela de Notificação WhatsApp (`/ordens-de-servico/notificar-whatsapp`) apresentava uma visualização estática e desprovida de dinamismo, limitando a capacidade da consultora de balcão de antecipar a experiência real do paciente. O usuário solicitou maior dinamismo, presença e vida para a interface.
+
+**Especificação Técnica:**
+1. **Simulador Conversacional WhatsApp Vivo (`app/ordens-de-servico/notificar-whatsapp/page.tsx`):**
+   - **Papel de Parede Autêntico:** Fundo autêntico WhatsApp (`#EFEAE2`) com textura sutil e divisor de data em chip flutuante.
+   - **Anexos Visuais Ricos no Chat:** Quando ativados os seletores digitais, a bolha de mensagem renderiza cards visuais ricos de verdade:
+     - **Card de Ticket QR Code:** Matriz escaneável com número da OS, gaveta e tag "VALIDADO" para bipe no balcão.
+     - **Card de Certificado Digital:** Card em PDF com escudo de autenticidade e validade de 12 meses.
+     - **Card de Guia de Higienização:** Manual prático de microfibra e água fria.
+   - **Simulação da Resposta do Paciente:** Toggle de simulação que insere uma bolha branca realista de resposta do paciente confirmando o horário de retirada na ótica.
+2. **Estúdio de Personalização com Alternância de Modo:**
+   - Abas de controle `[Simulador Visual]` e `[Personalizar Mensagem]`, permitindo que o operador customize o texto ou insira tags rápidas (`+ {cliente}`, `+ #{os}`, `+ {gaveta}`).
+3. **Barra de Troca Rápida de Ordem (Quick OS Switcher):**
+   - Pílulas interativas no topo para testar instantaneamente ordens com status distintos (`#10294 João`, `#10298 Maria`, `#10301 Carlos`, `#10280 Amanda`, `#10312 Renata`) sem depender de recarregar a URL.
+4. **Dossiê Clínico do Paciente com Indicador de Pulso:**
+   - Avatar com iniciais em gradiente Deep Navy, status com ponto pulsante (beacon dot), atalho de chat direto e cards dedicados para Armação, Lente e Saldo Restante.
+5. **Padronização da Tabela de Histórico de Envios:**
+   - Tabela promovida ao padrão Catálogo (`text-sm`, células em `py-3.5`, status de entrega com duplo check azul `done_all` e botão de Reenvio rápido).
+6. **Governança de IDs Semânticos & Compilação:**
+   - 100% de conformidade com IDs semânticos únicos (`semantic-ids.md`).
+   - `npm run build` executado com Exit Code 0 (15 rotas estáticas pré-renderizadas).
+
+**Critérios de Aceite:**
+- [x] Simulador WhatsApp transformado em experiência conversacional viva com papel de parede e bolhas com duplo check azul.
+- [x] Anexos digitais (QR Code de balcão e Certificado) renderizados como cards visuais ricos dentro da conversa.
+- [x] Funcionalidade de simulação de resposta do paciente integrada.
+- [x] Modo de edição rápida de texto com inserção de tags operacionais.
+- [x] Seletor rápido de OSs no topo para navegação dinâmica instantânea.
+- [x] Tabela de histórico de envios padronizada com o padrão ouro do Catálogo (`text-sm`, `py-3.5`).
+- [x] 100% de conformidade com IDs semânticos únicos.
+- [x] `npm run build` executado com Exit Code 0.
+
+---
+
+### 🌟 Sprint 20: Padronização Global da Micro-Animação de Elevação dos Cards (Hover Lift Effect)
+
+**Status:** Concluído (Entregue na Sprint 20 & Validado no DoD).
+
+**Motivação:**
+Após o aprimoramento dos cards executivos do Kardex na Sprint 18 com micro-animação de flutuação e elevação tátil no hover (`hover:-translate-y-0.5 hover:shadow-md hover:border-[#5483B3] transition-all duration-200` acompanhado de micro-zoom suave no ícone `group-hover:scale-105`), o usuário destacou a excelência da experiência sensorial e solicitou a padronização global desse comportamento para todos os cards operacionais e executivos do sistema.
+
+**Especificação Técnica:**
+1. **Padrão Sensorial Global Unificado:**
+   - **Container do Card:** `transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-[#5483B3] group` aplicado aos contêineres de cards, conferindo sensação tátil de física óptica e profundidade sutil sem quebra ou salto de layout (*zero layout shift*).
+   - **Ícone / Squircle Reativo:** `group-hover:scale-105 transition-transform duration-200` (ou `scale-110` para glifos inline), adicionando vida aos elementos visuais quando o cursor passa sobre o bloco.
+2. **Dashboard Geral & RBAC (`app/page.tsx`):**
+   - **6 Cards Gerenciais (Dr. Carlos Ramos):** Faturamento Hoje, Ticket Médio Geral, Aging Laboratórios, Saldo a Receber Balcão, Armações em Ruptura Crítica, Conversão Lentes + Armação.
+   - **4 Cards Operacionais do Consultor (Mariana Souza):** Minhas Vendas Hoje, Minhas OSs Ativas no Laboratório, Prontos p/ Retirada (Gavetas), Óculos Entregues Hoje.
+3. **Fila de Produção e Balcão (`app/ordens-de-servico/fila/page.tsx`):**
+   - **4 Cards de Topo Executivos:** Total Ordens em Aberto, Em Trânsito / Laboratório, Prontos p/ Retirada Balcão, Atrasadas / Cobrança Urgente.
+   - **Cards de Gavetas de Balcão (Kanban):** Cards individuais de gavetas de entrega (`#card-fila-gaveta-${item.id}`) atualizados com a elevação suave e borda azulada no hover.
+4. **Subtela WhatsApp (`app/ordens-de-servico/notificar-whatsapp/page.tsx`):**
+   - **Dossiê Clínico do Paciente:** Card de cabeçalho do paciente com avatar e dados de armação/lente integrado com a transição tátil de elevação.
+5. **Kardex — Sugestões de Compra (`app/kardex/sugestoes-compra/page.tsx`):**
+   - **4 Cards de Topo Atualizados:** Ruptura Crítica, Ponto de Pedido, Investimento Total e Lead Time Médio promovidos para o padrão executivo completo com squircles em gradiente, badges dinâmicos e micro-animação de hover lift.
+6. **Governança de IDs Semânticos & Compilação:**
+   - 100% de conformidade com IDs semânticos únicos (`semantic-ids.md`).
+   - `npm run build` executado com Exit Code 0 (15 rotas estáticas pré-renderizadas).
+   - Validação visual realizada no navegador com gravação em vídeo e capturas de tela.
+
+**Critérios de Aceite:**
+- [x] Padrão de hover lift suave (`hover:-translate-y-0.5 hover:shadow-md hover:border-[#5483B3]`) padronizado em todas as telas principais.
+- [x] Todos os 10 cards do Dashboard (visão Gerente e Consultor) animados de forma consistente.
+- [x] Cards executivos e cards de gavetas da Fila de Produção harmonizados.
+- [x] Cards de Sugestões de Compra do Kardex modernizados e elevados ao padrão do sistema.
+- [x] 100% de conformidade com IDs semânticos únicos mantidos.
+- [x] `npm run build` executado com Exit Code 0 sem warnings ou erros.
+- [x] Validação visual via browser recording e screenshots aprovada.
+
+---
+
+### 🎨 Sprint 21: Governança do Design System (AGENTS.md), Despoluição Visual & Padronização Sistêmica de Telas
+
+**Status:** Concluído (Entregue na Sprint 21 & Validado no DoD).
+
+**Motivação:**
+O usuário/PO pontuou a necessidade de alinhamento visual rigoroso entre as telas do sistema, alertando sobre a presença de poluição visual na tela de Notificação WhatsApp (excesso de emojis, gradientes extravagantes, molduras pesadas e excesso de informações fora do padrão da ferramenta). Além disso, cobrou a governança contínua do projeto com a alimentação formal do `AGENTS.md` para documentar grandes alterações e estabelecer padrões invioláveis de arquitetura e design, unificação de headers em todas as rotas e eliminação de inconsistências visuais em cards e ícones.
+
+**Especificação Técnica:**
+1. **Governança & Documentação Viva (`AGENTS.md`):**
+   - Criação e manutenção do `AGENTS.md` na raiz do repositório (`c:\Fatura-ótica\AGENTS.md`) e sincronização em `fatura-otica/AGENTS.md`.
+   - Definição formal do Design System **Clinical Precision Enterprise**:
+     - Paleta cromática estrita: Deep Navy (`#052659`), Active Cerulean (`#5483B3`), Soft Steel Blue (`#7DA0CA`), Clinical Ice Blue (`#C1E8FF`) e Background Neutro (`#F0F6FC`). Proibição expressa de cores arbitrárias (roxos, rosas, laranjas, neons).
+     - Proibição absoluta de emojis de brinquedo/infantis (`📍`, `⏰`, `🏷️`, `💳`, `🙏`, `👓`, etc.).
+     - Proibição de gradientes fora da identidade e texturas poluídas.
+     - Contrato de componentes: Page Header Standard (`PageHeader.tsx`), Card Hover Lift Standard, SelectableCard sem ícones decorativos forçados (`SelectableCard.tsx`) e Table Standard (modelo ouro do Catálogo).
+     - Regra inegociável de 100% de IDs semânticos únicos (`semantic-ids.md`).
+2. **Despoluição da Subtela WhatsApp (`app/ordens-de-servico/notificar-whatsapp/page.tsx`):**
+   - **Remoção de Emojis:** Todos os 4 modelos de mensagens oficiais limpos de emojis informais, utilizando marcadores clínicos discretos (`• Local de Retirada: ...`, `• Horário: ...`, `• OS: ...`).
+   - **Remoção de Gradientes:** Substituição de `bg-gradient-to-br from-emerald-50...` e degradês por blocos sólidos corporativos (`#052659` Deep Navy e `#F0F6FC`).
+   - **Visualizador Clínico Limpo:** Eliminação do padrão de papel de parede de pontos; container limpo em fundo neutro clínico (`bg-[#F8FAFC] border border-[#C1E8FF]`).
+   - **Anexos Compactos:** Substituição de caixas pretas pesadas de QR Code por barras compactas de validação de balcão.
+   - **Eliminação de Excesso de Informação:** Remoção do card de dicas redundante no rodapé.
+   - **Resposta Simulada Profissional:** Diálogo limpo e realista sem gírias ou emojis.
+3. **Padronização Sistêmica Unificada em 100% das Telas (`PageHeader.tsx`):**
+   - **Migração para PageHeader Global:**
+     - `/estoque`: Header migrado para `<PageHeader />` com breadcrumb `Dashboard / Estoque & Logística / Catálogo Livre`.
+     - `/kardex`: Header migrado para `<PageHeader />` com breadcrumbs e badge de versão.
+     - `/kardex/ajuste-manual`: Header migrado para `<PageHeader />`.
+     - `/kardex/entrada-nfe`: Header migrado para `<PageHeader />`.
+     - `/kardex/sugestoes-compra`: Header migrado para `<PageHeader />`.
+     - `/ordens-de-servico/fila`: Header migrado para `<PageHeader />`.
+     - `/ordens-de-servico/detalhes`: Header migrado para `<PageHeader />`.
+     - `/ordens-de-servico/notificar-whatsapp`: Header migrado para `<PageHeader />`.
+   - **Remoção de Gradientes e Padronização de Squircles de Ícones:**
+     - Squircles de cards executivos padronizados em `w-9 h-9 rounded-xl bg-[#F0F6FC] text-[#5483B3] border border-[#C1E8FF]` (sem gradientes carnavalescos).
+   - **Cartões de Seleção Limpos (`SelectableCard.tsx`):**
+     - Na Etapa 3 do Wizard de OS, cartões limpos e horizontais sem ícones decorativos forçados, com foco na marca, preço mono e especificações técnicas.
+4. **Governança de IDs Semânticos & Compilação:**
+   - 100% de conformidade com IDs semânticos únicos preservada.
+   - `npm run build` executado com Exit Code 0 (15 rotas estáticas pré-renderizadas sem erros).
+   - Auditoria visual aprovada no navegador através de subagent gravado em WebP.
+
+**Critérios de Aceite:**
+- [x] Arquivo `AGENTS.md` criado e detalhado na raiz com todas as diretrizes de governança e design system.
+- [x] Tela de Notificar WhatsApp despoluída (zero emojis, zero gradientes extravagantes, zero texturas poluídas, anexos compactos).
+- [x] Mensagens de templates formatadas com sobriedade clínica corporativa.
+- [x] Remoção de cards informativos redundantes.
+- [x] 100% de conformidade com IDs semânticos únicos mantida.
+- [x] `PageHeader.tsx` integrado em todas as telas (`/`, `/estoque`, `/kardex`, `/kardex/*`, `/ordens-de-servico`, `/ordens-de-servico/*`).
+---
+
+### 💎 Sprint 22: Unificação Arquitetural de Cabeçalhos e Padronização Universal de Cards (Zero Layout Shift)
+
+**Status:** Concluído (Entregue na Sprint 22 & Validado no DoD).
+
+**Motivação:**
+O usuário/PO pontuou que, ao transitar entre o Dashboard e as demais telas do sistema, sentia uma diferença de ergonomia visual: a organização dos cabeçalhos era heterogênea (algumas telas continham ícone sem breadcrumb, outras continham breadcrumb sem ícone, gerando saltos de posição ao navegar), e o tamanho, padding e anatomia dos cards variava expressivamente (Dashboard com cards compactos `p-4` sem squircle para o ícone versus Fila/Kardex com cards `p-5` e squircles `w-9 h-9`, além da tela de Estoque sem faixa de indicadores).
+
+**Especificação Técnica:**
+1. **Padronização Estrutural de Cabeçalhos (Zero Layout Shift):**
+   - Altura mínima estabilizada em `min-h-[72px]` em `PageHeader.tsx`.
+   - Adoção obrigatória de **Breadcrumb Clínico** e **Squircle de Ícone Institucional** (`w-9 h-9 rounded-xl bg-[#052659] text-white`) em 100% das páginas do ERP:
+     - Dashboard (`/`): `icon="domain"` (Gerente) / `icon="badge"` (Consultor) com breadcrumbs `Dashboard / Visão Operacional`.
+     - Central de Pedidos / Fila (`/ordens-de-servico/fila`): `icon="assignment"` com breadcrumbs `Dashboard / Ordens de Serviço / Central de Pedidos & Balcão`.
+     - Catálogo de Estoque (`/estoque`): `icon="inventory_2"` com breadcrumbs `Dashboard / Estoque & Logística / Catálogo Livre`.
+     - Kardex & Ledger (`/kardex`): `icon="swap_horiz"` com breadcrumbs `Dashboard / Estoque & Logística / Kardex & Ledger`.
+     - Entrada NF-e (`/kardex/entrada-nfe`): `icon="receipt_long"`.
+     - Ajuste Manual (`/kardex/ajuste-manual`): `icon="tune"`.
+     - Sugestões de Compra (`/kardex/sugestoes-compra`): `icon="shopping_cart"`.
+     - Detalhes da OS (`/ordens-de-servico/detalhes`): `icon="visibility"`.
+     - Notificar WhatsApp (`/ordens-de-servico/notificar-whatsapp`): `icon="chat"`.
+     - Nova OS (`/ordens-de-servico`): `icon="add_circle"`.
+2. **Criação do Componente Universal de Cards (`components/KpiCard.tsx`):**
+   - Criação do componente reutilizável `KpiCard.tsx` com 100% de IDs semânticos únicos, tipagem estrita TypeScript e tokens do Design System.
+   - Padrão arquitetural: `rounded-2xl border border-[#C1E8FF] bg-white p-5 shadow-xs hover:shadow-md hover:-translate-y-0.5 hover:border-[#5483B3] transition-all duration-200 group flex flex-col justify-between`.
+   - Squircle de ícone no canto superior direito (`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`).
+   - Métrica em `font-mono text-2xl sm:text-3xl font-bold text-[#052659]`.
+   - Rodapé com linha divisora `border-t border-[#F0F6FC]` e link de ação rápida.
+3. **Adoção Universal do KpiCard nas Telas Principais:**
+   - **Dashboard (`/`):** Substituição dos markups customizados de cartões pelos componentes `<KpiCard />` no modo Gerente (6 KPIs) e Consultor (4 KPIs).
+   - **Fila de Pedidos (`/ordens-de-servico/fila`):** Substituição dos 4 cards manuais por `<KpiCard />`.
+   - **Kardex (`/kardex`):** Substituição dos 4 cards manuais por `<KpiCard />`.
+   - **Catálogo de Estoque (`/estoque`):** Inclusão da faixa de 4 `<KpiCard />` no topo do inventário (Armações em Estoque, Lentes em Estoque, Alerta de Reposição e Valor em Inventário), eliminando a assimetria visual de abertura.
+4. **Governança de IDs Semânticos & Compilação:**
+   - 100% de IDs semânticos únicos preservados.
+   - `npm run build` executado com Exit Code 0 (15 rotas estáticas pré-renderizadas).
+   - Validação visual via browser subagent com capturas comprovando ausência de layout shift e uniformidade métrica entre Dashboard, Fila, Estoque e Kardex.
+
+**Critérios de Aceite:**
+- [x] Componente `components/KpiCard.tsx` criado e documentado.
+- [x] Altura e alinhamento de `PageHeader.tsx` padronizados com `min-h-[72px]`.
+- [x] 100% das páginas com Ícone Institucional e Breadcrumb Clínico integrados.
+- [x] Zero Layout Shift auditado ao navegar entre Dashboard, Fila, Estoque e Kardex.
+- [x] Dashboard, Fila, Estoque e Kardex utilizando `<KpiCard />` com padding `p-5`, cantos `rounded-2xl` e squircles idênticos.
+- [x] Faixa de KPIs adicionada no Catálogo de Estoque para consistência com o restante do ERP.
+- [x] `npm run build` compilado com Exit Code 0.
+- [x] Atualização dos documentos `SPEC.md` e `AGENTS.md`.
+
+---
+
+### 🚀 Sprint 23: Sistema de Destaque, Contraste e Affordance de Botões (*Clinical Action System*)
+
+**Status:** Concluído (Entregue na Sprint 23 & Validado no DoD).
+
+**Motivação:**
+O usuário/PO relatou que os botões da aplicação em geral estavam sem destaque visual suficiente, camuflando-se com os fundos claros e dificultando a rápida identificação de ações no balcão da ótica.
+
+**Especificação Técnica:**
+1. **Componentização Reutilizável (`components/Button.tsx`):**
+   - Criação do componente padrão universal com suporte a `href` (polimorfismo com `<Link>`), ícones Material Symbols e atalhos de teclado visuais (`[F1]`, `[F2]`).
+   - Matriz de 5 variantes: `primary` (Deep Navy com anel e sombra), `accent` (Esmeralda para WhatsApp), `secondary` (Branco com borda 2px `#5483B3`), `danger` (Carmim para atrasos) e `ghost`.
+2. **Erradicação do "Botão Camaleão":**
+   - Botões secundários (`[F1] Atualizar`, `Exportar Excel`, `Emitir Romaneio`) agora possuem borda sólida dupla `border-2 border-[#5483B3]` sobre fundo branco puro, eliminando o desaparecimento visual contra o background `#F0F6FC`.
+3. **Destaque Operacional em Tabelas (1 Clique):**
+   - **Central de Pedidos (`/ordens-de-servico/fila`):** Botão `Notificar WhatsApp` convertido para pílula verde esmeralda sólida (`bg-emerald-600 text-white font-bold hover:bg-emerald-700 shadow-xs`) e botão `Cobrar Lab` convertido para carmim sólido (`bg-rose-600 text-white font-bold`).
+   - **Dashboard (`/`):** Botão `Notificar` na lista de OSs de balcão convertido para esmeralda sólido (`bg-emerald-600`) e botão `Validar DNP` para âmbar sólido.
+   - **Estoque (`/estoque`):** Botão `Kardex` com contorno de 2px e hover invertido Deep Navy.
+4. **Governança & IDs Semânticos:**
+   - 100% de IDs semânticos únicos preservados em todos os botões refatorados.
+   - `npm run build` executado com Exit Code 0 (15 rotas estáticas pré-renderizadas).
+
+**Critérios de Aceite:**
+- [x] Componente `components/Button.tsx` criado e tipado.
+- [x] Botões primários com elevação e anel (`shadow-sm hover:shadow-md active:scale-95`).
+- [x] Botões secundários com contorno contrastante de 2px contra fundos claros.
+- [x] Ações de WhatsApp destacadas em verde esmeralda em toda a esteira de pedidos.
+- [x] Ações de cobrança destacadas em vermelho carmim nas OSs em atraso.
+- [x] Exit Code 0 no `npm run build` e conformidade com `AGENTS.md`.
+
+---
+
+### 🚀 Sprint 24: Affordance de Links (`<a>`), Chips Clínicos (`<span>`) e Ações de Cabeçalho
+
+**Status:** Concluído (Entregue na Sprint 24 & Validado no DoD).
+
+**Motivação:**
+Após o aprimoramento dos botões principais, o usuário/PO identificou que o botão `<button id="btn-fila-imprimir-romaneio">` ainda parecia desajustado por conta do fundo branco vazado no PageHeader, e solicitou atenção especial para elementos estruturais fundamentais de navegação rápida: tags `<a>` (links de ação) e tags `<span>` (metadados clínicos, gavetas físicas e status operacionais).
+
+**Especificação Técnica:**
+1. **Ajuste Conclusivo de `btn-fila-imprimir-romaneio` e Ações Secundárias:**
+   - Botão de Romaneio (`/ordens-de-servico/fila`), botão `[F1] Atualizar` (`/`) e `Exportar Excel` (`/estoque`) ajustados para preenchimento sólido **Cerulean `#5483B3`** (`bg-[#5483B3] hover:bg-[#052659] text-white font-bold ring-2 ring-[#5483B3]/25 shadow-sm hover:shadow-md`) com ícone branco puro, erradicando a sensação de botão vazado ou desbotado contra o PageHeader branco.
+2. **Elevação das Tags `<a>` / `<Link>` (Action Chip Links):**
+   - **Identificadores Clínicos (`#10294` e SKUs):** Deixaram de ser textos planos e passaram a ser Action Chip Links (`px-2.5 py-1 rounded-lg font-mono font-bold text-xs bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#C1E8FF] transition-all inline-flex items-center gap-1 shadow-2xs group`) com ícones institucionais `tag` e `qr_code`.
+   - **Links "Ver Ficha":** Estilizados como pílulas de ação com micro-animação de deslocamento de seta (`group-hover:translate-x-0.5`).
+   - **Footer Links de Cards Executivos e Tabelas:** Links de balcão completo e fila convertidos em pílulas estruturadas com borda sutil e preenchimento `#F0F6FC` com hover para Deep Navy.
+3. **Elevação das Tags `<span>` (Pílulas Clínicas & Chips de Gaveta):**
+   - **Pílulas de Status com Indicador Circular Iluminado:** Status operacionais (`Atrasado 2 dias`, `Pronto Retirada`, `Em Produção`) receberam container em pílula completa com bordas nítidas e ponto iluminado com anel de foco (`w-2 h-2 rounded-full ring-2`), conferindo máxima legibilidade visual no escaneamento de balcão.
+   - **Chips de Gaveta Física (`shelves`):** Gaveteiro de balcão (`Gaveta Transit Lab`, `Bancada 01`) padronizado com squircle/chip dedicado, ícone `shelves` institucional do Google Material Symbols e tipografia mono.
+   - **Badges de Cabeçalho:** Indicadores de pedidos ativos no PageHeader com ponto pulsante verde (`animate-pulse`) sobre Deep Navy sólido.
+4. **Governança & Análise Estática:**
+   - 100% de conformidade com `semantic-ids.md`.
+   - `npm run build` executado com **Exit Code 0** (zero warnings e 15 rotas estáticas pré-renderizadas com sucesso).
+
+**Critérios de Aceite:**
+- [x] Botão `btn-fila-imprimir-romaneio` ajustado com Cerulean sólido e contraste reforçado.
+- [x] Números de OS (`#10294`) e SKUs elevados para Action Chip Links clicáveis.
+- [x] Status operacionais transformados em pílulas clínicas com pontos circulares iluminados.
+- [x] Gavetas físicas com chips dedicados contendo ícone institucional `shelves`.
+- [x] Links de rodapé de tabelas e dashboards transformados em action pills.
+- [x] Exit Code 0 no `npm run build` e conformidade com `AGENTS.md`.
+
+---
+
 Para garantir que o **Fatura Ótica** seja escalável como SaaS B2B e adaptável a diferentes óticas sem comprometer a integridade clínica, estabelecemos três camadas rígidas de responsabilidade:
 
 | Camada | Escopo | Quem Define | Exemplos no Sistema |

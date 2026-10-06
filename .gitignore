@@ -61,3 +61,8 @@ next-env.d.ts
 scratch/
 extract_*.js
 temp_*.js
+
+# AI Agent tool caches & generated artifacts
+.claude/
+graphify-out/
+
