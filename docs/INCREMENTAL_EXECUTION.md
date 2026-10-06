@@ -30,8 +30,8 @@ Mudanças de persistência/RLS exigem PostgreSQL real; ausência do banco impede
 | Incremento | Recorte | Dependência/aceite resumido |
 | --- | --- | --- |
 | S1-01 | Contrato/modelagem de Identity | Entregue; operações HTTP permanecem planejadas. |
-| S1-02 | Núcleo de autorização | Validado em feature/sprint-01-identity:30testes, Domain100%, revisão; integração pendente. |
-| S1-03A | Persistência básica Identity e isolamento | Usuários/filiais/concessões, migration, role operacional, RLS/filtro e reader atual; QA com PostgreSQL real antes do Green. |
+| S1-02 | Núcleo de autorização | Validado inicialmente com30testes e revisão; incorporado à candidata local develop7d2c205 com Feature91/91. |
+| S1-03A | Persistência básica Identity e isolamento | Validado: migration, RLS/filtro/FKs/reader/transações; PostgreSQL17 real,61Integration e Feature91/91 na candidata local develop7d2c205. Publicação remota registrada no STATUS. |
 | S1-03B | Auditoria de alterações de acesso | Persistência append-only e evidência de quem/quando/alvo, sem credenciais; depende03A. |
 | S1-04A | Cadastro pendente e concessão de acessos | Gestor cadastra sem conceder; admin/dono autoriza escopo; contratos/HTTP e testes negativos. |
 | S1-04B | Token de primeiro acesso e ativação | Token hash/uso único/expiração, senha Argon2id e conta ativa somente após conclusão válida. |
@@ -47,7 +47,7 @@ Antes de executar qualquer linha ampla, o SM a divide novamente se não houver a
 
 ## Dependências de branches
 
-Cada nova tarefa registra o commit base que contém suas dependências. Como o núcleo S1-02 ainda está na feature e não em develop, S1-03A precisa incorporar explicitamente essa base revisada (`55ea2cd`) e as atualizações de workflow de develop, em checkout próprio. Não começar a partir de develop presumindo que esse código já foi integrado. O SM coordena integração das dependências e repete validações afetadas pela combinação.
+Cada nova tarefa registra o commit base que contém suas dependências. S1-03A incorporou explicitamente o núcleo revisado55ea2cd e o workflow develop5154670 em checkout próprio. A candidata local develop7d2c205 contém essas dependências e a persistência validada; conferir sua publicação remota no STATUS antes de iniciar S1-03B a partir de origin/develop. O SM coordena integração e repete validações afetadas pela combinação.
 
 ## Passagem de uma execução
 

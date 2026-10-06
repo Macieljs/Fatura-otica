@@ -72,3 +72,12 @@ Revisões desta política: apoio documental solicitado explicitamente a gpt-6-lu
 - PostgreSQL17 real: Green Integration61/61. GateFeatureRelease91/91 testes, 0skips, build0warnings0errors, Domain100%31linhas. Snapshot233246f6d9d6a3bf28a6d1ce4cfb4522f0581d168837b69793ef2932f55988b1.
 - QA técnico e revisão independente aprovados; parecer S1-03A-CODE-REVIEW.md. Incremento interno validado na branch de tarefa. Integração em develop ainda pendente neste registro.
 - Nenhuma rota Identity/DI operacional/login/SMTP entregue pelo recorte. Próxima tarefa planejada S1-03B auditoria de alterações de acesso; não iniciada automaticamente.
+
+## Fechamento S1-03A — integração local aprovada
+
+- Commitfeature6033823 publicado; candidata local develop7d2c205 aprovada e limpa durante o gate. Próximo commit somente documental registra este fechamento; conferência remota após push ainda necessária.
+- BuildRelease0warnings0errors (57,99s), Architecture3/Domain21/Application6/Integration61 (91/91),0skips,Domain100%31linhas. Evidências artifacts/quality/backend/20261006-173451-a4338108; snapshotb310ddf8ef3a68e5cdc839a46d578ae19d78dac20ac0390afeb82ad926a90ab8.
+- Frontendlint/build aprovados, árvorefrontend inalterada. Parecer independente de integração aprovado em S1-03A-INTEGRATION-REVIEW.md. Main e checkoutfrontend externo preservados.
+- ConectorGitHub autenticado recusou criaçãoPR com403/permissão insuficiente. NenhumPR criado; não confundir ausênciaPR com aprovaçãoGitHub ou proteção de branches comprovada.
+- Custos observados: instalação frontend5min; compilaçãoNext42s+TypeScript35,8s; build integradoRelease57,99s; IntegrationGreen12s. Houve setupDocker/imagens/restore inicial, conflitoEF e interrupção por limite de uso antes da retomada. Builds serializados e gates em feature/candidata também aumentaram a duração.
+- Preparação de ambiente concluída, dependências disponíveis nos checkouts e incremento interno encerrado. Próxima run S1-03B; não foi iniciada nesta execução. Login/cadastro/SMTP e integração de rotas seguem pendentes.

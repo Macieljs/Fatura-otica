@@ -1,6 +1,6 @@
 # S1-03A — Persistência Identity e isolamento
 
-- Estado: incremento validado na branch de tarefa; QA e revisão independente aprovados. Integração em develop ainda pendente.
+- Estado: incremento e integração local em develop aprovados. Candidata7d2c205 validada/revisada; publicação remota e resultado CI tratados no fechamento.
 - Escopo autorizado: Sprint01, próximo incremento de persistência, conforme pedido de continuidade do usuário.
 - Branch: feature/s1-03a-persistence; base55ea2cd (autorização validada) incorporada com develop5154670.
 - Responsáveis: SM coordenação/spec; Backend contrato/produção principal; QA testes principal; revisor principal independente; Luna diagnóstico de ambiente delimitado.
@@ -60,3 +60,12 @@
 - Parecer aprovado em docs/sprints/S1-03A-CODE-REVIEW.md; hashes de produção/testes/pins conferidos contra a evidência Green. Sem achados bloqueantes de funcionamento.
 - Red comportamento detalhado: 18 falhas NotImplementedException na ação ausente, antes dos asserts finais, e 1 assertion do construtor; 40 testes de banco já passavam. O Green, e não esses18stubs, comprova SQL funcional do reader/wrapper.
 - Incremento concluído no recorte interno. Integração em develop requer validar a combinação; main, rotas/frontend e deploy não estão liberados por esta conclusão.
+
+## Integração validada
+
+- Feature publicada6033823. Merge local develop7d2c2052680994a8143c150cc3f8e0618e192499 sem conflitos ou alteração de frontend.
+- GateFeatureRelease na candidata limpa: run20261006-173451-a4338108;91/91,0skips,build0warnings0errors,Domain31/31=100%; snapshotb310ddf8ef3a68e5cdc839a46d578ae19d78dac20ac0390afeb82ad926a90ab8.
+- Frontendlint/build passaram. Backendtreebc5b6e688bc9090b1fba34d114e1809ad7ddfd0d preservada da feature; frontendtreeed6ce0c41305fc0f4f07ed0f0ad649a813fddae4 preservada da base.
+- Revisão da combinação aprovada em S1-03A-INTEGRATION-REVIEW.md. Fechamento posterior altera apenas documentos, sem mudança de produção/testes.
+- Criação PR pelo conector GitHub recusada403 Resource not accessible by integration; nenhum PR criado. Branchfeature remota e pareceres versionados disponíveis. Não contornar proteção de branch; pushdevelop será normal, semforce.
+- Próximo incremento pronto: S1-03B auditoria. Rotas Identity ainda indisponíveis para integração de telas; sprint/main/deploy permanecem pendentes.
