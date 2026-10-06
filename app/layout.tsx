@@ -9,6 +9,7 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jet
 import AppShell from "@/components/AppShell";
 import { ToastProvider } from "@/components/ToastProvider";
 import { SidebarProvider } from "@/context/SidebarContext";
+import { OperatorProvider } from "@/hooks/useOperator";
 
 export const viewport: Viewport = {
   themeColor: "#052659",
@@ -64,9 +65,11 @@ export default function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex bg-[#F0F6FC] text-[#021024]`}
       >
         <ToastProvider>
-          <SidebarProvider>
-            <AppShell>{children}</AppShell>
-          </SidebarProvider>
+          <OperatorProvider>
+            <SidebarProvider>
+              <AppShell>{children}</AppShell>
+            </SidebarProvider>
+          </OperatorProvider>
         </ToastProvider>
       </body>
     </html>

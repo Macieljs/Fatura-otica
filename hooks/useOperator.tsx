@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 export type UserRole = "gerente" | "consultor";
 
@@ -20,40 +20,33 @@ const DEFAULT_OPERATOR: OperatorData = {
   loginTime: "08:00",
 };
 
-const getInitialOperator = (): OperatorData => {
-  if (typeof window !== "undefined") {
-    try {
-      const stored = localStorage.getItem("fatura_otica_operator");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const isManager =
-          parsed.roleType === "gerente" ||
-          (parsed.role && parsed.role.toLowerCase().includes("gerente")) ||
-          (parsed.name && parsed.name.toLowerCase().includes("carlos"));
+interface OperatorContextType {
+  operator: OperatorData;
+  role: UserRole;
+  isManager: boolean;
+  isConsultant: boolean;
+  isLoaded: boolean;
+  setOperator: (data: Partial<OperatorData>) => void;
+}
 
-        return {
-          name: parsed.name || (isManager ? "Dr. Carlos Ramos" : "Mariana Souza"),
-          role: parsed.role || (isManager ? "Gerente Operacional & Optometrista" : "Consultora de Atendimento"),
-          roleType: isManager ? "gerente" : "consultor",
-          branch: parsed.branch || "Filial Centro - Loja 01 Matriz",
-          loginTime: parsed.loginTime || "08:00",
-        };
-      }
-    } catch (e) {
-      console.error("Erro ao ler operador inicial:", e);
-    }
-  }
-  return DEFAULT_OPERATOR;
-};
+const OperatorContext = createContext<OperatorContextType>({
+  operator: DEFAULT_OPERATOR,
+  role: "gerente",
+  isManager: true,
+  isConsultant: false,
+  isLoaded: false,
+  setOperator: () => {},
+});
 
 /**
- * Hook de sessão unificado e reativo para controle de acesso baseado em papel (RBAC MVP).
- * Lê e sincroniza a sessão do operador gravada em localStorage ("fatura_otica_operator").
- * Notifica abas e componentes instantaneamente em mudanças de operador.
+ * Provedor de contexto global de operador (RBAC).
+ * Montado uma única vez no RootLayout para persistir o estado do operador
+ * em memória entre todas as transições de rotas do Next.js sem causar
+ * hydration mismatch entre SSR e cliente.
  */
-export function useOperator() {
-  const [operator, setOperator] = useState<OperatorData>(getInitialOperator);
-  const [isLoaded, setIsLoaded] = useState(true);
+export function OperatorProvider({ children }: { children: React.ReactNode }) {
+  const [operator, setOperator] = useState<OperatorData>(DEFAULT_OPERATOR);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const syncFromStorage = useCallback(() => {
     try {
@@ -113,12 +106,26 @@ export function useOperator() {
   const isManager = operator.roleType === "gerente";
   const isConsultant = operator.roleType === "consultor";
 
-  return {
-    operator,
-    role: operator.roleType,
-    isManager,
-    isConsultant,
-    isLoaded,
-    setOperator: setOperatorAndSave,
-  };
+  return (
+    <OperatorContext.Provider
+      value={{
+        operator,
+        role: operator.roleType,
+        isManager,
+        isConsultant,
+        isLoaded,
+        setOperator: setOperatorAndSave,
+      }}
+    >
+      {children}
+    </OperatorContext.Provider>
+  );
+}
+
+/**
+ * Hook de sessão unificado e reativo para controle de acesso baseado em papel (RBAC MVP).
+ * Lê o estado global fornecido pelo OperatorProvider mantido em memória no AppShell.
+ */
+export function useOperator() {
+  return useContext(OperatorContext);
 }
