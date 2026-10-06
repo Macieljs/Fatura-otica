@@ -1,6 +1,6 @@
 # S1-03B — Auditoria de alterações de acesso
 
-- Estado: integrado localmente em develop no merge `9fd17be`; tree `c1f160b` igual à tree da branch aprovada. Feature/revisão independentes aprovados; CI remoto do SHA integrado pendente. Nenhum endpoint Identity foi incluído.
+- Estado: integrado em develop no merge `9fd17be`; tree `c1f160b` igual à tree da branch aprovada. Feature/revisão independentes aprovados e CI remoto verde (Backend/Frontend) no SHA `48716bb`. Nenhum endpoint Identity foi incluído.
 - Base: develop ca5e37865a875504c09d51c30603c3f53dbe4011, S1-03A integrado com CI aprovado.
 - Branch: feature/s1-03b-audit. Checkout backend reutilizado: work/s1-03a-persistence; nome físico permanece, branch é do novo incremento. Frontend em outro terminal preservado.
 - Preflight: Docker29.1.3 e SDK10.0.203 disponíveis; pacotes e imagens reutilizados.

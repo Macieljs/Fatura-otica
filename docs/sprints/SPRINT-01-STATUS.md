@@ -4,14 +4,14 @@ Data: 2026-10-06. Estado da sprint: em execução; conclusão funcional ainda bl
 
 ## Estimativa de conclusão
 
-- O backlog define 7 itens principais, sem pontos ou pesos. S1-01/02/03 estão agora integrados localmente em `develop`: 3/7, aproximadamente 43%; CI remoto do novo SHA ainda pendente.
+- O backlog define 7 itens principais, sem pontos ou pesos. S1-01/02/03 estão integrados em `develop`: 3/7, aproximadamente 43%; CI remoto do merge/doc status SHA `48716bbbd8f861cd7b76f45f962b4c6b9840268a` passou nos jobs Backend e Frontend.
 - Esse percentual mede marcos por contagem igual, não esforço, prazo ou completude funcional. S1-04/05 (cadastro/ativação e autenticação/sessões), S1-06 (cliente TS/passagem frontend) e S1-07 (integração final) continuam pendentes; não há rotas Identity desta fatia para ligar às telas.
 
 ## Estado atual — 06/10/2026
 
 - S1-03B: contrato interno e testes de auditoria registrados em `S1-03B-AUDIT.md`, branch `feature/s1-03b-audit`. Build Debug da solução aprovado após correção de analyzer somente no teste: 0 warnings/0 errors em 18,62s.
 - Red funcional de Integration executado fora da sandbox: PostgreSQL 17 e fixture passaram readiness; 30 testes, 30 falhas, 0 êxitos/skips, TRX `artifacts/s103b-integration-red/identity-audit-red.trx`, ~1m14s. Writer stub causou `NotImplementedException`; migração/tabela ausentes causaram migration count 1 em vez de 2 e SQLSTATE `42P01`. Testes de check/FK/RLS/trigger que bateram na relação ausente ainda não comprovam seus critérios específicos. Relatório por método em `S1-03B-QA.md`.
-- Green focal e Feature final aprovados: Feature 149/149, zero skips/falhas; Architecture3, Domain48 (100% de 62 linhas), Application7, Integration91. QA isolou papel desconhecido por SQLSTATE23514 sem amarrar a ordem de CHECKs; filial vazia confirmou `ck_auditoria_filial_id_nao_vazio`. Revisão independente aprovada. Merge local em develop `9fd17be` com tree `c1f160b`; igual à tree da feature revisada. CI remoto pendente; runner default no sandbox travou, e a execução fora da sandbox concluiu com TRX.
+- Green focal e Feature final aprovados: Feature 149/149, zero skips/falhas; Architecture3, Domain48 (100% de 62 linhas), Application7, Integration91. QA isolou papel desconhecido por SQLSTATE23514 sem amarrar a ordem de CHECKs; filial vazia confirmou `ck_auditoria_filial_id_nao_vazio`. Revisão independente aprovada. Merge local em develop `9fd17be` com tree `c1f160b`, igual à tree da feature revisada. CI remoto passou em ambos os jobs: https://github.com/Macieljs/Fatura-otica/actions/runs/37543048845. Runner default no sandbox travou, e a execução fora da sandbox concluiu com TRX.
 - Roteamento de modelos: `docs/MODEL_ROUTING.md` agora explicita GPT-6 Luna como padrão para backend comum de baixo risco com aceite fechado e GPT-6.1 Sol para arquitetura, segurança, RLS, migrations e revisão crítica. Esta fatia usa Sol pelo risco. Economia em tokens ainda não medida.
 - Manutenção documental: a cada transição, atualizar spec, este status e o registro QA/implementação/revisão correspondente; regra incorporada em `docs/AGENT_WORKFLOW.md` e `.agents/rules/agent-workflow.md`.
 
