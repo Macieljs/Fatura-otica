@@ -906,6 +906,17 @@ Em uma rede ótica com múltiplas lojas e laboratório central, a concessão de 
 - [x] `npm run build:frontend` executado com Exit Code 0.
 - [x] Validação visual completa no navegador.
 
+### Registro de Débito Técnico / Issue Conhecida (UI Sidebar Transition)
+- **Identificador:** `TECH-DEBT-SIDEBAR-TRANSITION-01`
+- **Sintoma:** A interpolação de largura na barra lateral (`SidebarNav`) ao alternar entre recolhida (72px) e expandida (256px) sofre com engasgo perceptual (*layout thrashing*) devido ao redimensionamento em tempo real do contêiner principal (`AppShell`), que força recálculos sucessivos do DOM e dos gráficos SVG responsivos (Recharts).
+- **Estado Atual Estabilizado:**
+  - Botão de expandir mantido no topo logo abaixo do isotipo da marca (`btn-sidebar-toggle-collapse-collapsed`).
+  - Widget de EDI Óptico removido da sidebar para redução de ruído visual.
+  - Acesso à gestão de usuários blindado exclusivamente para gestores.
+  - Rota de ativação de conta (`/ativar-conta`) desacoplada do shell.
+  - Camada de texto tratada com persistência no DOM para evitar descontinuidade de nós.
+- **Direcionamento para Resolução Futura:** Avaliar adoção de biblioteca especializada em layout físico (como [Motion](https://motion.dev) ou [shadcn/ui Sidebar](https://ui.shadcn.com/docs/components/sidebar)) em uma sprint dedicada a polimento fino de animações de shell, sem impactar as entregas do roadmap de produto.
+
 ---
 
 Para garantir que o **Fatura Ótica** seja escalável como SaaS B2B e adaptável a diferentes óticas sem comprometer a integridade clínica, estabelecemos três camadas rígidas de responsabilidade:
