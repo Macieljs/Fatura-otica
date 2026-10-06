@@ -92,17 +92,21 @@ export default function SidebarNav() {
             { id: "nav-link-entrada-nfe", href: "/kardex/entrada-nfe", label: "Entrada NF-e XML", icon: "receipt_long" },
           ],
     },
-    {
-      group: "Administração & Acessos",
-      items: [
-        {
-          id: "nav-link-admin-usuarios",
-          href: "/admin/usuarios",
-          label: "Colaboradores & Acessos",
-          icon: "manage_accounts",
-        },
-      ],
-    },
+    ...(isManager
+      ? [
+          {
+            group: "Administração & Acessos",
+            items: [
+              {
+                id: "nav-link-admin-usuarios",
+                href: "/admin/usuarios",
+                label: "Colaboradores & Acessos",
+                icon: "manage_accounts",
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 
   const isItemActive = (href: string, exact?: boolean) => {

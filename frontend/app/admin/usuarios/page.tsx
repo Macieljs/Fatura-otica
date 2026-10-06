@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useOperator } from "@/hooks/useOperator";
 import PageHeader from "@/components/PageHeader";
 import KpiCard from "@/components/KpiCard";
 import Button from "@/components/Button";
@@ -64,8 +66,21 @@ const STATUS_CONFIG: Record<
 };
 
 export default function AdminUsuariosPage() {
+  const router = useRouter();
   const toast = useToast();
+  const { isManager, isLoaded } = useOperator();
   const [, startTransition] = useTransition();
+
+  // Proteção de rota corporativa: apenas gestores e administradores podem acessar
+  useEffect(() => {
+    if (isLoaded && !isManager) {
+      toast.warning("Acesso restrito a gestores e administradores de acesso.", {
+        title: "Acesso Negado (403)",
+        icon: "lock",
+      });
+      router.replace("/");
+    }
+  }, [isLoaded, isManager, router, toast]);
 
   // Estados principais
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -94,6 +109,7 @@ export default function AdminUsuariosPage() {
 
   // Carregamento de dados assíncrono seguro contra cascading renders
   useEffect(() => {
+    if (!isLoaded || !isManager) return;
     let isMounted = true;
 
     void (async () => {
@@ -125,7 +141,7 @@ export default function AdminUsuariosPage() {
     return () => {
       isMounted = false;
     };
-  }, [toast]);
+  }, [toast, isLoaded, isManager]);
 
   // KPIs
   const kpis = useMemo(() => {
@@ -282,6 +298,31 @@ export default function AdminUsuariosPage() {
       toast.error("Erro ao reenviar convite de ativação.");
     }
   };
+
+  if (!isLoaded || !isManager) {
+    return (
+      <div
+        id="admin-usuarios-guard-loading"
+        className="flex-1 flex items-center justify-center min-h-[500px] bg-[#F0F6FC]"
+      >
+        <div className="flex flex-col items-center gap-3 p-8 bg-white border border-[#5483B3]/20 rounded-2xl shadow-sm text-center max-w-md">
+          <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center">
+            <span className="material-symbols-outlined text-2xl">lock</span>
+          </div>
+          <div>
+            <h3 className="font-bold text-[#021024] text-base">Acesso Restrito a Gestores</h3>
+            <p className="text-xs text-[#5483B3] mt-1">
+              Esta área de configuração de colaboradores e permissões RBAC é restrita a gestores e administradores. Redirecionando...
+            </p>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-[#5483B3] font-mono mt-2">
+            <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+            <span>Verificando credenciais corporativas...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-16 text-[#021024]">
