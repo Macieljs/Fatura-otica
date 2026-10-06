@@ -303,20 +303,6 @@ export default function Home() {
             )}
           </div>
         }
-        subtitle={
-          <>
-            <span className="material-symbols-outlined text-[13px] shrink-0">
-              {isManager ? "calendar_today" : "person"}
-            </span>
-            <span className="truncate">
-              {isManager
-                ? "Segunda-feira, 28 de Outubro de 2024"
-                : `${operator.name} • ${operator.role}`}
-            </span>
-            <span className="text-[#7DA0CA] hidden sm:inline">•</span>
-            <span className="text-[#5483B3] hidden sm:inline font-mono">Sincronização EDI: há 3 min</span>
-          </>
-        }
         centerSlot={
           isManager ? (
             <div className="bg-[#F0F6FC] p-0.5 rounded-lg border border-[#7DA0CA]/50 hidden sm:flex items-center">
@@ -386,8 +372,8 @@ export default function Home() {
         }
       />
 
-      {/* Main Container */}
-      <main className="p-4 sm:p-5 lg:p-6 space-y-4 sm:space-y-5 max-w-[1720px] w-full mx-auto">
+      {/* Main Container - Proporções e Largura Alinhadas com Kardex & Estoque */}
+      <main className="max-w-7xl 2xl:max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* ========================================================================= */}
         {/* SECTION 1: TOP KPI STRIP (ROLE-AWARE) */}
         {/* ========================================================================= */}
@@ -466,7 +452,8 @@ export default function Home() {
               icon="assignment"
               trend={{ text: "+2 vs semana anterior", isPositive: true, icon: "trending_up" }}
               footerLeft="Todas com prazo ativo"
-              footerRight={<span className="font-bold text-emerald-600 font-mono">100% no prazo</span>}
+              footerHref="/ordens-de-servico/fila"
+              footerActionLabel="Ver fila OS"
             />
             <KpiCard
               id="card-dash-prontas-retirada"
@@ -489,7 +476,8 @@ export default function Home() {
               iconVariant="warning"
               trend={{ text: "1 pendente DNP • 1 receita", isNeutral: true, icon: "warning" }}
               footerLeft="Requer contato cliente"
-              footerRight={<span className="font-bold text-amber-700 font-mono">Ação pendente</span>}
+              footerHref="/ordens-de-servico/fila"
+              footerActionLabel="Ver pendências"
             />
             <KpiCard
               id="card-dash-atendimentos-hoje"
@@ -499,7 +487,8 @@ export default function Home() {
               icon="person_check"
               trend={{ text: "+4 atendimentos vs ontem", isPositive: true, icon: "trending_up" }}
               footerLeft="Ritmo de vendas ótimo"
-              footerRight={<span className="font-bold text-[#052659] font-mono">Turno 70%</span>}
+              footerHref="/ordens-de-servico"
+              footerActionLabel="Nova venda [F2]"
             />
           </section>
         )}
@@ -689,8 +678,8 @@ export default function Home() {
         ) : (
           /* CONSULTOR: "MINHAS ORDENS DO DIA" + "AGING DE LABORATÓRIO DOS MEUS PEDIDOS" */
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            {/* Left Column: Minhas Ordens de Serviço do Dia (7 cols) */}
-            <div className="lg:col-span-7 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
+            {/* Left Column: Minhas Ordens de Serviço do Dia (8 cols) */}
+            <div className="lg:col-span-8 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#F0F6FC] gap-2">
                   <div>
@@ -711,15 +700,15 @@ export default function Home() {
                 </div>
 
                 {/* Table of Consultant Orders */}
-                <div className="mt-3 overflow-x-auto border border-[#C1E8FF] rounded-2xl overflow-hidden shadow-2xs">
+                <div className="mt-3 border border-[#C1E8FF] rounded-2xl overflow-hidden shadow-2xs">
                   <table id="table-dash-consultor-minhas-ordens" className="w-full text-left border-collapse text-sm">
                     <thead>
                       <tr className="h-10 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF] uppercase">
-                        <th className="px-4 py-3">OS</th>
+                        <th className="w-[85px] px-4 py-3">OS</th>
                         <th className="px-4 py-3">Paciente</th>
                         <th className="px-4 py-3 hidden md:table-cell">Armação &amp; Lente</th>
-                        <th className="px-3 py-3 text-center">Status</th>
-                        <th className="px-4 py-3 text-right">Ação Balcão</th>
+                        <th className="w-[140px] px-3 py-3 text-center">Status</th>
+                        <th className="w-[64px] px-4 py-3 text-right">Ação</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -771,29 +760,31 @@ export default function Home() {
                               <Link
                                 id={`btn-dash-notificar-os-${ord.id}`}
                                 href={`/ordens-de-servico/notificar-whatsapp?id=${ord.id}`}
-                                className="h-8 px-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-emerald-500/20"
+                                className="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center justify-center shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-emerald-500/20 shrink-0 ml-auto"
                                 title="Notificar retirada via WhatsApp"
+                                aria-label="Notificar retirada via WhatsApp"
                               >
-                                <span className="material-symbols-outlined text-[15px]">chat</span>
-                                <span>Notificar</span>
+                                <span className="material-symbols-outlined text-[17px]">chat</span>
                               </Link>
                             ) : ord.status === "receita" ? (
                               <Link
                                 id={`btn-dash-validar-dnp-${ord.id}`}
                                 href="/ordens-de-servico"
-                                className="h-8 px-3.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-amber-500/20"
+                                className="w-8 h-8 rounded-lg bg-amber-500 hover:bg-amber-600 text-white inline-flex items-center justify-center shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-amber-500/20 shrink-0 ml-auto"
+                                title="Validar DNP & Prescrição"
+                                aria-label="Validar DNP & Prescrição"
                               >
-                                <span className="material-symbols-outlined text-[15px]">edit_document</span>
-                                <span>Validar DNP</span>
+                                <span className="material-symbols-outlined text-[17px]">straighten</span>
                               </Link>
                             ) : (
                               <Link
                                 id={`btn-dash-ver-os-${ord.id}`}
                                 href={`/ordens-de-servico/detalhes?id=${ord.id}`}
-                                className="h-8 px-3 rounded-lg bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] font-bold text-xs inline-flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 transition-all group"
+                                className="w-8 h-8 rounded-lg bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] inline-flex items-center justify-center shadow-2xs hover:shadow-xs active:scale-95 transition-all group cursor-pointer shrink-0 ml-auto"
+                                title="Ver Ficha Técnica Dióptrica"
+                                aria-label="Ver Ficha Técnica Dióptrica"
                               >
-                                <span>Ficha</span>
-                                <span className="material-symbols-outlined text-[14px] text-[#5483B3] group-hover:text-white group-hover:translate-x-0.5 transition-all">arrow_forward</span>
+                                <span className="material-symbols-outlined text-[17px] text-[#5483B3] group-hover:text-white transition-colors">description</span>
                               </Link>
                             )}
                           </td>
@@ -817,8 +808,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Column: Aging de Laboratório dos Meus Pedidos (5 cols) */}
-            <div className="lg:col-span-5 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
+            {/* Right Column: Aging de Laboratório dos Meus Pedidos (4 cols) */}
+            <div className="lg:col-span-4 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between pb-3 border-b border-[#F0F6FC]">
                   <div>
@@ -1119,6 +1110,82 @@ export default function Home() {
                   <span className="material-symbols-outlined text-sm">arrow_forward</span>
                 </Link>
               </div>
+            </div>
+          </section>
+        )}
+
+        {!isManager && (
+          /* CONSULTOR: ATALHOS OPERACIONAIS DE BALCÃO */
+          <section className="bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0F6FC]">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[#052659]">flash_on</span>
+                <h2 className="text-base font-bold text-[#052659]">Atalhos Operacionais de Balcão</h2>
+              </div>
+              <span className="text-xs text-[#5483B3] font-medium hidden sm:inline">
+                Acesso rápido aos fluxos de atendimento diário
+              </span>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Link
+                id="link-dash-consultor-shortcut-nova-os"
+                href="/ordens-de-servico"
+                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
+              >
+                <div className="w-10 h-10 rounded-lg bg-[#052659] text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                  <span className="material-symbols-outlined text-[20px]">add_circle</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="font-bold text-sm text-[#052659] flex items-center gap-1.5">
+                    <span>Nova OS de Balcão</span>
+                    <span className="px-1.5 py-0.2 rounded font-mono text-[10px] bg-[#C1E8FF] text-[#052659] font-bold">F2</span>
+                  </div>
+                  <p className="text-xs text-[#5483B3] mt-0.5">Prescrição e venda assistida</p>
+                </div>
+              </Link>
+
+              <Link
+                id="link-dash-consultor-shortcut-catalogo"
+                href="/estoque"
+                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
+              >
+                <div className="w-10 h-10 rounded-lg bg-[#5483B3] text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                  <span className="material-symbols-outlined text-[20px]">eyeglasses</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="font-bold text-sm text-[#052659]">Catálogo de Armações</div>
+                  <p className="text-xs text-[#5483B3] mt-0.5">Consulta de estoque e preços</p>
+                </div>
+              </Link>
+
+              <Link
+                id="link-dash-consultor-shortcut-fila"
+                href="/ordens-de-servico/fila"
+                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
+              >
+                <div className="w-10 h-10 rounded-lg bg-[#5483B3] text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                  <span className="material-symbols-outlined text-[20px]">shelves</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="font-bold text-sm text-[#052659]">Fila de Pedidos</div>
+                  <p className="text-xs text-[#5483B3] mt-0.5">Localização física e gaveteiros</p>
+                </div>
+              </Link>
+
+              <Link
+                id="link-dash-consultor-shortcut-kardex"
+                href="/kardex"
+                className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer"
+              >
+                <div className="w-10 h-10 rounded-lg bg-[#5483B3] text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                  <span className="material-symbols-outlined text-[20px]">swap_horiz</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="font-bold text-sm text-[#052659]">Kardex de Estoque</div>
+                  <p className="text-xs text-[#5483B3] mt-0.5">Rastreamento de movimentações</p>
+                </div>
+              </Link>
             </div>
           </section>
         )}
