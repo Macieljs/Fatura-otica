@@ -1111,7 +1111,7 @@ function FilaLaboratorioContent() {
                                     <span className="material-symbols-outlined text-[16px] text-[#5483B3] shrink-0">
                                       person
                                     </span>
-                                    <span className="font-bold truncate text-[13px]" title={item.cliente}>
+                                    <span className="font-extrabold text-[#052659] truncate text-[13px]" title={item.cliente}>
                                       {item.cliente}
                                     </span>
                                   </div>

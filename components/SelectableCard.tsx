@@ -76,7 +76,7 @@ export default function SelectableCard({
                 <span className="material-symbols-outlined text-[18px]">{icon}</span>
               </div>
             )}
-            <span className="text-sm font-bold text-[#052659] truncate leading-tight">
+            <span className="text-sm font-extrabold text-[#052659] truncate leading-tight">
               {title}
             </span>
           </div>

@@ -1,18 +1,8 @@
-<!-- BEGIN:nextjs-agent-rules -->
-
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
-
 # 👓 AGENTS.md — Governança, Padrões Técnicos e Design System do Fatura Ótica
 
 > **Status:** Documento Vivo de Arquitetura & Diretrizes Corporativas  
 > **Última Atualização:** Outubro / 2026 (Sprint 21)  
-> **Escopo:** Módulo Principal `fatura-otica` (ERP Óptico & Gestão Clínica B2B)
+> **Escopo:** Todo o ecossistema `Fatura Ótica` (ERP Óptico & Gestão Clínica B2B)
 
 ---
 
@@ -72,6 +62,7 @@ A aplicação utiliza estritamente o sistema de cores do Fatura Ótica:
 - Componente oficial: `components/KpiCard.tsx`
 - Container compacto e ergonômico: `rounded-xl border border-[#C1E8FF] bg-white p-3.5 sm:p-4 shadow-2xs hover:shadow-md hover:-translate-y-0.5 hover:border-[#5483B3] transition-all duration-200 group flex flex-col justify-between`.
 - Squircle de ícone: `w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200` posicionado no topo à direita.
+- **Título de Categoria / Rótulo:** `text-xs font-extrabold uppercase tracking-wider text-[#052659]` garantindo contraste imediato e legibilidade clínica sem desbotamento.
 - Métricas: `font-mono text-xl sm:text-2xl font-bold text-[#052659] leading-tight` com distância reduzida para subtítulos e tendências.
 - Rodapé compacto: linha divisora `border-t border-[#F0F6FC] mt-2.5 pt-2` com métricas secundárias ou links rápidos, eliminando vácuos verticais e garantindo que as tabelas de trabalho fiquem 100% visíveis *above the fold*.
 - Variantes semânticas: `neutral`, `primary`, `warning`, `danger`, `success`.
@@ -97,7 +88,7 @@ A aplicação utiliza estritamente o sistema de cores do Fatura Ótica:
 - **Primary CTA (`variant="primary"`):** `bg-[#052659] hover:bg-[#021024] text-white shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#052659]/20 font-bold`.
 - **Secondary CTA / Cabeçalho (`variant="secondary"` ou Cerulean Sólido):** Para botões como `btn-fila-imprimir-romaneio`, `btn-dash-atualizar` e `btn-estoque-exportar-excel`, usar preenchimento sólido Cerulean `bg-[#5483B3] hover:bg-[#052659] text-white font-bold shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#5483B3]/25` com ícone branco, erradicando botões vazados/camaleões contra o cabeçalho.
 - **Accent / Conversão (`variant="accent"`):** `bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 font-bold` para WhatsApp e entregas.
-- **Danger (`variant="danger"`):** `bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md active:scale-95 font-bold` para cobranças e atrasos.
+- **Danger (`variant="danger"`):** `bg-rose-600 hover:bg-rose-700 text-white shadow-xs hover:shadow-md active:scale-95 font-bold` para cobranças de laboratório atrasado.
 - **Tabela / Linhas (`h-8 px-3.5 rounded-lg text-xs font-bold`):** Ações de 1 clique em pílulas sólidas com micro-lift.
 
 #### F. Padrão de Links de Ação (Tags `<a>` e `<Link>`)
@@ -136,7 +127,7 @@ Antes de qualquer conclusão de tarefa ou entrega ao PO/usuário:
 3. **Análise Estática & Build de Produção:** O comando `npm run build` deve compilar com **Exit Code 0** (zero erros de TypeScript, zero rotas estáticas quebradas).
 4. **Registro Formal em `SPEC.md`:** A sprint correspondente deve estar devidamente descrita, com motivação, especificação técnica detalhada e critérios de aceite marcados.
 5. **Atualização do `AGENTS.md`:** Toda alteração de grande porte, padrão de tela ou decisão arquitetural deve ser registrada neste documento.
-6. **Back-end (.NET + TDD):** testes de aceite escritos antes do código, `dotnet build` sem warnings, `dotnet test` 100% verde, cobertura do Domínio ≥ 90% e testes de isolamento entre tenants (ver `.agents/rules/back-end-developer.md`).
+6. **Back-end (.NET + TDD):** testes de aceite escritos antes do código, `dotnet build` sem warnings, `dotnet test` 100% verde, cobertura do Domínio ≥ 90% e testes de isolamento entre tenants (ver `.agents/rules/back-end-developer.md` e `backend/docs/adr/`).
 
 ---
 

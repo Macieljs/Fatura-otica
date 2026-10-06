@@ -78,8 +78,10 @@ export default function KpiCard({
     >
       <div>
         {/* Top Row: Rótulo de Categoria e Squircle de Ícone Clínico */}
-        <div className="flex items-center justify-between text-[#5483B3] text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider">
-          <span className="truncate pr-2">{title}</span>
+        <div className="flex items-center justify-between gap-2">
+          <span className="truncate pr-1 text-xs font-extrabold uppercase tracking-wider text-[#052659]">
+            {title}
+          </span>
           {icon && (
             <div
               className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs ${getIconStyles()}`}

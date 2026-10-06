@@ -42,8 +42,10 @@ export default function MetricCard({
       className={`bg-white rounded-2xl border border-[#C1E8FF] p-5 flex flex-col justify-between shadow-xs hover:shadow-md hover:-translate-y-0.5 hover:border-[#5483B3] transition-all duration-200 group ${className}`}
     >
       <div>
-        <div className="flex items-center justify-between text-[#5483B3] text-[11px] font-bold uppercase tracking-wider gap-2">
-          <span className="truncate">{label}</span>
+        <div className="flex items-center justify-between gap-2">
+          <span className="truncate text-xs font-extrabold uppercase tracking-wider text-[#052659]">
+            {label}
+          </span>
           <div
             className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-200 ${iconBoxStyles}`}
           >
