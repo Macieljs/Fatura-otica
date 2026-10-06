@@ -1,7 +1,7 @@
 # Sprint 01 — Identidade e acesso empresarial
 
 - Data: 2026-10-06 (America/Fortaleza).
-- Estado: `ready` para contrato/modelagem e primeira tarefa de autorização; integração depende de Docker/PostgreSQL.
+- Estado: `implementing`. S1-01 e núcleo S1-02 validados; cadastro/ativação/sessões/persistência e integração ainda pendentes. Acompanhar docs/sprints/SPRINT-01-STATUS.md.
 - Autorização: usuário confirmou iniciar esta sprint, atualizar specs e delegar execução na conversa de 06/10/2026. Reutilizar essa autorização no escopo descrito; não aprovar módulos futuros ou publicação por inferência.
 - Base: `f412f5194b07fb263a1d95f259a25cacea06197f`.
 - Integração: `develop`; implementação em `feature/sprint-01-identity`; estabilidade/release em `main`.
@@ -67,8 +67,8 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 
 | Item | Entrega | Estado inicial | Dependência |
 | --- | --- | --- | --- |
-| S1-01 | Contrato OpenAPI e modelo Identity, alinhamento ADR/PRD | ready | Esta spec |
-| S1-02 | Políticas de domínio: usuário ativo, papéis e filiais | ready após contrato | QA Red antes do Dev |
+| S1-01 | Contrato OpenAPI e modelo Identity, alinhamento ADR/PRD | entregue na branch feature | Esta spec |
+| S1-02 | Políticas de domínio: usuário ativo, papéis e filiais | núcleo validado; integração pendente | Red → Green → revisão comprovados |
 | S1-03 | Persistência/migrations/RLS e auditoria | ready após contrato | Docker/PostgreSQL + QA Red |
 | S1-04 | Cadastro pendente, concessão e ativação | ready após contrato | SMTP configurável + S1-02/03 |
 | S1-05 | Login, sessão, refresh/logout e recuperação | ready após contrato | S1-02/03/04 |

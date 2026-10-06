@@ -30,6 +30,14 @@ Push agora aciona `Quality` em `develop` e `main`; PR permanece sem filtro de br
 
 ## Validação e limites
 
+### Confirmação independente do ajuste Cobertura
+
+Revisado o diff de `scripts/quality-gate.ps1:75–87`, implementado pelo QA: SHA-256 dos bytes antes do parse; cópias idênticas são lidas uma vez; mais de um conteúdo distinto continua bloqueando a execução. Pacote Domain ausente/múltiplo, ausência de linhas, taxa inválida e cobertura inferior a 90% continuam bloqueantes. Contadores/resultados de testes, fonte da execução e falhas de etapas não foram alterados. Nenhum bloqueio concreto identificado no ajuste.
+
+Hash SHA-256 do script revisado: `553CC603CE6B83321F9E373E4689C9C350DE4EC7F2D454FA564C0F1F93078BAC`. QA executou fixtures e o revisor conferiu `artifacts/qa/gate-cobertura-fix/verification.json`: duplicatas idênticas aprovadas; XMLs distintos, 89% de cobertura, XML ausente e zero linhas bloqueados, com os motivos esperados. Não houve reexecução concorrente pelo revisor. As fixtures comprovam somente a mecânica do gate, não testes funcionais do produto nem Feature aprovado.
+
+O registro de fixtures identifica HEAD `8a60e57692f2abcfc8cb63c6331e26a41465d7cc` e snapshot local `39fd6e432ddb46ee63ba1529f692a536a751d8e931387cae537e096e14eb7a98`. Este parecer foi acrescentado depois das fixtures e muda o snapshot documental; não atribuir a execução ao snapshot final como se ele já tivesse sido testado. O hash do script permite identificar o conteúdo efetivamente revisado. O bloqueio de PostgreSQL/integração real permanece.
+
 YAML carregado com `js-yaml` já disponível no ambiente frontend, sem instalação. Asserções confirmaram push em develop/main, PR sem filtro, acionamento manual, comandos frontend limitados a instalação/lint/build e runner backend Feature preservado. `git diff --check` passou. Essa verificação não valida políticas do provedor nem disponibilidade remota das actions.
 
 Não houve commit, push, execução de CI remoto ou promoção para main nesta tarefa. A revisão do workflow não substitui QA do código de identidade, cobertura, PostgreSQL real nem verificação manual frontend. O progresso parcial do núcleo S1-02 pode ser registrado após Green e revisão na branch de tarefa, sem declarar concluído o módulo nem aprovar sua candidata funcional. Consultar [BRANCH_WORKFLOW](../BRANCH_WORKFLOW.md) para os critérios de promoção.

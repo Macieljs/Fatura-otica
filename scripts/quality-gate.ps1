@@ -72,15 +72,19 @@ if ($Scope -eq 'Backend') {
     if ($Level -eq 'Feature') {
         $coverageRoot = Join-Path $resultsPath 'FaturaOtica.Domain.Tests'
         $packages = @()
+        $coverageHashes = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
         if (Test-Path -LiteralPath $coverageRoot) {
             foreach ($coverageFile in Get-ChildItem -LiteralPath $coverageRoot -Recurse -Filter 'coverage.cobertura.xml' -File) {
                 try {
+                    # VSTest can copy an attachment into In/; accept only byte-identical duplicates.
+                    $coverageHash = (Get-FileHash -LiteralPath $coverageFile.FullName -Algorithm SHA256).Hash
+                    if (-not $coverageHashes.Add($coverageHash)) { continue }
                     [xml]$coverage = [IO.File]::ReadAllText($coverageFile.FullName)
                     $packages += @($coverage.SelectNodes("//*[local-name()='package' and @name='FaturaOtica.Domain']"))
                 } catch { $blockers.Add("Cobertura inválida: $($coverageFile.FullName)") }
             }
         }
-        if ($packages.Count -ne 1) {
+        if ($coverageHashes.Count -gt 1 -or $packages.Count -ne 1) {
             $blockers.Add('Cobertura do Domínio ausente ou ambígua nesta execução.')
         } else {
             $domainPackage = $packages[0]
