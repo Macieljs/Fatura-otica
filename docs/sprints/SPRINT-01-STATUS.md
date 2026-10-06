@@ -57,3 +57,18 @@ A partir deste refinamento, o SM executa um incremento pequeno por run e registr
 Docker info foi rechecado neste refinamento e o motor Linux permanece indisponível. Próximo alvo: disponibilizar ambiente de PostgreSQL real como tarefa delimitada e então executar S1-03A; não iniciar toda a sprint de uma vez.
 
 Revisões desta política: apoio documental solicitado explicitamente a gpt-6-luna (medium/contexto restrito), sem inconsistência concreta; revisão de limites de execução/integração pelo agente independente do modelo principal, parecer favorável. Confirmação da dependência55ea2cd fora de develop; nenhuma redução de Feature/DoD nem implementação de outra etapa nesta run.
+
+## Retomada S1-03A em 2026-10-06
+
+- Branch de tarefa: feature/s1-03a-persistence; base atual 7e0428c incorpora núcleo55ea2cd e develop5154670.
+- Docker Engine disponível: versão29.1.3 confirmada após iniciar Docker Desktop. O bloqueio histórico do motor Linux acima foi resolvido; fixture PostgreSQL real e testes ainda pendentes.
+- Backend e QA retomados após interrupção por limite de uso. Contrato e skeletons precedem Red funcional; não há implementação de persistência aprovada nem rotas Identity prontas para integração.
+- Checkout original observado em feature/frontend-sprint-25 na preparação deste incremento; não alterar branch/arquivos do terminal frontend.
+
+
+## Validação técnica S1-03A
+
+- Persistência Identity, migration, RLS/filtros/FKs e reader atual implementados na branch feature/s1-03a-persistence.
+- PostgreSQL17 real: Green Integration61/61. GateFeatureRelease91/91 testes, 0skips, build0warnings0errors, Domain100%31linhas. Snapshot233246f6d9d6a3bf28a6d1ce4cfb4522f0581d168837b69793ef2932f55988b1.
+- QA técnico e revisão independente aprovados; parecer S1-03A-CODE-REVIEW.md. Incremento interno validado na branch de tarefa. Integração em develop ainda pendente neste registro.
+- Nenhuma rota Identity/DI operacional/login/SMTP entregue pelo recorte. Próxima tarefa planejada S1-03B auditoria de alterações de acesso; não iniciada automaticamente.
