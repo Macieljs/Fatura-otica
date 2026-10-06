@@ -26,7 +26,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <SidebarNav />
       <div 
         id="app-shell-main-wrapper"
-        className={`flex-1 min-w-0 flex flex-col min-h-screen pt-14 md:pt-0 transition-[margin] duration-200 ease-in-out ${
+        className={`flex-1 min-w-0 flex flex-col min-h-screen pt-14 md:pt-0 shell-hardware-transition ${
           isCollapsed ? "md:ml-[72px]" : "md:ml-64"
         }`}
       >

@@ -212,25 +212,27 @@ export default function SidebarNav() {
                         href={item.href}
                         prefetch={true}
                         title={collapsed ? `${item.label} ${item.shortcut ? `(${item.shortcut})` : ""}` : undefined}
-                        className={`rounded-lg transition-all relative group flex items-center cursor-pointer active:scale-95 duration-100 ${
+                        className={`h-11 rounded-lg relative group flex items-center cursor-pointer active:scale-95 duration-150 transition-colors ${
                           collapsed
-                            ? "h-11 w-11 mx-auto justify-center"
-                            : "w-full px-2.5 py-2 justify-between font-medium text-[13px]"
+                            ? "w-11 mx-auto justify-center px-0"
+                            : "w-full px-2.5 justify-between font-medium text-[13px]"
                         } ${
                           active
                             ? "bg-[#5483B3] text-white shadow-xs font-semibold"
-                            : "text-[#C1E8FF] hover:bg-[#5483B3]/25 hover:text-white transition-colors duration-150"
+                            : "text-[#C1E8FF] hover:bg-[#5483B3]/25 hover:text-white"
                         }`}
                       >
-                        <div className={`flex items-center pointer-events-none ${collapsed ? "justify-center" : "gap-2.5 min-w-0"}`}>
+                        <div className={`flex items-center pointer-events-none min-w-0 ${collapsed ? "justify-center" : "gap-2.5 flex-1 overflow-hidden"}`}>
                           <span
-                            className={`material-symbols-outlined text-[20px] ${
+                            className={`material-symbols-outlined text-[20px] shrink-0 ${
                               active ? "text-white" : "text-[#7DA0CA]"
                             }`}
                           >
                             {item.icon}
                           </span>
-                          {!collapsed && <span className="truncate">{item.label}</span>}
+                          {!collapsed && (
+                            <span className="truncate whitespace-nowrap">{item.label}</span>
+                          )}
                         </div>
 
                         {/* Collapsed Tooltip / Floating Badge */}
@@ -246,10 +248,10 @@ export default function SidebarNav() {
                             )}
                           </>
                         ) : (
-                          <div className="flex items-center gap-1 flex-shrink-0">
+                          <div className="flex items-center gap-1 shrink-0 ml-1.5">
                             {item.badge && (
                               <span
-                                className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${item.badgeColor}`}
+                                className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${item.badgeColor || "bg-[#5483B3] text-white"}`}
                               >
                                 {item.badge}
                               </span>
@@ -358,7 +360,7 @@ export default function SidebarNav() {
       {/* Desktop Persistent Sidebar (Adaptive Collapsible Width) */}
       <aside 
         id="sidebar-nav-desktop-aside"
-        className={`hidden md:flex flex-shrink-0 bg-[#052659] border-r border-[#021024] flex-col fixed top-0 bottom-0 left-0 z-40 select-none transition-[width] duration-200 ease-in-out ${
+        className={`hidden md:flex flex-shrink-0 bg-[#052659] border-r border-[#021024] flex-col fixed top-0 bottom-0 left-0 z-40 select-none overflow-x-hidden sidebar-hardware-transition ${
           isCollapsed ? "w-[72px]" : "w-64"
         }`}
       >
