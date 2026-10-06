@@ -23,6 +23,11 @@ internal sealed record IdentityTestData(Guid TenantA, Guid TenantB, Guid UserA, 
             GRANT USAGE ON SCHEMA identity TO s103a_runtime;
             GRANT SELECT, INSERT, UPDATE, DELETE ON identity.usuarios, identity.filiais,
                 identity.papeis_usuarios, identity.concessoes_filiais TO s103a_runtime;
+            DO $audit$ BEGIN
+              IF to_regclass('identity.auditoria') IS NOT NULL THEN
+                GRANT SELECT, INSERT ON identity.auditoria TO s103a_runtime;
+              END IF;
+            END $audit$;
             INSERT INTO identity.tenants (id,nome) VALUES (@ta,'Tenant A'),(@tb,'Tenant B');
             INSERT INTO identity.usuarios (id,tenant_id,nome,email_normalizado,status,senha_hash)
               VALUES (@ua,@ta,'User A','seller@example.test','Active','test-only-hash'),

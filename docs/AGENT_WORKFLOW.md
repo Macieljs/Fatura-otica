@@ -6,6 +6,12 @@ Executar tarefas autorizadas de ponta a ponta, com testes antes do comportamento
 
 Este documento define o processo; `AGENTS.md` o torna descobrível pelos agentes e `.github/workflows/quality.yml` executa verificações de qualidade no GitHub. Os arquivos de regras não iniciam agentes ou mantêm um serviço em execução sozinhos. A execução dos agentes depende de um orquestrador com ferramentas de delegação, acesso ao repositório e ao ambiente necessário. O CI de qualidade não publica as aplicações.
 
+## Documentação acompanha cada mudança de estado
+
+A documentação do projeto faz parte da entrega. O responsável atualiza a spec/backlog da sprint, o status geral e o registro especializado (QA, implementação, revisão ou integração) quando a tarefa muda de escopo ou estado: refinamento, contrato, Red, Green, impedimento, revisão, integração ou fechamento. O Scrum Master confere consistência entre esses registros antes de encerrar uma etapa. Não deixar notas somente no chat nem esperar o fechamento da sprint para atualizar o status.
+
+Manter uma fonte de verdade por decisão. Nos registros, separar evidência executada de expectativa e plano: incluir data, branch/SHA quando pertinente, comando, resultado observável e próxima ação; chamar falha de ambiente de impedimento, não de Red. Atualizações de política também alteram o workflow/regra de agente e seu documento de referência na mesma tarefa.
+
 ## Fase atual do frontend — decisão do usuário
 
 Enquanto a aplicação está em construção, testes automatizados de frontend (unitários/componentes) e E2E ficam adiados. Não instalar runners, criar essas suítes ou bloquear a sprint pela ausência delas nesta fase.
@@ -161,6 +167,8 @@ Publicação em staging, configuração de secrets, ambientes e produção depen
 ## Seleção de modelos e contexto
 
 Aplicar [MODEL_ROUTING.md](MODEL_ROUTING.md) em cada delegação. Luna para tarefas simples delimitadas; modelo principal para implementações/revisões críticas. O SM registra seleção, validação e escaladas, envia contexto mínimo suficiente e aplica o modelo na ferramenta. Não alterar critérios de qualidade para economizar consumo.
+
+O modelo, motivo e resultado de validação ficam registrados na tarefa. Para tarefas ordinárias de backend com contrato fechado e baixo risco, usar GPT-6 Luna; para arquitetura, autenticação, permissões, RLS, migrations e mudanças críticas, usar GPT-6.1 Sol. Critérios e escalonamento completos estão em [MODEL_ROUTING.md](MODEL_ROUTING.md).
 
 ## Granularidade das execuções
 

@@ -7,7 +7,7 @@ description: Aplicar ao organizar e executar tarefas com agentes, testes, revis�
 
 Ler `docs/AGENT_WORKFLOW.md` a partir da raiz do checkout atual e usar os modelos em `docs/templates/`.
 
-1. O orquestrador registra escopo, critérios e autorização já existente. Não pedir a mesma aprovação novamente em cada etapa.
+1. O orquestrador registra escopo, critérios e autorização já existente. Atualiza spec/backlog, status geral e registro especializado a cada transição (contrato, Red, Green, impedimento, revisão e integração), com evidência observada e próxima ação; não deixa as docs para o fechamento da sprint. Não pedir a mesma aprovação novamente em cada etapa.
 2. Delegar testes ao QA e implementação aos agentes da área. Quando houver ferramentas de subagentes, usar agentes internos da tarefa, mantendo o contexto necessário e donos claros para os arquivos.
 3. Depois da implementação, delegar a revisão a um agente independente do autor, com o diff e as evidências da revisão candidata.
 4. Para comportamento novo de backend, registrar Red funcional antes de Green. No frontend, testes automatizados e E2E ficam adiados por decisão do usuário; aplicar lint, build, revisão independente e verificação manual nesta fase. Falhas de compilação/infraestrutura precisam ser identificadas separadamente.
@@ -22,7 +22,7 @@ O CI executa verificações; não inicia os agentes nem publica as aplicações.
 
 ## Política de modelos na delegação
 
-Seguir `docs/MODEL_ROUTING.md`. Apoio simples/risco baixo: solicitar `gpt-6-luna` com contexto recortado. Implementação e revisão críticas: modelo principal herdado. Registrar risco, modelo solicitado, motivo, validação e fallback/escalada. Ambiguidade ou risco crítico exige escalada imediata; tarefa simples tem no máximo uma tentativa de correção antes de escalar. Falhas de ambiente precisam de diagnóstico, não troca automática de modelo. Não definir Luna como padrão global nem fingir seleção apenas pela persona.
+Seguir `docs/MODEL_ROUTING.md`. O padrão para backend cotidiano de baixo risco com contrato fechado (CRUD/endpoints comuns, testes e validações de regras decididas, correções locais) é solicitar `gpt-6-luna` com contexto recortado. Arquitetura, autenticação, permissões, RLS, migrations, integridade crítica e revisão independente crítica usam `gpt-6.1-sol` ou modelo principal herdado. Registrar classe de risco, modelo solicitado, motivo, validação e fallback/escalada. Ambiguidade ou risco crítico exige escalada imediata; tarefa simples tem no máximo uma tentativa de correção antes de escalar. Falhas de ambiente precisam de diagnóstico, não troca automática de modelo. Não definir Luna como padrão global nem fingir seleção apenas pela persona.
 
 ## Um incremento por execução
 

@@ -1,3 +1,4 @@
+using FaturaOtica.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -5,6 +6,7 @@ namespace FaturaOtica.Infrastructure.Identity;
 
 public sealed class IdentityDbContext : DbContext
 {
+    private static readonly string[] AuditRequiredIdentifierColumns = ["id", "tenant_id", "autor_usuario_id", "alvo_usuario_id"];
     public IdentityDbContext(DbContextOptions<IdentityDbContext> options, Guid configuredTenantId)
         : base(options)
     {
@@ -20,12 +22,14 @@ public sealed class IdentityDbContext : DbContext
     public DbSet<IdentityBranch> Branches => Set<IdentityBranch>();
     public DbSet<IdentityTenantRole> TenantRoles => Set<IdentityTenantRole>();
     public DbSet<IdentityBranchGrant> BranchGrants => Set<IdentityBranchGrant>();
+    public DbSet<IdentityAuditEvent> AuditEvents => Set<IdentityAuditEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("identity");
         modelBuilder.Ignore<IdentityRecord>();
         modelBuilder.Ignore<TenantIdentityRecord>();
+        ConfigureAudit(modelBuilder.Entity<IdentityAuditEvent>());
         ConfigureRecord(modelBuilder.Entity<IdentityTenant>(), "tenants");
         ConfigureTenantRecord(modelBuilder.Entity<IdentityUser>(), "usuarios");
         ConfigureTenantRecord(modelBuilder.Entity<IdentityBranch>(), "filiais");
@@ -84,6 +88,53 @@ public sealed class IdentityDbContext : DbContext
             t.HasCheckConstraint("ck_concessoes_filiais_usuario_id_nao_vazio", "usuario_id <> '00000000-0000-0000-0000-000000000000'::uuid");
             t.HasCheckConstraint("ck_concessoes_filiais_filial_id_nao_vazio", "filial_id <> '00000000-0000-0000-0000-000000000000'::uuid");
         });
+    }
+
+    private void ConfigureAudit(EntityTypeBuilder<IdentityAuditEvent> audit)
+    {
+        audit.ToTable("auditoria", table =>
+        {
+            const string empty = "'00000000-0000-0000-0000-000000000000'::uuid";
+            foreach (var column in AuditRequiredIdentifierColumns)
+                table.HasCheckConstraint($"ck_auditoria_{column}_nao_vazio", $"{column} <> {empty}");
+            table.HasCheckConstraint("ck_auditoria_filial_id_nao_vazio", $"filial_id IS NULL OR filial_id <> {empty}");
+            table.HasCheckConstraint("ck_auditoria_acao", "acao IN ('GrantAccess', 'RevokeAccess', 'BlockUser')");
+            table.HasCheckConstraint("ck_auditoria_papel", "papel IS NULL OR papel IN ('Owner', 'AccessAdministrator', 'Seller', 'BranchManager')");
+            table.HasCheckConstraint("ck_auditoria_escopo", """
+                (acao = 'BlockUser' AND papel IS NULL AND filial_id IS NULL) OR
+                (acao IN ('GrantAccess', 'RevokeAccess') AND papel IS NOT NULL AND
+                    ((papel IN ('Owner', 'AccessAdministrator') AND filial_id IS NULL) OR
+                     (papel IN ('Seller', 'BranchManager') AND filial_id IS NOT NULL)))
+                """);
+            table.HasCheckConstraint("ck_auditoria_metadados_imutaveis", "criado_por IS NULL AND atualizado_em IS NULL AND atualizado_por IS NULL");
+        });
+        audit.HasKey(e => e.Id).HasName("pk_auditoria");
+        audit.Property(e => e.Id).HasColumnName("id").ValueGeneratedNever();
+        audit.Property(e => e.TenantId).HasColumnName("tenant_id");
+        audit.Property(e => e.ActorUserId).HasColumnName("autor_usuario_id");
+        audit.Property(e => e.TargetUserId).HasColumnName("alvo_usuario_id");
+        audit.Property(e => e.Action).HasColumnName("acao").HasConversion<string>().HasColumnType("text");
+        audit.Property(e => e.OccurredAt).HasColumnName("ocorrido_em").HasColumnType("timestamptz");
+        audit.Property(e => e.Role).HasColumnName("papel").HasConversion<string>().HasColumnType("text");
+        audit.Property(e => e.BranchId).HasColumnName("filial_id");
+        audit.Property<DateTimeOffset>("CreatedAt").HasColumnName("criado_em").HasColumnType("timestamptz").HasDefaultValueSql("now()");
+        audit.Property<Guid?>("CreatedBy").HasColumnName("criado_por");
+        audit.Property<DateTimeOffset?>("UpdatedAt").HasColumnName("atualizado_em").HasColumnType("timestamptz");
+        audit.Property<Guid?>("UpdatedBy").HasColumnName("atualizado_por");
+        audit.HasOne<IdentityTenant>().WithMany().HasForeignKey(e => e.TenantId)
+            .OnDelete(DeleteBehavior.NoAction).HasConstraintName("fk_auditoria_tenants");
+        audit.HasOne<IdentityUser>().WithMany().HasForeignKey(e => new { e.TenantId, e.ActorUserId })
+            .HasPrincipalKey(e => new { e.TenantId, e.Id }).OnDelete(DeleteBehavior.NoAction).HasConstraintName("fk_auditoria_usuarios_autor");
+        audit.HasOne<IdentityUser>().WithMany().HasForeignKey(e => new { e.TenantId, e.TargetUserId })
+            .HasPrincipalKey(e => new { e.TenantId, e.Id }).OnDelete(DeleteBehavior.NoAction).HasConstraintName("fk_auditoria_usuarios_alvo");
+        audit.HasOne<IdentityBranch>().WithMany().HasForeignKey(e => new { e.TenantId, e.BranchId })
+            .HasPrincipalKey(e => new { e.TenantId, e.Id }).OnDelete(DeleteBehavior.NoAction).HasConstraintName("fk_auditoria_filiais");
+        audit.HasIndex(e => e.TenantId).HasDatabaseName("ix_auditoria_tenant_id");
+        audit.HasIndex(e => new { e.TenantId, e.ActorUserId }).HasDatabaseName("ix_auditoria_tenant_id_autor_usuario_id");
+        audit.HasIndex(e => new { e.TenantId, e.TargetUserId }).HasDatabaseName("ix_auditoria_tenant_id_alvo_usuario_id");
+        audit.HasIndex(e => new { e.TenantId, e.BranchId }).HasDatabaseName("ix_auditoria_tenant_id_filial_id");
+        audit.HasIndex(e => new { e.TenantId, e.OccurredAt }).HasDatabaseName("ix_auditoria_tenant_id_ocorrido_em");
+        audit.HasQueryFilter(e => e.TenantId == ConfiguredTenantId);
     }
 
     private static void ConfigureRecord<T>(EntityTypeBuilder<T> entity, string table) where T : IdentityRecord

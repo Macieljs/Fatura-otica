@@ -8,7 +8,7 @@ namespace FaturaOtica.Integration.Tests;
 public sealed class IdentityMigrationTests(IdentityPostgreSqlFixture fixture)
 {
     private static readonly string[] ExpectedTables =
-        ["concessoes_filiais", "filiais", "papeis_usuarios", "tenants", "usuarios"];
+        ["auditoria", "concessoes_filiais", "filiais", "papeis_usuarios", "tenants", "usuarios"];
 
     [Fact]
     public async Task MigrateAsync_BancoVazio_CriaModeloIdentityVersionadoComRlsForcada()
@@ -104,10 +104,10 @@ public sealed class IdentityMigrationTests(IdentityPostgreSqlFixture fixture)
         while (await columnReader.ReadAsync())
         {
             var name = columnReader.GetString(1);
-            if (name is "id" or "tenant_id" or "usuario_id" or "filial_id")
+            if (name is "id" or "tenant_id" or "usuario_id" or "filial_id" or "autor_usuario_id" or "alvo_usuario_id")
             {
                 Assert.Equal("uuid", columnReader.GetString(2));
-                Assert.Equal("NO", columnReader.GetString(3));
+                Assert.Equal(name == "filial_id" && columnReader.GetString(0) == "auditoria" ? "YES" : "NO", columnReader.GetString(3));
                 if (name == "id") Assert.True(columnReader.IsDBNull(4));
                 checkedColumns++;
             }
@@ -125,4 +125,5 @@ public sealed class IdentityMigrationTests(IdentityPostgreSqlFixture fixture)
         Assert.True(checkedColumns >= 20, "Identity catalog must contain the required typed columns.");
     }
 }
+
 

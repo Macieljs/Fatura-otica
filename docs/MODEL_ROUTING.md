@@ -6,19 +6,19 @@ Status: adotada por decisão do usuário em 2026-10-06. Aplicável ao workflow d
 
 | Classe | Modelo solicitado | Exemplos |
 | --- | --- | --- |
-| Apoio simples, objetivo verificável e escopo pequeno | `gpt-6-luna` | Localizar arquivos, consultar documentação, resumir logs, conferir referências, atualizar registros com fatos fornecidos. |
-| Correção pequena com causa conhecida, aceite fechado e sem impacto crítico | `gpt-6-luna` | Ajustes locais de documentação/formatação e mudanças reversíveis delimitadas; exigir validação adequada. |
-| Implementação crítica ou ampla | Modelo principal do orquestrador, herdado | Autenticação, sessões, permissões, RLS, migrations, integridade, financeiro/fiscal, contratos e integrações com decisões abertas. |
-| Revisão crítica independente | Modelo principal do orquestrador, herdado | Segurança, arquitetura, regra de negócio, dados, revisão de candidata integrada e liberação. |
+| Apoio simples, objetivo verificável e escopo pequeno | `gpt-6-luna` (GPT-6 Luna) | Localizar arquivos, consultar documentação, resumir logs, conferir referências e atualizar registros com fatos fornecidos. |
+| Implementação backend de baixo risco, com contrato e aceite fechados | `gpt-6-luna` (GPT-6 Luna) | CRUD/endpoints comuns, validações, testes de regras já decididas, pequenas correções e manutenção local. Isolar arquivo/diretório e dependências; preservar teste-first quando aplicável. |
+| Implementação crítica, ambígua ou que atravessa camadas | `gpt-6.1-sol` (GPT-6.1 Sol, modelo principal) | Arquitetura, autenticação, sessões, permissões, RLS, migrations, integridade, financeiro/fiscal, contratos em aberto e integrações de maior risco. |
+| Revisão crítica independente | `gpt-6.1-sol` (GPT-6.1 Sol, modelo principal) | Segurança, arquitetura, regra de negócio, dados, revisão da candidata integrada e liberação. |
 
-Classificar a tarefa, não somente o papel. Um QA pode usar Luna para extrair contagens de um relatório, mas os cenários de autorização e a revisão de isolamento exigem o modelo principal. Não definir Luna como padrão global para todos os agentes.
+Classificar a tarefa, não somente o papel. Um QA pode usar Luna para catalogar testes ordinários ou extrair contagens; cenários de autorização, isolamento e revisão de segurança exigem Sol. Para o backend cotidiano de baixo risco, Luna é o padrão. Não definir Luna como padrão global para tarefas críticas nem como modelo obrigatório para todo agente.
 
 ## Responsabilidade do Scrum Master
 
 1. Antes de delegar, registrar risco, escopo, modelo solicitado e motivo. Em caso de dúvida sobre criticidade, usar o modelo principal.
-2. Solicitar `gpt-6-luna` explicitamente na ferramenta de criação para tarefas simples. Uma persona no prompt não altera o modelo por si só.
+2. Solicitar `gpt-6-luna` explicitamente na ferramenta de criação para tarefas simples e backend de baixo risco com aceite fechado. Uma persona no prompt não altera o modelo por si só.
 3. No runtime atual, um agente com modelo diferente deve ser criado com contexto novo/recortado (`fork_turns: none` ou histórico parcial) e parâmetro `model: gpt-6-luna`. Histórico completo herda o modelo principal. Para apoio simples, solicitar esforço `medium`, suportado por Luna; não mudar o esforço das tarefas críticas por esta política.
-4. Para tarefas críticas, omitir override de modelo/esforço e herdar o modelo principal. Manter autor e revisor em agentes distintos.
+4. Para tarefas críticas, selecionar `gpt-6.1-sol` (ou omitir o override quando este for o modelo principal herdado). Manter autor e revisor em agentes distintos.
 5. Se Luna não estiver disponível ou a criação rejeitar a configuração, usar o modelo principal e registrar o fallback. Não afirmar que o modelo mudou se a ferramenta rejeitou o pedido.
 6. Não trocar retroativamente agentes já em execução. Uma escalada cria uma nova delegação para o modelo principal ou encaminha o trabalho a um agente desse modelo.
 7. Registrar o modelo solicitado e a confirmação da ferramenta quando disponível. Não inventar preço, uso ou modelo efetivo se o runtime não o informa.
