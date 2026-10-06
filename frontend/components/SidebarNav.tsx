@@ -136,16 +136,35 @@ export default function SidebarNav() {
     return (
       <div className="flex flex-col h-full justify-between">
         {/* Top Section */}
-        <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+        <div className={`flex flex-col ${collapsed ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"}`}>
           {/* Brand Header */}
           <div className={`h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 transition-all ${
             collapsed ? "px-2 justify-center" : "px-4 justify-between"
           }`}>
-            <Link id="nav-link-brand-home" href="/" prefetch={true} className={`flex items-center cursor-pointer active:scale-95 transition-transform duration-100 ${collapsed ? "justify-center w-full" : ""}`}>
+            <Link
+              id="nav-link-brand-home"
+              href="/"
+              prefetch={true}
+              className={`flex items-center cursor-pointer active:scale-95 transition-transform duration-100 ${
+                collapsed ? "justify-center w-full relative group" : ""
+              }`}
+            >
               {collapsed ? (
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#052659] to-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white shadow-xs">
-                  <span className="material-symbols-outlined text-[22px]">visibility</span>
-                </div>
+                <>
+                  <div className="flex items-center justify-center p-1">
+                    <OpticalBrandLogo size="md" showText={false} />
+                  </div>
+                  {/* Flyout Tooltip */}
+                  <div
+                    role="tooltip"
+                    className="hidden md:block absolute left-[64px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
+                  >
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
+                      <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
+                      <span className="text-[#F0F6FC]">Fatura Ótica Enterprise</span>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <OpticalBrandLogo size="md" subtitle="v4.8 Enterprise" badge="MATRIZ" />
               )}
@@ -177,44 +196,28 @@ export default function SidebarNav() {
 
           {/* Desktop Expand Toggle Button (When Collapsed - Centered Perfectly) */}
           {collapsed && !forceExpanded && (
-            <div className="px-2 pt-2.5 pb-0.5 flex justify-center">
+            <div className="px-2 pt-2.5 pb-0.5 flex justify-center relative group">
               <button
                 id="btn-sidebar-toggle-collapse-collapsed"
                 type="button"
                 onClick={toggleCollapse}
-                title="Expandir Menu Lateral [Alt+B]"
                 className="hidden md:flex w-10 h-7.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/25 transition-colors cursor-pointer items-center justify-center border border-[#5483B3]/30 shadow-2xs"
               >
                 <span className="material-symbols-outlined text-[18px]">last_page</span>
               </button>
-            </div>
-          )}
-
-          {/* Live Optical Engine Pulse Badge */}
-          {collapsed ? (
-            <div 
-              className="mx-auto mt-2 w-8 h-8 rounded-lg bg-[#021024]/70 border border-[#5483B3]/30 flex items-center justify-center shadow-2xs"
-              title="EDI Óptico Conectado • Tolerância ±0.25D"
-            >
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </span>
-            </div>
-          ) : (
-            <div className="mx-3 mt-3 px-2.5 py-1.5 rounded-lg bg-[#021024]/70 border border-[#5483B3]/30 flex items-center justify-between shadow-2xs">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span className="text-[10px] font-mono text-[#C1E8FF] font-semibold">
-                  EDI Óptico Conectado
-                </span>
+              {/* Flyout Tooltip */}
+              <div
+                role="tooltip"
+                className="hidden md:block absolute left-[64px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
+              >
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
+                  <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
+                  <span className="text-[#F0F6FC]">Expandir Menu</span>
+                  <span className="px-1.5 py-0.5 rounded bg-[#5483B3]/30 text-[#C1E8FF] text-[10px] font-mono border border-[#5483B3]/30">
+                    Alt+B
+                  </span>
+                </div>
               </div>
-              <span className="text-[9px] font-mono text-[#7DA0CA] bg-[#052659] px-1.5 py-0.2 rounded font-bold border border-[#5483B3]/40">
-                ±0.25D
-              </span>
             </div>
           )}
 
@@ -239,7 +242,6 @@ export default function SidebarNav() {
                         id={item.id}
                         href={item.href}
                         prefetch={true}
-                        title={collapsed ? `${item.label} ${item.shortcut ? `(${item.shortcut})` : ""}` : undefined}
                         className={`rounded-lg transition-all relative group flex items-center cursor-pointer active:scale-95 duration-100 ${
                           collapsed
                             ? "h-11 w-11 mx-auto justify-center"
@@ -261,7 +263,7 @@ export default function SidebarNav() {
                           {!collapsed && <span className="truncate">{item.label}</span>}
                         </div>
 
-                        {/* Collapsed Tooltip / Floating Badge */}
+                        {/* Collapsed View: Badges and Floating Flyout Tooltip */}
                         {collapsed ? (
                           <>
                             {item.badge && (
@@ -272,6 +274,33 @@ export default function SidebarNav() {
                             {active && (
                               <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#C1E8FF]"></span>
                             )}
+
+                            {/* Floating Flyout Tooltip on Hover */}
+                            <div
+                              role="tooltip"
+                              className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
+                            >
+                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
+                                <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
+                                <span className="text-[#F0F6FC]">{item.label}</span>
+
+                                {item.shortcut && (
+                                  <span className="px-1.5 py-0.5 rounded bg-[#5483B3]/30 text-[#C1E8FF] text-[10px] font-mono border border-[#5483B3]/30">
+                                    {item.shortcut}
+                                  </span>
+                                )}
+
+                                {item.badge && (
+                                  <span
+                                    className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                                      item.badgeColor || "bg-[#5483B3] text-white"
+                                    }`}
+                                  >
+                                    {item.badge}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           </>
                         ) : (
                           <div className="flex items-center gap-1 flex-shrink-0">
@@ -302,26 +331,63 @@ export default function SidebarNav() {
         </div>
 
         {/* Sidebar Footer User Card */}
-        <div className={`border-t border-[#021024] bg-[#021024]/60 flex-shrink-0 ${collapsed ? "p-2" : "p-3"}`}>
+        <div className={`border-t border-[#021024] bg-[#021024]/60 flex-shrink-0 ${collapsed ? "p-2 overflow-visible" : "p-3"}`}>
           {collapsed ? (
             <div className="flex flex-col items-center gap-2">
-              <Link
-                id="btn-sidebar-user-avatar"
-                href="/login"
-                title={`${operator.name} • ${operator.role} • Trocar`}
-                className="relative w-9 h-9 rounded-xl bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shadow-xs hover:border-white transition-all cursor-pointer"
-              >
-                <span>{initials}</span>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#052659]"></span>
-              </Link>
-              <Link
-                id="btn-sidebar-trocar-operador"
-                href="/login"
-                title="Sair / Trocar de Terminal"
-                className="p-1 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">logout</span>
-              </Link>
+              <div className="relative group flex justify-center">
+                <Link
+                  id="btn-sidebar-user-avatar"
+                  href="/login"
+                  className="relative w-9 h-9 rounded-xl bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shadow-xs hover:border-white transition-all cursor-pointer"
+                >
+                  <span>{initials}</span>
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#052659]"></span>
+                </Link>
+                {/* Flyout Tooltip */}
+                <div
+                  role="tooltip"
+                  className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
+                >
+                  <div className="flex flex-col gap-0.5 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
+                    <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[#F0F6FC]">{operator.name}</span>
+                      <span
+                        className={`text-[9px] font-bold px-1.5 py-0.2 rounded font-mono ${
+                          isManager
+                            ? "bg-amber-400/20 text-amber-300 border border-amber-400/40"
+                            : "bg-emerald-400/20 text-emerald-300 border border-emerald-400/40"
+                        }`}
+                      >
+                        {isManager ? "GERENTE" : "BALCÃO"}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-[#7DA0CA] font-normal">
+                      Terminal • {operator.branch.split(" - ")[0]} • Trocar
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative group flex justify-center">
+                <Link
+                  id="btn-sidebar-trocar-operador"
+                  href="/login"
+                  className="p-1.5 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]">logout</span>
+                </Link>
+                {/* Flyout Tooltip */}
+                <div
+                  role="tooltip"
+                  className="hidden md:block absolute left-[56px] top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out translate-x-[-4px] group-hover:translate-x-0"
+                >
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#021024] text-white text-xs font-semibold shadow-xl border border-[#5483B3]/40 whitespace-nowrap backdrop-blur-md">
+                    <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#021024] border-l border-b border-[#5483B3]/40 rotate-45"></div>
+                    <span className="text-[#F0F6FC]">Trocar Operador / Sair</span>
+                  </div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="p-2.5 rounded-xl bg-[#031c44] border border-[#7DA0CA]/30 shadow-xs flex items-center justify-between gap-2.5">
