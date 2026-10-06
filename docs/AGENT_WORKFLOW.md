@@ -125,6 +125,8 @@ O runner do backend compila a solução antes de testar, cria um diretório excl
 
 ## Revisão, integração e liberação
 
+Para PRs e automação de merge, seguir [PR_REVIEW_AND_MERGE.md](PR_REVIEW_AND_MERGE.md). O auto-review/auto-merge de GitHub ainda não está ativado nem suas proteções foram verificadas. Até isso ser comprovado, o revisor independente e o orquestrador seguem o fluxo atual; nenhuma IA contorna os checks.
+
 Usar os modelos de `docs/templates/`. O parecer precisa identificar o SHA candidato e o snapshot/diff quando ainda houver mudanças locais. Qualquer alteração posterior que mude o código invalida a revisão e os testes afetados; a liberação exige checkout limpo, SHA imutável e testes/revisão válidos para esse SHA.
 
 Achados que afetam requisito, autorização, tenant, dados, testes ou funcionamento bloqueiam a entrega. Melhorias sem impacto no aceite podem ser registradas para outra tarefa. O Dev corrige e o revisor confirma os achados resolvidos. Duas tentativas sem progresso no mesmo bloqueio levam a replanejamento; não suprimir regras, remover testes ou reduzir cobertura para encerrar o ciclo.

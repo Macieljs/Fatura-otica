@@ -17,6 +17,7 @@ Ler `docs/AGENT_WORKFLOW.md` a partir da raiz do checkout atual e usar os modelo
 8. Graphify é uma ferramenta do ambiente. Atualizar o grafo do checkout de trabalho e usá-lo para localizar código; resultados do grafo não aprovam testes nem revisão.
 9. Release exige SHA imutável, checkout limpo, evidências correspondentes e autorização aplicável ao ambiente. Seguir `release-manager.md`.
 10. Não remover testes, enfraquecer critérios ou editar um PRD para fingir aprovação. Registrar bloqueio e condição de retomada.
+11. Para PR e merge automatizados, seguir `docs/PR_REVIEW_AND_MERGE.md`. Revisor IA não tem permissão para contornar proteção ou fazer push direto. Sem check, conflito, review desatualizado, risco alto ou incerteza significa escalar ao humano e não mesclar.
 
 O CI executa verificações; não inicia os agentes nem publica as aplicações. Um orquestrador precisa executar as delegações e acompanhar as etapas.
 

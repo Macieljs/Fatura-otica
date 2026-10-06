@@ -25,6 +25,8 @@ Cada implementação concorrente usa seu próprio worktree. Contrato, migrations
 
 Proteções remotas ainda não foram verificadas. Antes da promoção, conferir no provedor se `develop` e `main` exigem revisão independente e os checks `Frontend quality`/`Backend quality`, além de nova revisão quando o diff mudar. O YAML não configura essas proteções. Enquanto não houver comprovação, o coordenador aplica os gates manualmente e registra a limitação; nunca declara a integração automaticamente protegida.
 
+A proposta de revisão por agente e auto-merge protegido está em [PR_REVIEW_AND_MERGE.md](PR_REVIEW_AND_MERGE.md). Ela ainda não está habilitada no GitHub; manter o merge manual até validar Copilot/App, permissões e branch rules.
+
 ## Impedimentos da Sprint 01
 
 | Impedimento | Efeito e condição para avançar |
