@@ -204,7 +204,7 @@ export default function SugestoesCompraPage() {
       <PageHeader
         id="header-sugestoes-compra"
         icon="shopping_cart"
-        title="Sugestões de Compra & Reposição Automática"
+        title="Sugestões de Compra"
         badge={
           <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#C1E8FF] text-[#052659] border border-[#7DA0CA]">
             Lote #REP-2026-W43 • 5 Fornecedores
@@ -213,10 +213,8 @@ export default function SugestoesCompraPage() {
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
           { label: "Kardex", href: "/kardex", id: "link-sugestoes-breadcrumb-kardex" },
-          { label: "Planejamento & Compras" },
-          { label: "Sugestões de Reposição" },
+          { label: "Sugestões de Compra" },
         ]}
-        subtitle="Cálculo algorítmico baseado no Ponto de Pedido (PP), giro de 30 dias e tempo de entrega dos fornecedores"
         actions={
           <div className="flex items-center gap-2.5">
             <span className="px-3 py-1 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">

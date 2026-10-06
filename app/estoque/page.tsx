@@ -317,7 +317,7 @@ export default function EstoquePage() {
       <PageHeader
         id="header-estoque-catalogo"
         icon="inventory_2"
-        title="Catálogo de Estoque Livre"
+        title="Catálogo de Estoque"
         badge={
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#052659] text-white font-mono text-xs font-bold rounded-full border border-[#052659] shadow-2xs">
             <span className="material-symbols-outlined text-[13px] text-[#C1E8FF]">inventory_2</span>
@@ -327,9 +327,8 @@ export default function EstoquePage() {
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
           { label: "Estoque & Logística" },
-          { label: "Catálogo Livre" },
+          { label: "Catálogo de Estoque" },
         ]}
-        subtitle="Visão operacional de inventário disponível para venda e montagem em laboratório"
         actions={
           <>
             <button

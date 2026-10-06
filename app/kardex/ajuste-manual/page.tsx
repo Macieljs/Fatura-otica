@@ -99,7 +99,7 @@ export default function AjusteManualPage() {
       <PageHeader
         id="header-ajuste-manual"
         icon="tune"
-        title="Lançamento de Ajuste Manual & Baixa por Avaria Clínica"
+        title="Ajuste Manual de Estoque"
         badge={
           <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-300">
             Protocolo Fiscal Ativo
@@ -108,10 +108,8 @@ export default function AjusteManualPage() {
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
           { label: "Kardex", href: "/kardex", id: "link-ajuste-breadcrumb-kardex" },
-          { label: "Movimentações" },
-          { label: "Lançamento de Ajuste Manual" },
+          { label: "Ajuste Manual" },
         ]}
-        subtitle="Registro formal de perdas, quebras em laboratório de montagem, contagem de inventário físico ou devoluções"
         actions={
           <Link
             id="link-ajuste-voltar-kardex"

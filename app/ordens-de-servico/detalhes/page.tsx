@@ -134,7 +134,7 @@ function DetalheOSContent() {
       <PageHeader
         id="header-os-detalhes"
         icon="visibility"
-        title={`Ordem de Serviço #${os.id} — ${os.cliente}`}
+        title={`OS #${os.id} — ${os.cliente}`}
         badge={
           <span
             className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
@@ -150,7 +150,7 @@ function DetalheOSContent() {
         }
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
-          { label: "Fila de Laboratório", href: "/ordens-de-servico/fila", id: "link-os-detalhe-voltar-fila" },
+          { label: "Fila de Pedidos", href: "/ordens-de-servico/fila", id: "link-os-detalhe-voltar-fila" },
           { label: `OS #${os.id}` },
         ]}
         subtitle={

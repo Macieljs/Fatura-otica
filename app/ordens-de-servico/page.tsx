@@ -453,9 +453,9 @@ export default function OrdensDeServicoPage() {
           </span>
         }
         subtitle={
-          <span title={clientData.nome || undefined}>
-            {clientData.nome ? `Cliente: ${clientData.nome}` : "Balcão & Prescrição Óptica"}
-          </span>
+          clientData.nome ? (
+            <span title={clientData.nome}>Cliente: {clientData.nome}</span>
+          ) : undefined
         }
         centerSlot={
           <OsStepper

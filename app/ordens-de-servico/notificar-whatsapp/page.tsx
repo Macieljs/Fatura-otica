@@ -200,7 +200,7 @@ function WhatsAppNotifierContent() {
       <PageHeader
         id="header-os-notificar-whatsapp"
         icon="chat"
-        title="Disparador WhatsApp Oficial de Balcão"
+        title="Notificação WhatsApp"
         badge={
           <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -209,11 +209,10 @@ function WhatsAppNotifierContent() {
         }
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
-          { label: "Central de Pedidos", href: "/ordens-de-servico/fila", id: "link-notificar-breadcrumb-pedidos" },
-          { label: "Comunicação com Paciente" },
+          { label: "Fila de Pedidos", href: "/ordens-de-servico/fila", id: "link-notificar-breadcrumb-pedidos" },
+          { label: "Notificação WhatsApp" },
           { label: `OS #${osData.id}` },
         ]}
-        subtitle="Comunicação corporativa e clínica para aviso de retirada de óculos e acompanhamento de ordens"
         actions={
           <div className="flex items-center gap-2.5 flex-wrap">
             <Link

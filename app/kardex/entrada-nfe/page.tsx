@@ -111,7 +111,7 @@ export default function EntradaNFePage() {
       <PageHeader
         id="header-entrada-nfe"
         icon="receipt_long"
-        title="Recebimento e Importação Fiscal de NF-e"
+        title="Entrada de NF-e"
         badge={
           <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#C1E8FF] text-[#052659] border border-[#7DA0CA]">
             Aguardando Conciliação
@@ -120,9 +120,8 @@ export default function EntradaNFePage() {
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
           { label: "Kardex", href: "/kardex", id: "link-nfe-breadcrumb-kardex" },
-          { label: "Entrada de Mercadorias (NF-e)" },
+          { label: "Entrada de NF-e" },
         ]}
-        subtitle="Conferência física às cegas, conciliação de itens de fornecedor com catálogo e cálculo automatizado de custo médio ponderado"
         actions={
           <div className="flex items-center gap-2.5">
             <span className="px-3 py-1 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">

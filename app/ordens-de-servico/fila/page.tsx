@@ -486,7 +486,7 @@ function FilaLaboratorioContent() {
       <PageHeader
         id="header-fila-pedidos"
         icon="assignment"
-        title="Central de Pedidos & Acompanhamento de Laboratório"
+        title="Fila de Pedidos"
         badge={
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#052659] text-white border border-[#052659] shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-emerald-300/40 animate-pulse" />
@@ -496,9 +496,8 @@ function FilaLaboratorioContent() {
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
           { label: "Ordens de Serviço" },
-          { label: "Central de Pedidos & Balcão" },
+          { label: "Fila de Pedidos" },
         ]}
-        subtitle="Controle de malotes de laboratórios terceirizados, conferência de chegada e automação de WhatsApp"
         actions={
           <>
             <button

@@ -115,7 +115,7 @@ export default function Kardex() {
       <PageHeader
         id="header-kardex-ledger"
         icon="swap_horiz"
-        title="Kardex & Rastreabilidade de Estoque"
+        title="Kardex de Estoque"
         badge={
           <span className="bg-[#F0F6FC] text-[#052659] text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border border-[#C1E8FF]">
             LEDGER-v2.6
@@ -124,9 +124,8 @@ export default function Kardex() {
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
           { label: "Estoque & Logística" },
-          { label: "Kardex & Ledger" },
+          { label: "Kardex" },
         ]}
-        subtitle="Extrato cronológico de movimentações físicas e fiscais, baixas por Ordens de Serviço e entradas por NF-e"
         actions={
           <>
             <Link

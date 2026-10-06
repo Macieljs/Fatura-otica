@@ -288,12 +288,7 @@ export default function Home() {
           { label: "Dashboard", href: "/" },
           { label: isManager ? "Painel Executivo" : "Painel de Atendimento" },
         ]}
-        title={
-          <>
-            {isManager ? "Painel Executivo" : "Painel de Atendimento"}
-            <span className="hidden xl:inline"> &amp; Diagnóstico Diário</span>
-          </>
-        }
+        title={isManager ? "Painel Executivo" : "Painel de Atendimento"}
         badge={
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-[#052659] text-white border border-[#052659] inline-flex items-center gap-1 shadow-2xs">

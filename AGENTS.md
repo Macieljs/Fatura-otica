@@ -55,8 +55,9 @@ A aplicação utiliza estritamente o sistema de cores do Fatura Ótica:
 - Componente oficial: `components/PageHeader.tsx`
 - Altura estabilizada e compacta: `min-h-[64px]` fixa em todas as rotas com `py-2.5` para erradicar totalmente o Layout Shift na navegação e maximizar a área útil de trabalho.
 - 1. **Breadcrumb Clínico Obrigatório:** Link de retorno com seta discreta (`arrow_back`) + caminho hierárquico em `text-xs text-[#5483B3]`.
-- 2. **Squircle Institucional & Título:** Squircle sólido `w-8 h-8 rounded-lg bg-[#052659] text-white flex items-center justify-center shrink-0 shadow-2xs` + Título em `text-base sm:text-lg lg:text-xl font-extrabold text-[#052659] tracking-tight`.
-- 3. **Barra de Ações Rápidas à Direita:** Botão secundário (`bg-white border-[#7DA0CA] text-[#052659]`) e botão primário (`bg-[#052659] text-white`).
+- 2. **Squircle Institucional & Título Conciso:** Squircle sólido `w-8 h-8 rounded-lg bg-[#052659] text-white flex items-center justify-center shrink-0 shadow-2xs` + Título objetivo e direto em `text-base sm:text-lg lg:text-xl font-extrabold text-[#052659] tracking-tight` (ex.: *Kardex de Estoque*, *Fila de Pedidos*, *Catálogo de Estoque*).
+- 3. **Zero Parágrafos Explicativos / Didáticos:** Proibido utilizar subtítulos longos que expliquem o que a tela faz. O ERP é uma ferramenta profissional de balcão; o cabeçalho deve ser limpo e desobstruído.
+- 4. **Barra de Ações Rápidas à Direita:** Botão secundário (`bg-white border-[#7DA0CA] text-[#052659]`) e botão primário (`bg-[#052659] text-white`).
 
 #### B. Padrão de Cards Executivos & KPIs (Componente Universal KpiCard)
 - Componente oficial: `components/KpiCard.tsx`
