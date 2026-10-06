@@ -818,7 +818,7 @@ Em ambiente de balcão e retaguarda de ótica, operadores frequentemente realiza
 
 ### 🚀 Sprint 26: Painel Administrativo de Identidade, Gestão de Operadores e Filiais (Alinhamento Backend Sprint 01)
 
-**Status:** Especificação Aprovada (Fase de Modelagem de Dados & Mock Adapter).
+**Status:** Concluído com Sucesso (Build & Lint Exit Code 0, Branch feature/frontend-sprint-26).
 
 **Motivação & Contexto Empresarial:**
 Alinhamento direto entre a interface Next.js e o contrato oficial de API do backend .NET 10 (`backend/docs/contracts/identity.openapi.yaml` e `docs/sprints/SPRINT-01-IDENTITY.md`).
@@ -895,16 +895,16 @@ Em uma rede ótica com múltiplas lojas e laboratório central, a concessão de 
 - Mock Adapter desacoplado com latência simulada de 300ms, persistência em `localStorage` e retorno padronizado para testes rápidos no navegador.
 
 **Critérios de Aceite:**
-- [ ] Modelagem de tipos em `types/identity.ts` conforme schemas de `identity.openapi.yaml`.
-- [ ] Mock Service Adapter em `services/identityService.ts` implementando usuários padrão, filiais e ações de CRUD.
-- [ ] Página `/admin/usuarios` criada com listagem de colaboradores, badges de status, filtros e KPIs.
-- [ ] Modal de criação rápida de colaborador sem exposição de senha e com auto-lock.
-- [ ] Gaveta lateral de concessões para Administrador de Acessos alterar filiais e papéis.
-- [ ] Página `/ativar-conta` para primeiro acesso e definição de senha com checklist visual de segurança.
-- [ ] 100% de conformidade com `semantic-ids.md` em todos os botões, inputs e elementos interativos.
-- [ ] `npm run lint:frontend` executado com Exit Code 0 (0 errors, 0 warnings).
-- [ ] `npm run build:frontend` executado com Exit Code 0.
-- [ ] Validação visual completa no navegador.
+- [x] Modelagem de tipos em `types/identity.ts` conforme schemas de `identity.openapi.yaml`.
+- [x] Mock Service Adapter em `services/identityMockService.ts` implementando usuários padrão, filiais e ações de CRUD.
+- [x] Página `/admin/usuarios` criada com listagem de colaboradores, badges de status, filtros e KPIs.
+- [x] Modal de criação rápida de colaborador sem exposição de senha e com auto-lock.
+- [x] Gaveta lateral de concessões para Administrador de Acessos alterar filiais e papéis.
+- [x] Página `/ativar-conta` para primeiro acesso e definição de senha com checklist visual de segurança.
+- [x] 100% de conformidade com `semantic-ids.md` em todos os botões, inputs e elementos interativos.
+- [x] `npm run lint:frontend` executado com Exit Code 0 (0 errors, 0 warnings).
+- [x] `npm run build:frontend` executado com Exit Code 0.
+- [x] Validação visual completa no navegador.
 
 ---
 
