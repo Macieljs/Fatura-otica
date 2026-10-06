@@ -54,6 +54,8 @@ export default function Home() {
   const [selectedPeriod, setSelectedPeriod] = useState<"hoje" | "7d" | "mes">("hoje");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [consultantSearch, setConsultantSearch] = useState("");
+  const [consultantFilterStatus, setConsultantFilterStatus] = useState("todas");
   const { operator, isManager, isConsultant } = useOperator();
 
   useEffect(() => {
@@ -193,9 +195,11 @@ export default function Home() {
       telefone: "11988887777",
       armacao: "Ray-Ban RX5228 Tartaruga 54-18",
       lente: "Multifocal Digital FreeForm",
+      gaveta: "Gaveta G-01",
+      laboratorio: "Laboratório Próprio",
+      valor: "R$ 1.890,00",
       status: "pronto",
       statusLabel: "Pronto Retirada",
-      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
       prazo: "Hoje",
     },
     {
@@ -205,9 +209,11 @@ export default function Home() {
       telefone: "11977776666",
       armacao: "Vogue VO5352 Dourado 52-17",
       lente: "Visão Simples Crizal Rock",
+      gaveta: "Bancada Lab",
+      laboratorio: "Hoya Lab Brasil",
+      valor: "R$ 950,00",
       status: "montagem",
       statusLabel: "Laboratório Hoya",
-      badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
       prazo: "Hoje às 17h",
     },
     {
@@ -217,9 +223,11 @@ export default function Home() {
       telefone: "11966665555",
       armacao: "Oakley OX8156 Satin Black",
       lente: "Transitions Gen 8 Cinza",
+      gaveta: "Gaveta G-02",
+      laboratorio: "Zeiss Lab SP",
+      valor: "R$ 1.420,00",
       status: "surfacagem",
       statusLabel: "Surfaçagem Zeiss",
-      badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
       prazo: "Amanhã 11h",
     },
     {
@@ -229,10 +237,26 @@ export default function Home() {
       telefone: "11955554444",
       armacao: "Carrera CA8840 Aviador Grafite",
       lente: "Policarbonato Antirreflexo",
+      gaveta: "Gaveta G-03",
+      laboratorio: "Aguardando DNP",
+      valor: "R$ 780,00",
       status: "receita",
       statusLabel: "Aguardando DNP",
-      badgeColor: "bg-amber-50 text-amber-800 border-amber-200",
       prazo: "Pendente",
+    },
+    {
+      id: "10282",
+      os: "OS #10282",
+      cliente: "Carlos Eduardo Mendes",
+      telefone: "11933332222",
+      armacao: "Prada Linea Rossa 02WS",
+      lente: "Solar Polarizado Cinza",
+      gaveta: "Gaveta G-01",
+      laboratorio: "Laboratório Próprio",
+      valor: "R$ 2.150,00",
+      status: "pronto",
+      statusLabel: "Pronto Retirada",
+      prazo: "Hoje",
     },
     {
       id: "10280",
@@ -241,12 +265,31 @@ export default function Home() {
       telefone: "11944443333",
       armacao: "Ray-Ban Justin RB4165 Preto",
       lente: "Solar Polarizado G-15",
+      gaveta: "Entregue",
+      laboratorio: "Concluído",
+      valor: "R$ 650,00",
       status: "entregue",
       statusLabel: "Entregue ao Paciente",
-      badgeColor: "bg-slate-50 text-slate-700 border-slate-200",
       prazo: "Concluído",
     },
   ];
+
+  const filteredConsultantOrders = consultantOrders.filter((ord) => {
+    if (consultantFilterStatus === "pronto" && ord.status !== "pronto") return false;
+    if (consultantFilterStatus === "lab" && ord.status !== "montagem" && ord.status !== "surfacagem") return false;
+    if (consultantFilterStatus === "pendente" && ord.status !== "receita") return false;
+    if (consultantSearch.trim()) {
+      const q = consultantSearch.toLowerCase();
+      return (
+        ord.os.toLowerCase().includes(q) ||
+        ord.cliente.toLowerCase().includes(q) ||
+        ord.armacao.toLowerCase().includes(q) ||
+        ord.lente.toLowerCase().includes(q) ||
+        ord.gaveta.toLowerCase().includes(q)
+      );
+    }
+    return true;
+  });
 
   const consultantLabAlerts = [
     {
@@ -279,7 +322,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex-1 flex flex-col min-w-0 bg-[#F0F6FC]">
+    <div className="flex-1 flex flex-col min-w-0 bg-[#F0F6FC] min-h-screen pb-20 text-[#021024]">
       {/* Top Persistent Componentized Header */}
       <PageHeader
         id="header-dash-executivo"
@@ -373,7 +416,7 @@ export default function Home() {
       />
 
       {/* Main Container - Proporções e Largura Alinhadas com Kardex & Estoque */}
-      <main className="max-w-7xl 2xl:max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main className="w-full max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* ========================================================================= */}
         {/* SECTION 1: TOP KPI STRIP (ROLE-AWARE) */}
         {/* ========================================================================= */}
@@ -676,64 +719,152 @@ export default function Home() {
             </div>
           </section>
         ) : (
-          /* CONSULTOR: "MINHAS ORDENS DO DIA" + "AGING DE LABORATÓRIO DOS MEUS PEDIDOS" */
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            {/* Left Column: Minhas Ordens de Serviço do Dia (8 cols) */}
-            <div className="lg:col-span-8 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
-              <div>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#F0F6FC] gap-2">
-                  <div>
-                    <h2 className="text-base font-bold text-[#052659] flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[#5483B3]">assignment_ind</span>
-                      <span>Minhas Ordens de Serviço do Dia</span>
-                    </h2>
-                    <p className="text-xs text-[#5483B3]">Atendimentos sob responsabilidade de {operator.name}</p>
+          /* CONSULTOR: FLUXO DE BALCÃO INTEGRADO (100% LARGURA OPERACIONAL EQUALIZADA COM KARDEX) */
+          <>
+            {/* SECTION 2: WORKLIST OPERACIONAL DE BALCÃO (12 COLS - FULL WIDTH PADRÃO KARDEX) */}
+            <section className="bg-white rounded-2xl border border-[#C1E8FF] shadow-xs flex flex-col overflow-hidden">
+              {/* Barra de Filtros & Ações Rápidas */}
+              <div className="p-4 sm:p-5 border-b border-[#F0F6FC] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#052659] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    <span className="material-symbols-outlined text-[20px]">assignment_ind</span>
                   </div>
-                  <Link
-                    id="btn-dash-consultor-nova-os"
-                    href="/ordens-de-servico"
-                    className="h-8 px-3.5 rounded-lg bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all self-start sm:self-auto ring-2 ring-[#052659]/20"
-                  >
-                    <span className="material-symbols-outlined text-sm">add</span>
-                    <span>Nova Venda</span>
-                  </Link>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h2 className="text-base font-bold text-[#052659]">Minhas Ordens de Serviço do Balcão</h2>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#F0F6FC] text-[#052659] border border-[#C1E8FF]">
+                        {filteredConsultantOrders.length} ordens ativas
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#5483B3] mt-0.5">Atendimentos sob responsabilidade direta de {operator.name}</p>
+                  </div>
                 </div>
 
-                {/* Table of Consultant Orders */}
-                <div className="mt-3 border border-[#C1E8FF] rounded-2xl overflow-hidden shadow-2xs">
-                  <table id="table-dash-consultor-minhas-ordens" className="w-full text-left border-collapse text-sm">
-                    <thead>
-                      <tr className="h-10 bg-[#F0F6FC] sticky top-0 z-10 text-[11px] font-bold tracking-wider text-[#052659] border-b border-[#C1E8FF] uppercase">
-                        <th className="w-[85px] px-4 py-3">OS</th>
-                        <th className="px-4 py-3">Paciente</th>
-                        <th className="px-4 py-3 hidden md:table-cell">Armação &amp; Lente</th>
-                        <th className="w-[140px] px-3 py-3 text-center">Status</th>
-                        <th className="w-[64px] px-4 py-3 text-right">Ação</th>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  {/* Busca Rápida */}
+                  <div className="relative min-w-[240px] sm:w-64">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[17px] text-[#5483B3]">
+                      search
+                    </span>
+                    <input
+                      id="input-dash-consultor-busca"
+                      type="text"
+                      value={consultantSearch}
+                      onChange={(e) => setConsultantSearch(e.target.value)}
+                      placeholder="Buscar por paciente, OS ou armação..."
+                      className="w-full h-9 pl-9 pr-3 text-xs rounded-xl border border-[#7DA0CA]/60 bg-white text-[#021024] placeholder:text-slate-400 focus:outline-none focus:border-[#052659] focus:ring-1 focus:ring-[#052659] transition-all"
+                    />
+                  </div>
+
+                  {/* Filtro de Status */}
+                  <div className="flex items-center gap-2">
+                    <select
+                      id="select-dash-consultor-filtro-status"
+                      value={consultantFilterStatus}
+                      onChange={(e) => setConsultantFilterStatus(e.target.value)}
+                      className="h-9 px-3 text-xs font-semibold rounded-xl border border-[#7DA0CA]/60 bg-white text-[#052659] focus:outline-none focus:border-[#052659] transition-all cursor-pointer"
+                    >
+                      <option value="todas">Todos os Status</option>
+                      <option value="pronto">Prontas p/ Retirada</option>
+                      <option value="lab">Em Produção / Lab</option>
+                      <option value="pendente">Aguardando DNP / Receita</option>
+                    </select>
+
+                    <Link
+                      id="btn-dash-consultor-nova-os"
+                      href="/ordens-de-servico"
+                      className="h-9 px-3.5 rounded-xl bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-[#052659]/20 whitespace-nowrap cursor-pointer shrink-0"
+                    >
+                      <span className="material-symbols-outlined text-[16px] text-[#C1E8FF]">add_circle</span>
+                      <span>Nova OS [F2]</span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tabela de Ordens do Consultor em Largura Total */}
+              <div className="overflow-x-auto">
+                <table id="table-dash-consultor-minhas-ordens" className="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr className="bg-[#F0F6FC] sticky top-0 z-10 border-b border-[#C1E8FF] text-[11px] font-bold text-[#052659] uppercase tracking-wider shadow-2xs">
+                      <th className="px-4 py-3.5 whitespace-nowrap">OS</th>
+                      <th className="px-4 py-3.5">Paciente &amp; Contato</th>
+                      <th className="px-4 py-3.5">Armação &amp; Lente Prescrita</th>
+                      <th className="px-4 py-3.5 whitespace-nowrap">Local / Gaveta</th>
+                      <th className="px-4 py-3.5 whitespace-nowrap">Laboratório &amp; Prazo</th>
+                      <th className="px-4 py-3.5 text-right whitespace-nowrap">Valor Total</th>
+                      <th className="px-4 py-3.5 text-center whitespace-nowrap">Status Clínico</th>
+                      <th className="px-4 py-3.5 text-right whitespace-nowrap">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-[#021024]">
+                    {filteredConsultantOrders.length === 0 ? (
+                      <tr>
+                        <td colSpan={8} className="px-4 py-10 text-center text-xs text-slate-500">
+                          Nenhuma ordem encontrada para os filtros selecionados.
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {consultantOrders.map((ord) => (
-                        <tr key={ord.id} className="h-16 hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default">
+                    ) : (
+                      filteredConsultantOrders.map((ord) => (
+                        <tr
+                          key={ord.id}
+                          className="hover:bg-[#C1E8FF]/15 transition-colors duration-150 cursor-default"
+                        >
+                          {/* Coluna 1: OS Action Chip */}
                           <td className="px-4 py-3.5 whitespace-nowrap">
                             <Link
                               id={`link-dash-consultant-os-${ord.id}`}
                               href={`/ordens-de-servico/detalhes?id=${ord.id}`}
-                              className="font-mono font-bold text-xs text-[#052659] hover:text-white bg-[#F0F6FC] hover:bg-[#052659] px-2.5 py-1 rounded-lg border border-[#C1E8FF] hover:border-[#052659] transition-all inline-flex items-center gap-1 shadow-2xs hover:shadow-xs group cursor-pointer"
+                              className="px-2.5 py-1 rounded-lg font-mono font-bold text-xs bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#C1E8FF] hover:border-[#052659] shadow-2xs hover:shadow-xs transition-all inline-flex items-center gap-1 group cursor-pointer"
                               title="Ver Ficha Técnica"
                             >
-                              <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white transition-colors">tag</span>
+                              <span className="material-symbols-outlined text-[13px] text-[#5483B3] group-hover:text-white transition-colors">
+                                tag
+                              </span>
                               <span>{ord.os}</span>
                             </Link>
                           </td>
-                          <td className="px-4 py-3.5 font-medium whitespace-nowrap">
+
+                          {/* Coluna 2: Paciente & Contato */}
+                          <td className="px-4 py-3.5 whitespace-nowrap">
                             <div className="font-bold text-sm text-[#052659]">{ord.cliente}</div>
-                            <div className="font-mono text-xs text-slate-400 mt-0.5">Prazo: {ord.prazo}</div>
+                            <div className="font-mono text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+                              <span className="material-symbols-outlined text-[13px] text-[#5483B3]">call</span>
+                              <span>{ord.telefone}</span>
+                            </div>
                           </td>
-                          <td className="px-4 py-3.5 hidden md:table-cell">
-                            <div className="truncate max-w-[240px] font-semibold text-sm text-slate-800">{ord.armacao}</div>
-                            <div className="truncate max-w-[240px] text-xs text-slate-500 mt-0.5">{ord.lente}</div>
+
+                          {/* Coluna 3: Armação & Lente */}
+                          <td className="px-4 py-3.5">
+                            <div className="font-semibold text-sm text-slate-800 truncate max-w-[280px]">
+                              {ord.armacao}
+                            </div>
+                            <div className="text-xs text-slate-500 truncate max-w-[280px] mt-0.5">
+                              {ord.lente}
+                            </div>
                           </td>
-                          <td className="px-3 py-3.5 text-center whitespace-nowrap">
+
+                          {/* Coluna 4: Local / Gaveta */}
+                          <td className="px-4 py-3.5 whitespace-nowrap">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-[#F0F6FC] text-[#052659] border border-[#C1E8FF] shadow-2xs">
+                              <span className="material-symbols-outlined text-[14px] text-[#5483B3]">shelves</span>
+                              <span>{ord.gaveta}</span>
+                            </span>
+                          </td>
+
+                          {/* Coluna 5: Laboratório & Prazo */}
+                          <td className="px-4 py-3.5 whitespace-nowrap">
+                            <div className="font-medium text-xs text-slate-700">{ord.laboratorio}</div>
+                            <div className="font-mono text-[11px] text-[#5483B3] mt-0.5">Prazo: {ord.prazo}</div>
+                          </td>
+
+                          {/* Coluna 6: Valor Total */}
+                          <td className="px-4 py-3.5 text-right font-mono font-bold text-sm text-[#052659] whitespace-nowrap">
+                            {ord.valor}
+                          </td>
+
+                          {/* Coluna 7: Status Clínico */}
+                          <td className="px-4 py-3.5 text-center whitespace-nowrap">
                             <span
                               className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-2xs ${
                                 ord.status === "pronto"
@@ -755,137 +886,223 @@ export default function Home() {
                               <span>{ord.statusLabel}</span>
                             </span>
                           </td>
+
+                          {/* Coluna 8: Ações Rápidas de 1 Clique */}
                           <td className="px-4 py-3.5 text-right whitespace-nowrap">
-                            {ord.status === "pronto" ? (
-                              <Link
-                                id={`btn-dash-notificar-os-${ord.id}`}
-                                href={`/ordens-de-servico/notificar-whatsapp?id=${ord.id}`}
-                                className="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center justify-center shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-emerald-500/20 shrink-0 ml-auto"
-                                title="Notificar retirada via WhatsApp"
-                                aria-label="Notificar retirada via WhatsApp"
-                              >
-                                <span className="material-symbols-outlined text-[17px]">chat</span>
-                              </Link>
-                            ) : ord.status === "receita" ? (
-                              <Link
-                                id={`btn-dash-validar-dnp-${ord.id}`}
-                                href="/ordens-de-servico"
-                                className="w-8 h-8 rounded-lg bg-amber-500 hover:bg-amber-600 text-white inline-flex items-center justify-center shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-amber-500/20 shrink-0 ml-auto"
-                                title="Validar DNP & Prescrição"
-                                aria-label="Validar DNP & Prescrição"
-                              >
-                                <span className="material-symbols-outlined text-[17px]">straighten</span>
-                              </Link>
-                            ) : (
+                            <div className="flex items-center justify-end gap-1.5">
+                              {ord.status === "pronto" && (
+                                <Link
+                                  id={`btn-dash-notificar-os-${ord.id}`}
+                                  href={`/ordens-de-servico/notificar-whatsapp?id=${ord.id}`}
+                                  className="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center justify-center shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-emerald-500/20 shrink-0"
+                                  title="Notificar retirada via WhatsApp"
+                                  aria-label="Notificar retirada via WhatsApp"
+                                >
+                                  <span className="material-symbols-outlined text-[17px]">chat</span>
+                                </Link>
+                              )}
+                              {ord.status === "receita" && (
+                                <Link
+                                  id={`btn-dash-validar-dnp-${ord.id}`}
+                                  href="/ordens-de-servico"
+                                  className="w-8 h-8 rounded-lg bg-amber-500 hover:bg-amber-600 text-white inline-flex items-center justify-center shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all ring-2 ring-amber-500/20 shrink-0"
+                                  title="Validar DNP & Prescrição"
+                                  aria-label="Validar DNP & Prescrição"
+                                >
+                                  <span className="material-symbols-outlined text-[17px]">straighten</span>
+                                </Link>
+                              )}
                               <Link
                                 id={`btn-dash-ver-os-${ord.id}`}
                                 href={`/ordens-de-servico/detalhes?id=${ord.id}`}
-                                className="w-8 h-8 rounded-lg bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] inline-flex items-center justify-center shadow-2xs hover:shadow-xs active:scale-95 transition-all group cursor-pointer shrink-0 ml-auto"
+                                className="w-8 h-8 rounded-lg bg-[#F0F6FC] hover:bg-[#052659] text-[#052659] hover:text-white border border-[#5483B3]/40 hover:border-[#052659] inline-flex items-center justify-center shadow-2xs hover:shadow-xs active:scale-95 transition-all group cursor-pointer shrink-0"
                                 title="Ver Ficha Técnica Dióptrica"
                                 aria-label="Ver Ficha Técnica Dióptrica"
                               >
-                                <span className="material-symbols-outlined text-[17px] text-[#5483B3] group-hover:text-white transition-colors">description</span>
+                                <span className="material-symbols-outlined text-[17px] text-[#5483B3] group-hover:text-white transition-colors">
+                                  description
+                                </span>
                               </Link>
-                            )}
+                            </div>
                           </td>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
 
-              <div className="mt-3 pt-2.5 border-t border-[#F0F6FC] flex items-center justify-between text-xs text-[#5483B3]">
-                <span>5 ordens listadas • 3 prontas para entrega</span>
+              {/* Rodapé Resumo da Tabela */}
+              <div className="p-3.5 bg-[#F0F6FC]/60 border-t border-[#C1E8FF] flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#5483B3] gap-2">
+                <span>
+                  Exibindo <strong>{filteredConsultantOrders.length}</strong> de {consultantOrders.length} ordens de balcão registradas
+                </span>
                 <Link
                   id="link-dash-consultor-ver-fila-completa"
                   href="/ordens-de-servico/fila"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-[#052659] hover:text-white bg-[#F0F6FC] hover:bg-[#052659] border border-[#C1E8FF] hover:border-[#052659] transition-all shadow-2xs group cursor-pointer"
+                  className="px-3 py-1 rounded-lg border border-[#7DA0CA] bg-white hover:bg-[#052659] text-[#052659] hover:text-white text-xs font-bold transition-all shadow-2xs inline-flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
                 >
                   <span>Abrir Fila de Ordens Completa</span>
-                  <span className="material-symbols-outlined text-sm text-[#5483B3] group-hover:text-white group-hover:translate-x-0.5 transition-all">arrow_forward</span>
+                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
                 </Link>
               </div>
-            </div>
+            </section>
 
-            {/* Right Column: Aging de Laboratório dos Meus Pedidos (4 cols) */}
-            <div className="lg:col-span-4 bg-white rounded-xl border border-[#C1E8FF]/60 p-5 shadow-sm flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-[#F0F6FC]">
-                  <div>
-                    <h2 className="text-base font-bold text-[#052659] flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[#5483B3]">precision_manufacturing</span>
-                      <span>Aging de Laboratório dos Meus Pedidos</span>
-                    </h2>
-                    <p className="text-xs text-[#5483B3]">Acompanhamento de lentes externas em produção</p>
-                  </div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#C1E8FF] text-[#052659]">
-                    3 ATIVOS
-                  </span>
-                </div>
-
-                {/* Progress bar and summary */}
-                <div className="mt-3 p-3 rounded-xl bg-[#F0F6FC] border border-[#C1E8FF]/60">
-                  <div className="flex justify-between text-xs font-semibold text-[#052659] mb-1">
-                    <span>Pontualidade das minhas lentes:</span>
-                    <span className="font-mono text-emerald-700 font-bold">100% no prazo</span>
-                  </div>
-                  <div className="w-full h-1.5 rounded-full bg-[#E2E8F0] overflow-hidden">
-                    <div className="h-full rounded-full bg-emerald-500" style={{ width: "95%" }}></div>
-                  </div>
-                </div>
-
-                {/* Individual Lab Orders List */}
-                <div className="mt-3 space-y-2.5">
-                  {consultantLabAlerts.map((alert) => (
-                    <div
-                      key={alert.os}
-                      className="p-3 rounded-xl border border-[#C1E8FF]/50 bg-white hover:bg-[#F0F6FC]/60 transition-colors flex items-center justify-between shadow-2xs"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-xs text-[#052659]">{alert.os}</span>
-                          <span className="text-[11px] font-medium text-slate-700">• {alert.cliente}</span>
-                        </div>
-                        <div className="text-[11px] text-[#5483B3] mt-0.5">
-                          {alert.lab} — <span className="font-medium text-slate-600">{alert.servico}</span>
-                        </div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">Previsão: {alert.previsao}</div>
+            {/* SECTION 3: MONITOR DE LABORATÓRIO E METAS DE BALCÃO (12 COLS DIVIDIDO) */}
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+              {/* Left Column: Aging de Laboratório dos Meus Pedidos (7 cols) */}
+              <div className="lg:col-span-7 bg-white rounded-2xl border border-[#C1E8FF] p-5 shadow-xs flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between pb-3.5 border-b border-[#F0F6FC]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-[#052659] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                        <span className="material-symbols-outlined text-base">precision_manufacturing</span>
                       </div>
-
-                      <div className="text-right">
-                        <span
-                          className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border font-mono ${
-                            alert.statusType === "warning"
-                              ? "bg-amber-50 text-amber-800 border-amber-200"
-                              : alert.statusType === "info"
-                              ? "bg-blue-50 text-blue-700 border-blue-200"
-                              : "bg-emerald-50 text-emerald-700 border-emerald-200"
-                          }`}
-                        >
-                          {alert.status}
-                        </span>
+                      <div>
+                        <h2 className="text-base font-bold text-[#052659]">Aging de Laboratório dos Meus Pedidos</h2>
+                        <p className="text-xs text-[#5483B3]">Acompanhamento de lentes externas em produção terceirizada</p>
                       </div>
                     </div>
-                  ))}
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#C1E8FF] text-[#052659] border border-[#7DA0CA]/40">
+                      3 ATIVOS
+                    </span>
+                  </div>
+
+                  {/* Barra de Progresso de Pontualidade */}
+                  <div className="mt-4 p-3.5 rounded-xl bg-[#F0F6FC] border border-[#C1E8FF]">
+                    <div className="flex justify-between text-xs font-bold text-[#052659] mb-1.5">
+                      <span>Pontualidade das minhas lentes:</span>
+                      <span className="font-mono text-emerald-700 font-bold">100% no prazo</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
+                      <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: "95%" }}></div>
+                    </div>
+                    <div className="flex justify-between text-[11px] font-mono text-[#5483B3] mt-1.5">
+                      <span>Tempo médio: 2.4 dias</span>
+                      <span>0 ordens em atraso</span>
+                    </div>
+                  </div>
+
+                  {/* Lista de Ordens em Laboratório */}
+                  <div className="mt-3.5 space-y-2.5">
+                    {consultantLabAlerts.map((alert) => (
+                      <div
+                        key={alert.os}
+                        className="p-3.5 rounded-xl border border-[#C1E8FF] bg-white hover:bg-[#F0F6FC]/60 transition-colors flex items-center justify-between shadow-2xs"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono font-bold text-xs text-[#052659]">{alert.os}</span>
+                            <span className="text-xs font-semibold text-slate-800">• {alert.cliente}</span>
+                          </div>
+                          <div className="text-xs text-[#5483B3] mt-0.5">
+                            {alert.lab} — <span className="font-medium text-slate-600">{alert.servico}</span>
+                          </div>
+                          <div className="text-[11px] font-mono text-slate-400 mt-0.5">Previsão de Entrega: {alert.previsao}</div>
+                        </div>
+
+                        <div className="text-right flex items-center gap-2">
+                          <span
+                            className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border font-mono ${
+                              alert.statusType === "warning"
+                                ? "bg-amber-50 text-amber-800 border-amber-200"
+                                : alert.statusType === "info"
+                                ? "bg-blue-50 text-blue-700 border-blue-200"
+                                : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            }`}
+                          >
+                            {alert.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-4 p-3 bg-blue-50/60 rounded-xl border border-blue-200 text-xs flex items-center justify-between text-blue-900 shadow-2xs">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-blue-700 text-base">support_agent</span>
+                    <span className="font-medium">Dúvida sobre prazo de laboratório?</span>
+                  </div>
+                  <Link
+                    id="link-dash-consultor-cobrar-lab"
+                    href="/ordens-de-servico/fila"
+                    className="font-bold text-blue-800 hover:underline text-xs flex items-center gap-0.5"
+                  >
+                    <span>Cobrar Lab</span>
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  </Link>
                 </div>
               </div>
 
-              <div className="mt-4 p-2.5 bg-blue-50/60 rounded-xl border border-blue-200 text-xs flex items-center justify-between text-blue-900">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-blue-700 text-base">support_agent</span>
-                  <span>Dúvida sobre prazo de laboratório?</span>
+              {/* Right Column: Performance de Balcão & Metas de Mariana (5 cols) */}
+              <div className="lg:col-span-5 bg-white rounded-2xl border border-[#C1E8FF] p-5 shadow-xs flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between pb-3.5 border-b border-[#F0F6FC]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-[#052659] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                        <span className="material-symbols-outlined text-base">trending_up</span>
+                      </div>
+                      <div>
+                        <h2 className="text-base font-bold text-[#052659]">Minha Performance de Balcão</h2>
+                        <p className="text-xs text-[#5483B3]">Metas individuais do turno de atendimento</p>
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
+                      META: 85%
+                    </span>
+                  </div>
+
+                  {/* Barra de Progresso da Meta Diária */}
+                  <div className="mt-4 p-3.5 rounded-xl bg-[#F0F6FC] border border-[#C1E8FF]">
+                    <div className="flex justify-between text-xs font-bold text-[#052659] mb-1.5">
+                      <span>Meta Diária de Vendas:</span>
+                      <span className="font-mono text-[#052659]">R$ 4.250 / R$ 5.000</span>
+                    </div>
+                    <div className="w-full h-2.5 rounded-full bg-[#E2E8F0] overflow-hidden">
+                      <div className="h-full rounded-full bg-[#052659] transition-all duration-500" style={{ width: "85%" }}></div>
+                    </div>
+                    <div className="flex justify-between text-[11px] font-mono text-[#5483B3] mt-1.5">
+                      <span className="text-emerald-700 font-bold">+R$ 750 para bater 100%</span>
+                      <span>Turno: Manhã/Tarde</span>
+                    </div>
+                  </div>
+
+                  {/* 4 Cards de Métricas de Vendas de Balcão */}
+                  <div className="mt-3.5 grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl bg-[#F0F6FC] border border-[#C1E8FF] shadow-2xs">
+                      <span className="text-[11px] font-bold uppercase text-[#5483B3] block">Atendimentos</span>
+                      <span className="font-mono text-xl font-bold text-[#052659] block mt-1">14</span>
+                      <span className="text-[10px] text-emerald-700 font-medium block mt-0.5">+4 vs ontem</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[#F0F6FC] border border-[#C1E8FF] shadow-2xs">
+                      <span className="text-[11px] font-bold uppercase text-[#5483B3] block">Ticket Médio</span>
+                      <span className="font-mono text-xl font-bold text-[#052659] block mt-1">R$ 303</span>
+                      <span className="text-[10px] text-emerald-700 font-medium block mt-0.5">Meta: R$ 280</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[#F0F6FC] border border-[#C1E8FF] shadow-2xs">
+                      <span className="text-[11px] font-bold uppercase text-[#5483B3] block">Conv. Antirreflexo</span>
+                      <span className="font-mono text-xl font-bold text-[#052659] block mt-1">80%</span>
+                      <span className="text-[10px] text-emerald-700 font-medium block mt-0.5">Excelente</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[#F0F6FC] border border-[#C1E8FF] shadow-2xs">
+                      <span className="text-[11px] font-bold uppercase text-[#5483B3] block">OSs Concluídas</span>
+                      <span className="font-mono text-xl font-bold text-[#052659] block mt-1">6</span>
+                      <span className="text-[10px] text-[#5483B3] font-medium block mt-0.5">No prazo</span>
+                    </div>
+                  </div>
                 </div>
-                <Link
-                  id="link-dash-consultor-cobrar-lab"
-                  href="/ordens-de-servico/fila"
-                  className="font-bold text-blue-800 hover:underline text-[11px]"
-                >
-                  Cobrar Lab →
-                </Link>
+
+                <div className="mt-4 p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs flex items-center justify-between text-emerald-900 shadow-2xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span className="font-bold">Turno em ritmo ótimo:</span>
+                    <span className="text-emerald-800 text-[11px]">85% da cota diária concluída.</span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </>
         )}
 
         {/* ========================================================================= */}

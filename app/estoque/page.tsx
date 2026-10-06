@@ -369,7 +369,7 @@ export default function EstoquePage() {
       />
 
       {/* 2. CONTEÚDO PRINCIPAL */}
-      <main className="max-w-7xl 2xl:max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main className="w-full max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Faixa de Indicadores Rápidos de Estoque Livre (Unificada via KpiCard) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard
