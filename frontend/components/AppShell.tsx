@@ -8,13 +8,16 @@ import { useSidebar } from "@/context/SidebarContext";
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { isCollapsed } = useSidebar();
-  const isLoginPage = pathname === "/login";
+  const isStandalonePage =
+    pathname === "/login" ||
+    pathname === "/ativar-conta" ||
+    pathname?.startsWith("/ativar-conta");
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [pathname]);
 
-  if (isLoginPage) {
+  if (isStandalonePage) {
     return <main className="w-full min-h-screen">{children}</main>;
   }
 
