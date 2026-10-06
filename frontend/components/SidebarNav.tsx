@@ -40,7 +40,7 @@ export default function SidebarNav() {
       group: isManager ? "Visão Executiva" : "Visão Operacional",
       items: [
         { id: "nav-link-dashboard", href: "/", label: "Dashboard", icon: "dashboard", exact: true },
-        { id: "nav-link-kardex", href: "/kardex", label: "Kardex", icon: "monitoring", exact: true },
+        { id: "nav-link-kardex", href: "/kardex", label: "Kardex", icon: "swap_horiz", exact: true },
       ],
     },
     {
@@ -65,7 +65,7 @@ export default function SidebarNav() {
           id: "nav-link-nova-os",
           href: "/ordens-de-servico",
           label: "Nova Venda / OS",
-          icon: "add_shopping_cart",
+          icon: "add_circle",
           shortcut: "[F2]",
           exact: true,
         },
@@ -75,20 +75,20 @@ export default function SidebarNav() {
       group: "Estoque & Logística",
       items: isManager
         ? [
-            { id: "nav-link-estoque", href: "/estoque", label: "Catálogo Armações", icon: "qr_code_2" },
+            { id: "nav-link-estoque", href: "/estoque", label: "Catálogo Armações", icon: "inventory_2" },
             { id: "nav-link-entrada-nfe", href: "/kardex/entrada-nfe", label: "Entrada NF-e XML", icon: "receipt_long" },
-            { id: "nav-link-ajuste-manual", href: "/kardex/ajuste-manual", label: "Ajuste & Avaria", icon: "construction" },
+            { id: "nav-link-ajuste-manual", href: "/kardex/ajuste-manual", label: "Ajuste & Avaria", icon: "tune" },
             {
               id: "nav-link-sugestoes-compra",
               href: "/kardex/sugestoes-compra",
               label: "Sugestões de Compra",
-              icon: "production_quantity_limits",
+              icon: "shopping_cart",
               badge: "8",
               badgeColor: "bg-red-500/20 text-red-300 border border-red-500/40",
             },
           ]
         : [
-            { id: "nav-link-estoque", href: "/estoque", label: "Catálogo Armações", icon: "qr_code_2" },
+            { id: "nav-link-estoque", href: "/estoque", label: "Catálogo Armações", icon: "inventory_2" },
             { id: "nav-link-entrada-nfe", href: "/kardex/entrada-nfe", label: "Entrada NF-e XML", icon: "receipt_long" },
           ],
     },
@@ -101,7 +101,7 @@ export default function SidebarNav() {
                 id: "nav-link-admin-usuarios",
                 href: "/admin/usuarios",
                 label: "Colaboradores & Acessos",
-                icon: "manage_accounts",
+                icon: "badge",
               },
             ],
           },

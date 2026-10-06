@@ -325,7 +325,7 @@ export default function Home() {
       {/* Top Persistent Componentized Header */}
       <PageHeader
         id="header-dash-executivo"
-        icon={isManager ? "domain" : "badge"}
+        icon="dashboard"
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
           { label: isManager ? "Painel Executivo" : "Painel de Atendimento" },
