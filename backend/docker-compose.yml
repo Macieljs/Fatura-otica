@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: fatura-otica-postgres
+    environment:
+      POSTGRES_DB: fatura_otica
+      POSTGRES_USER: fatura_admin
+      POSTGRES_PASSWORD: fatura_dev_only
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fatura_admin -d fatura_otica"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pgdata:

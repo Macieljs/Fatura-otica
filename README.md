@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fatura Ótica
 
-## Getting Started
+Projeto completo do ERP Fatura Ótica, com frontend Next.js e backend .NET 10 em um único repositório.
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```text
+Fatura-ótica/
+├── frontend/             Next.js, componentes, páginas e documentação do front
+├── backend/              Solução .NET, domínio, API, infraestrutura e testes
+├── .agents/              Regras comuns e skill Graphify
+├── docs/                 Organização e documentação compartilhada
+├── scripts/              Comandos do projeto
+├── graphify-out/         Grafo gerado; ignorado pelo Git
+├── AGENTS.md             Instruções comuns para os agentes
+└── package.json          Atalhos para executar front, backend e Graphify
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Frontend
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Instalar dependências com `npm --prefix frontend ci` e iniciar com `npm run dev:frontend`.
+Validar a compilação com `npm run build:frontend`. Detalhes da aplicação em `frontend/README.md`; orientações de deploy em `frontend/DEPLOY.md`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Backend
 
-## Learn More
+Usar o SDK definido em `global.json`. Compilar com `npm run build:backend` e testar com `npm run test:backend`.
+O PostgreSQL de desenvolvimento pode ser iniciado com `docker compose -f backend/docker-compose.yml up -d`.
+Os testes com Testcontainers precisam de Docker em execução. Decisões de arquitetura estão em `backend/docs/adr/`.
 
-To learn more about Next.js, take a look at the following resources:
+## Graphify
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Instalar no ambiente do agente com `python -m pip install graphifyy`.
+Gerar ou atualizar o grafo com `npm run graph:update`. Consultar com `npm run graph:query -- "PageHeader"` ou `npm run graph:query -- "AddInfrastructure"`.
+O script `scripts/graphify.ps1` permite consultar a partir de qualquer diretório, sempre usando o grafo da raiz.
+O grafo cobre o código de frontend e backend e é regenerado localmente, sem depender de um servidor de grafos.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Agentes e estrutura
 
-## Deploy on Vercel
+Abrir a raiz do projeto para que os agentes recebam `AGENTS.md`, as regras de `.agents/` e acesso ao grafo compartilhado.
+Consultar `docs/PROJECT_STRUCTURE.md` para detalhes da reorganização e os ajustes necessários nos ambientes de deploy.
+## Workflow de agentes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O processo de testes antes do código, implementação, revisão independente e liberação está em [docs/AGENT_WORKFLOW.md](docs/AGENT_WORKFLOW.md). Os modelos de tarefa, revisão e release ficam em `docs/templates/`.
+Executar `npm.cmd run quality:backend:bootstrap` para verificar a infraestrutura inicial, ou `npm.cmd run quality:backend` para o gate completo de uma funcionalidade. O runner compila antes dos testes e registra as evidências da execução.
+O CI de PR exige lint/build e relatórios de testes funcionais das duas partes. O estado inicial ainda tem bloqueios de lint e suítes vazias, detalhados no workflow. O pipeline de qualidade não inicia agentes e não publica em produção.

@@ -1,0 +1,60 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Frontend quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend
+        id: install
+        run: npm ci --prefix frontend
+      - name: Lint
+        id: lint
+        run: npm run lint:frontend
+      - name: Build
+        id: build
+        if: always() && steps.install.conclusion == 'success'
+        run: npm run build:frontend
+
+
+  backend:
+    name: Backend quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Restore
+        run: dotnet restore backend/FaturaOtica.slnx
+      - name: Behavioral tests and coverage
+        shell: pwsh
+        run: ./scripts/test-backend.ps1 -Level Feature -Configuration Release -NoRestore
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: backend-quality-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/quality/backend/
+          if-no-files-found: warn
+          retention-days: 14

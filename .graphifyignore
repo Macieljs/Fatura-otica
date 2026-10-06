@@ -1,0 +1,11 @@
+node_modules/
+.next/
+bin/
+obj/
+TestResults/
+coverage/
+graphify-out/
+.git/
+.claude/
+.agents/skills/
+artifacts/

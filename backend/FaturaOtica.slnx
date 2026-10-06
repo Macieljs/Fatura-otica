@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FaturaOtica.Api/FaturaOtica.Api.csproj" />
+    <Project Path="src/FaturaOtica.Application/FaturaOtica.Application.csproj" />
+    <Project Path="src/FaturaOtica.Domain/FaturaOtica.Domain.csproj" />
+    <Project Path="src/FaturaOtica.Infrastructure/FaturaOtica.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FaturaOtica.Application.Tests/FaturaOtica.Application.Tests.csproj" />
+    <Project Path="tests/FaturaOtica.Architecture.Tests/FaturaOtica.Architecture.Tests.csproj" />
+    <Project Path="tests/FaturaOtica.Domain.Tests/FaturaOtica.Domain.Tests.csproj" />
+    <Project Path="tests/FaturaOtica.Integration.Tests/FaturaOtica.Integration.Tests.csproj" />
+  </Folder>
+</Solution>
