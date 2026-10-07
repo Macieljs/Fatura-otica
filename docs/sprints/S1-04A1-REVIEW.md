@@ -35,4 +35,4 @@ A revisão autoriza somente a integração técnica do snapshot A1 em `develop`,
 - Branch de feature: `feature/s1-04a-pending-profiles`, commit `9be100d`.
 - Merge local em `develop`: `8ec47d9`.
 - Árvore do merge e árvore da feature revisada coincidem: `aa6e7922171782d7d0962e522560b243cfe5d1b8`.
-- CI remoto fica pendente até a publicação de `develop`; nenhuma promoção para `main` foi feita.
+- CI remoto Quality #13, run `37553300673`, passou Backend e Frontend para o commit `63a31135ac952d5cec8941374cd87775aa15aa96` (push do merge/documentação). Main não foi alterada.
