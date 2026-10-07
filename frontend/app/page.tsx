@@ -7,6 +7,7 @@ import { useOperator } from "@/hooks/useOperator";
 const emptySubscribe = () => () => {};
 import PageHeader from "@/components/PageHeader";
 import KpiCard from "@/components/KpiCard";
+import OpticalFrameIcon from "@/components/icons/OpticalFrameIcon";
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -324,7 +325,7 @@ export default function Home() {
       {/* Top Persistent Componentized Header */}
       <PageHeader
         id="header-dash-executivo"
-        icon={isManager ? "domain" : "badge"}
+        icon="dashboard"
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
           { label: isManager ? "Painel Executivo" : "Painel de Atendimento" },
@@ -1368,7 +1369,7 @@ export default function Home() {
                 className="p-4 rounded-xl border border-[#C1E8FF] bg-[#F0F6FC]/50 hover:bg-[#F0F6FC] hover:border-[#5483B3] transition-all duration-200 group flex items-start gap-3.5 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:scale-98 cursor-pointer"
               >
                 <div className="w-10 h-10 rounded-lg bg-[#5483B3] text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
-                  <span className="material-symbols-outlined text-[20px]">eyeglasses</span>
+                  <OpticalFrameIcon size={22} className="text-white" />
                 </div>
                 <div className="min-w-0">
                   <div className="font-bold text-sm text-[#052659]">Catálogo de Armações</div>

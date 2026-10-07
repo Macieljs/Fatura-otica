@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState, useMemo, Suspense } from "react";
 import PageHeader from "@/components/PageHeader";
+import OpticalFrameIcon from "@/components/icons/OpticalFrameIcon";
+import Button from "@/components/Button";
 
 interface OSWhatsAppDetail {
   id: string;
@@ -352,7 +354,7 @@ function WhatsAppNotifierContent() {
               <div className="mt-3.5 space-y-2.5 text-xs">
                 <div className="p-3 bg-[#F0F6FC] rounded-xl border border-[#C1E8FF] flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="material-symbols-outlined text-[#5483B3] text-lg">eyeglasses</span>
+                    <OpticalFrameIcon size={18} className="text-[#5483B3] shrink-0" />
                     <div className="min-w-0">
                       <span className="text-[10px] uppercase font-bold text-[#5483B3] block">Armação</span>
                       <span className="font-semibold text-slate-800 truncate block" title={osData.armacao}>
@@ -810,17 +812,15 @@ function WhatsAppNotifierContent() {
                     <span className="material-symbols-outlined text-[15px]">open_in_new</span>
                   </a>
 
-                  <button
+                  <Button
                     id="btn-notificar-copiar-texto"
-                    type="button"
+                    variant="secondary"
+                    size="md"
+                    icon={copiado ? "check" : "content_copy"}
                     onClick={handleCopiar}
-                    className="px-4 py-2.5 rounded-xl bg-white hover:bg-[#F0F6FC] text-[#052659] text-xs font-bold border-2 border-[#5483B3] hover:border-[#052659] transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-2xs hover:shadow-xs active:scale-95"
                   >
-                    <span className="material-symbols-outlined text-[16px] text-[#5483B3]">
-                      {copiado ? "check" : "content_copy"}
-                    </span>
-                    <span>{copiado ? "Copiado!" : "Copiar Texto"}</span>
-                  </button>
+                    {copiado ? "Copiado!" : "Copiar Texto"}
+                  </Button>
                 </div>
 
                 <div className="flex items-center gap-1.5 text-xs text-slate-500">

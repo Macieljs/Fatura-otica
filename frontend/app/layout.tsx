@@ -8,7 +8,7 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jet
 
 import AppShell from "@/components/AppShell";
 import { ToastProvider } from "@/components/ToastProvider";
-import { SidebarProvider } from "@/context/SidebarContext";
+import { SidebarProvider, SIDEBAR_INIT_SCRIPT } from "@/context/SidebarContext";
 import { OperatorProvider } from "@/hooks/useOperator";
 
 export const viewport: Viewport = {
@@ -54,8 +54,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

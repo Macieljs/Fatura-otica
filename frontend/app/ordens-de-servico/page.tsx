@@ -6,6 +6,7 @@ import { useToast } from "@/components/ToastProvider";
 import PageHeader from "@/components/PageHeader";
 import OsStepper from "@/components/OsStepper";
 import SelectableCard from "@/components/SelectableCard";
+import Button from "@/components/Button";
 
 interface PrescriptionEye {
   esf: string;
@@ -81,6 +82,16 @@ export default function OrdensDeServicoPage() {
   const toast = useToast();
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1); // Inicia limpo na Etapa 1 (Cliente)
   const [osSaved, setOsSaved] = useState(false);
+
+  // Blindagem de emissão assíncrona contra múltiplos cliques de balcão
+  const handleEmitirOS = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    setOsSaved(true);
+    toast.success("Ordem de Serviço #10315 emitida com sucesso! Enviada para o laboratório e registrada no Kardex.", {
+      title: "OS Emitida",
+      icon: "verified",
+    });
+  };
 
   // Client Data (Inicia vazio para nova emissão real de balcão)
   const [clientData, setClientData] = useState({
@@ -409,7 +420,7 @@ export default function OrdensDeServicoPage() {
       if (!selectedFrame.sku) {
         toast.warning("Selecione uma armação do estoque livre para montar a Ordem de Serviço.", {
           title: "Armação Não Selecionada",
-          icon: "eyeglasses",
+          icon: "inventory_2",
         });
         return;
       }
@@ -1503,15 +1514,17 @@ export default function OrdensDeServicoPage() {
               </div>
 
               {!osSaved && (
-                <button
+                <Button
                   id="btn-os-emitir-ordem-resumo"
-                  type="button"
-                  onClick={() => setOsSaved(true)}
-                  className="h-11 px-6 rounded-lg bg-[#5483b3] hover:bg-[#7da0ca] text-white text-xs font-bold transition-all shadow-md flex items-center gap-2 whitespace-nowrap"
+                  variant="primary"
+                  size="lg"
+                  icon="verified"
+                  onClick={handleEmitirOS}
+                  loadingText="Emitindo Ordem de Serviço..."
+                  className="bg-[#5483b3] hover:bg-[#7da0ca] border-[#5483b3] shadow-md whitespace-nowrap"
                 >
-                  <span className="material-symbols-outlined text-[18px]">verified</span>
-                  <span>Emitir Ordem de Serviço</span>
-                </button>
+                  Emitir Ordem de Serviço
+                </Button>
               )}
             </div>
           </section>
@@ -1596,15 +1609,17 @@ export default function OrdensDeServicoPage() {
                 </span>
               </button>
             ) : (
-              <button
+              <Button
                 id="btn-os-finalizar-enviar-lab"
-                type="button"
-                onClick={() => setOsSaved(true)}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white transition-all shadow-xs"
+                variant="accent"
+                size="md"
+                icon="send"
+                onClick={handleEmitirOS}
+                loadingText="Finalizando & Enviando..."
+                className="w-full sm:w-auto"
               >
-                <span className="material-symbols-outlined text-[16px]">send</span>
-                <span>Finalizar & Enviar ao Laboratório</span>
-              </button>
+                Finalizar & Enviar ao Laboratório
+              </Button>
             )}
           </div>
         </div>

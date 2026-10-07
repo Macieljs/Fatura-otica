@@ -10,7 +10,7 @@ export interface KpiCardProps {
   title: string;
   value: string | number;
   unit?: string;
-  icon?: string;
+  icon?: string | React.ReactNode;
   iconVariant?: KpiIconVariant;
   trend?: {
     text: string;
@@ -86,7 +86,11 @@ export default function KpiCard({
             <div
               className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs ${getIconStyles()}`}
             >
-              <span className="material-symbols-outlined text-[17px]">{icon}</span>
+              {typeof icon === "string" ? (
+                <span className="material-symbols-outlined text-[17px]">{icon}</span>
+              ) : (
+                icon
+              )}
             </div>
           )}
         </div>

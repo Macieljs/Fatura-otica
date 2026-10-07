@@ -6,6 +6,8 @@ import { useState, useEffect, useMemo, Suspense } from "react";
 import { useToast } from "@/components/ToastProvider";
 import PageHeader from "@/components/PageHeader";
 import KpiCard from "@/components/KpiCard";
+import OpticalFrameIcon from "@/components/icons/OpticalFrameIcon";
+import Button from "@/components/Button";
 
 interface OSItem {
   id: string;
@@ -319,9 +321,14 @@ function FilaLaboratorioContent() {
     };
   }, [destaqueParam]);
 
-  const handleDarEntradaBip = (e: React.FormEvent) => {
+  const [isProcessingBip, setIsProcessingBip] = useState(false);
+
+  const handleDarEntradaBip = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputMalote.trim()) return;
+    if (isProcessingBip || !inputMalote.trim()) return;
+
+    setIsProcessingBip(true);
+    await new Promise((resolve) => setTimeout(resolve, 350));
 
     const idLimpo = inputMalote.trim().replace("#", "");
     const osEncontrada = ordens.find((o) => o.id === idLimpo);
@@ -354,6 +361,7 @@ function FilaLaboratorioContent() {
     }
 
     setInputMalote("");
+    setIsProcessingBip(false);
     setTimeout(() => setMensagemSucessoBip(null), 7000);
   };
 
@@ -497,9 +505,11 @@ function FilaLaboratorioContent() {
         ]}
         actions={
           <>
-            <button
+            <Button
               id="btn-fila-imprimir-romaneio"
-              type="button"
+              variant="outline"
+              size="md"
+              icon="local_shipping"
               onClick={() =>
                 toast.success(
                   "Romaneio de Envio de Malote gerado com sucesso! Protocolo com 3 armações para entrega ao motoboy.",
@@ -509,11 +519,9 @@ function FilaLaboratorioContent() {
                   }
                 )
               }
-              className="h-9 px-3.5 rounded-xl text-xs font-bold bg-[#5483B3] hover:bg-[#052659] text-white transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#5483B3]/25 inline-flex items-center gap-1.5 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[16px] text-white">local_shipping</span>
-              <span>Emitir Romaneio</span>
-            </button>
+              Emitir Romaneio
+            </Button>
 
             <Link
               id="link-fila-nova-os"
@@ -559,14 +567,18 @@ function FilaLaboratorioContent() {
                   [F4]
                 </span>
               </div>
-              <button
+              <Button
                 id="btn-fila-bipar"
                 type="submit"
-                className="px-4 py-2.5 rounded-xl bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-all inline-flex items-center justify-center gap-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#052659]/20 shrink-0 cursor-pointer"
+                variant="primary"
+                size="md"
+                icon="qr_code_scanner"
+                isLoading={isProcessingBip}
+                loadingText="Registrando..."
+                className="shrink-0"
               >
-                <span className="material-symbols-outlined text-[16px]">qr_code_scanner</span>
-                <span>Dar Entrada</span>
-              </button>
+                Dar Entrada
+              </Button>
             </form>
           </div>
 
@@ -1119,9 +1131,7 @@ function FilaLaboratorioContent() {
                                 {/* Detalhes de Armação, Lente e Laboratório */}
                                 <div className="bg-[#F8FAFC] rounded-lg p-2.5 space-y-1 border border-[#F0F6FC] text-xs">
                                   <div className="flex items-start gap-1.5">
-                                    <span className="material-symbols-outlined text-[14px] text-[#5483B3] shrink-0 mt-0.5">
-                                      eyeglasses
-                                    </span>
+                                    <OpticalFrameIcon size={14} className="text-[#5483B3] shrink-0 mt-0.5" />
                                     <span className="font-semibold text-slate-800 line-clamp-1" title={item.armacao}>
                                       {item.armacao}
                                     </span>

@@ -777,7 +777,145 @@ Após o aprimoramento dos botões principais, o usuário/PO identificou que o bo
 - [x] Status operacionais transformados em pílulas clínicas com pontos circulares iluminados.
 - [x] Gavetas físicas com chips dedicados contendo ícone institucional `shelves`.
 - [x] Links de rodapé de tabelas e dashboards transformados em action pills.
-- [x] Exit Code 0 no `npm run build` e conformidade com `AGENTS.md`.
+---
+
+### 🚀 Sprint 25: Blindagem do Front-end — Prevenção de Duplo Clique, Auto-lock e Resiliência de Ações
+
+**Status:** Concluído com Sucesso (Build & Lint Exit Code 0, Branch feature/frontend-sprint-25).
+
+**Motivação:**
+Em ambiente de balcão e retaguarda de ótica, operadores frequentemente realizam cliques múltiplos e rápidos em botões de ação ("duplo clique"), o que pode gerar requisições concorrentes duplicadas, como emissão duplicada de OS (#10294 e #10295), dupla baixa no Kardex de estoque, disparos repetidos de mensagens no WhatsApp e inserções financeiras incorretas.
+
+**Especificação Técnica:**
+1. **Componente Universal `components/Button.tsx` com Blindagem Atômica:**
+   - Interceptação inteligente de `onClick`: suporte nativo a handlers assíncronos (`async/await` / Promises) com auto-lock instantâneo (`isLoading = true`) enquanto a Promise estiver pendente.
+   - Debounce atômico de proteção (500ms): rejeição síncrona imediata via refs de múltiplos cliques acidentais no mesmo botão.
+   - Estado visual de carregamento integrado com spinner animado (`animate-spin`), preservando a largura do botão sem causar Layout Shift.
+   - Propriedade `disabled` ativada imediatamente no primeiro evento com `pointer-events-none` e cursor apropriado (`cursor-not-allowed`).
+2. **Criação do Hook Utilitário `hooks/useAsyncAction.ts`:**
+   - Hook desacoplado e reutilizável para gerenciar ações com trava de concorrência (`isLoading`, `execute`, `error`, `reset`), garantindo que apenas 1 ciclo execute por vez com notificações clínicas integradas.
+3. **Refatoração das Ações de Mutação Crítica nas Telas:**
+   - **Emissão de OS (`/ordens-de-servico`):** Blindagem dos botões de emissão e envio (`btn-os-emitir-ordem-resumo` e `btn-os-finalizar-enviar-lab`), impedindo criação duplicada da ordem.
+   - **Kardex Entrada NF-e (`/kardex/entrada-nfe`):** Blindagem dos botões `btn-nfe-confirmar-entrada` e `btn-nfe-salvar-rascunho`.
+   - **Kardex Ajuste Manual (`/kardex/ajuste-manual`):** Blindagem do botão de confirmação de baixa por avaria/laboratório (`btn-ajuste-registrar-termo`).
+   - **Notificação WhatsApp (`/ordens-de-servico/notificar-whatsapp`):** Bloqueio de cliques repetidos na cópia de mensagem (`btn-notificar-copiar-texto`).
+   - **Catálogo de Estoque (`/estoque`):** Blindagem do botão de salvar produto no modal manual (`btn-modal-novo-produto-salvar`).
+   - **Fila de Pedidos (`/ordens-de-servico/fila`):** Blindagem da submissão rápida de malote (`btn-fila-bipar`).
+4. **Governança & IDs Semânticos:**
+   - 100% de conformidade com `semantic-ids.md`.
+   - Build e Lint 100% aprovados (`npm run build:frontend` e `npm run lint:frontend`).
+
+**Critérios de Aceite:**
+- [x] Auto-lock e debounce integrados nativamente em `components/Button.tsx`.
+- [x] Hook `hooks/useAsyncAction.ts` criado e tipado.
+- [x] Ações críticas de escrita (Emissão de OS, Entrada NF-e, Ajuste Manual, Modal de Produto, Bip de Malote e Ações de WhatsApp) protegidas contra duplo clique.
+- [x] Spinner e transição visual suave sem Layout Shift durante o processamento.
+- [x] `npm run lint:frontend` executado com Exit Code 0.
+- [x] `npm run build:frontend` executado com Exit Code 0.
+- [x] Validação visual e teste de cliques repetidos verificado.
+
+---
+
+### 🚀 Sprint 26: Painel Administrativo de Identidade, Gestão de Operadores e Filiais (Alinhamento Backend Sprint 01)
+
+**Status:** Concluído com Sucesso (Build & Lint Exit Code 0, Branch feature/frontend-sprint-26).
+
+**Motivação & Contexto Empresarial:**
+Alinhamento direto entre a interface Next.js e o contrato oficial de API do backend .NET 10 (`backend/docs/contracts/identity.openapi.yaml` e `docs/sprints/SPRINT-01-IDENTITY.md`).
+Em uma rede ótica com múltiplas lojas e laboratório central, a concessão de acessos precisa ser rigorosamente segregada:
+1. Gestores de filial podem cadastrar novos funcionários para sua unidade, mas **nunca criam nem visualizam senhas**. O perfil nasce com status `pending`.
+2. O Administrador de Acessos da empresa (ou o Dono da rede) é o único autorizado a conceder papéis (`seller`, `branchManager`, `accessAdministrator`, `owner`) e filiais permitidas.
+3. O novo colaborador recebe convite seguro para ativar sua conta e definir sua própria senha em uma tela de primeiro acesso (`/ativar-conta`).
+4. Enquanto os endpoints HTTP da Sprint 01 do backend estão sendo finalizados em C#/PostgreSQL, o front-end implementa uma camada de **Design-First com Mock Service Layer**, garantindo 100% de testabilidade, fidelidade aos DTOs e zero retrabalho futuro.
+
+**Especificação Técnica das Telas e Componentes:**
+
+#### 1. Página de Gestão de Usuários e Acessos (`/admin/usuarios`):
+- **Cabeçalho:** `PageHeader` (`header-admin-usuarios`) com breadcrumbs (`Dashboard > Administração > Colaboradores & Acessos`).
+- **Cards de Indicadores (KPIs):**
+  - `card-kpi-total-usuarios`: Total de colaboradores cadastrados na organização.
+  - `card-kpi-usuarios-ativos`: Colaboradores ativos e homologados.
+  - `card-kpi-usuarios-pendentes`: Convites pendentes de primeiro acesso/ativação.
+  - `card-kpi-usuarios-bloqueados`: Acessos revogados/bloqueados por auditoria.
+- **Barra de Filtros & Ações:**
+  - Campo de busca textual (`input-admin-busca-usuario`): filtra por nome, e-mail ou CPF.
+  - Filtro por Filial (`select-admin-filtro-filial`): lista filiais da rede ou "Todas as Filiais" (restrito se o usuário logado for gestor local).
+  - Pílulas de filtro de status: `btn-filtro-status-todos`, `btn-filtro-status-ativos`, `btn-filtro-status-pendentes`, `btn-filtro-status-bloqueados`.
+  - Botão de Ação Primária: `btn-admin-novo-usuario` (+ Novo Colaborador), abre o modal de cadastro rápido.
+- **Tabela de Operadores (`table-admin-usuarios`):**
+  - Colunas:
+    1. **Colaborador:** Nome completo, e-mail corporativo normalizado e avatar com iniciais.
+    2. **Filial de Lotação:** Nome da loja e chip de identificação.
+    3. **Papéis Concedidos:** Badges clínicos indicando `Vendedor`, `Gestor`, `Admin Acessos` ou `Dono`.
+    4. **Status do Perfil:**
+       - `badge-status-ativo`: Verde esmeralda (Ativo e operando).
+       - `badge-status-pendente`: Amarelo âmbar (Aguardando ativação pelo colaborador).
+       - `badge-status-bloqueado`: Rosa avermelhado (Acesso suspenso).
+    5. **Ações:**
+       - `btn-usuario-gerenciar-acessos-{id}`: Abre gaveta lateral de concessões.
+       - `btn-usuario-reenviar-convite-{id}`: Disponível para pendentes, dispara reenvio de token.
+       - `btn-usuario-toggle-bloqueio-{id}`: Alterna bloqueio/desbloqueio imediato.
+
+#### 2. Modal de Cadastro Rápido pelo Gestor (`modal-admin-novo-usuario`):
+- **Campos:**
+  - Nome Completo (`input-modal-usuario-nome`): `required`, mínimo 3 caracteres.
+  - E-mail Corporativo (`input-modal-usuario-email`): `required`, formato email normalizado.
+  - Filial de Lotação (`select-modal-usuario-filial`): seleção da unidade.
+  - Cargo/Função (`input-modal-usuario-cargo`): texto descritivo (ex: "Consultor Óptico Balcão", "Técnico de Surfaçagem").
+- **Garantia de Segurança:** Nenhum campo de senha no formulário. Alerta informativo institucional explicando que um token de ativação seguro (24h de validade) será enviado para o e-mail cadastrado.
+- **Botões:** `btn-modal-usuario-cancelar` e `btn-modal-usuario-salvar` (com proteção anti-duplo clique e feedback de sucesso via toast).
+
+#### 3. Gaveta Lateral de Concessões e Permissões (`drawer-admin-permissoes-usuario`):
+- Exibe os dados do colaborador selecionado e suas credenciais.
+- **Matriz de Papéis (`GrantRequest.role`):**
+  - `seller` (Vendedor): Opera OS nas filiais autorizadas.
+  - `branchManager` (Gestor de Filial): Visualiza relatórios locais e cadastra novos perfis na sua unidade.
+  - `accessAdministrator` (Admin de Acessos): Concede/revoga papéis e filiais a terceiros.
+  - `owner` (Dono): Acesso irrestrito a todas as filiais e visão consolidada.
+- **Matriz de Filiais Autorizadas (`GrantRequest.branchId`):** Lista todas as filiais com checkboxes individuais.
+- **Ações:**
+  - Salvar Concessões (`btn-drawer-salvar-concessoes`): Salva os novos papéis e filiais.
+  - Bloquear / Desbloquear (`btn-drawer-toggle-status`): Altera o estado entre `active` e `blocked`.
+  - Reenviar E-mail de Ativação (`btn-drawer-reenviar-ativacao`): Gera novo token de 24h para o usuário.
+
+#### 4. Tela de Primeiro Acesso & Ativação de Senha (`/ativar-conta`):
+- Acessada via link com token: `/ativar-conta?token=FO-ACT-2026-X89`
+- Exibe os dados pré-cadastrados (Nome e E-mail da ótica).
+- **Campos de Senha:**
+  - Nova Senha (`input-ativar-senha`): tipo password com toggle de visualização.
+  - Confirmação de Senha (`input-ativar-confirmar-senha`).
+  - Checklist Dinâmico de Segurança: Mínimo 8 caracteres, pelo menos 1 número, 1 letra maiúscula e 1 caractere especial.
+- **Submissão (`btn-ativar-conta-submit`):**
+  - Dispara ativação atômica com validação de token.
+  - Altera status para `active` e redireciona para `/login` com toast de boas-vindas.
+
+#### 5. Camada de Tipagem e Mock Adapter (`types/identity.ts` e `services/identityService.ts`):
+- Modelagem TypeScript 100% aderente a `identity.openapi.yaml`:
+  - `Profile`, `Branch`, `Grant`, `Session`, `Me`, `Problem`.
+- Mock Adapter desacoplado com latência simulada de 300ms, persistência em `localStorage` e retorno padronizado para testes rápidos no navegador.
+
+**Critérios de Aceite:**
+- [x] Modelagem de tipos em `types/identity.ts` conforme schemas de `identity.openapi.yaml`.
+- [x] Mock Service Adapter em `services/identityMockService.ts` implementando usuários padrão, filiais e ações de CRUD.
+- [x] Página `/admin/usuarios` criada com listagem de colaboradores, badges de status, filtros e KPIs.
+- [x] Modal de criação rápida de colaborador sem exposição de senha e com auto-lock.
+- [x] Gaveta lateral de concessões para Administrador de Acessos alterar filiais e papéis.
+- [x] Página `/ativar-conta` para primeiro acesso e definição de senha com checklist visual de segurança.
+- [x] 100% de conformidade com `semantic-ids.md` em todos os botões, inputs e elementos interativos.
+- [x] `npm run lint:frontend` executado com Exit Code 0 (0 errors, 0 warnings).
+- [x] `npm run build:frontend` executado com Exit Code 0.
+- [x] Validação visual completa no navegador.
+
+### Registro de Débito Técnico / Issue Conhecida (UI Sidebar Transition)
+- **Identificador:** `TECH-DEBT-SIDEBAR-TRANSITION-01`
+- **Sintoma:** A interpolação de largura na barra lateral (`SidebarNav`) ao alternar entre recolhida (72px) e expandida (256px) sofre com engasgo perceptual (*layout thrashing*) devido ao redimensionamento em tempo real do contêiner principal (`AppShell`), que força recálculos sucessivos do DOM e dos gráficos SVG responsivos (Recharts).
+- **Estado Atual Estabilizado:**
+  - Botão de expandir mantido no topo logo abaixo do isotipo da marca (`btn-sidebar-toggle-collapse-collapsed`).
+  - Widget de EDI Óptico removido da sidebar para redução de ruído visual.
+  - Acesso à gestão de usuários blindado exclusivamente para gestores.
+  - Rota de ativação de conta (`/ativar-conta`) desacoplada do shell.
+  - Camada de texto tratada com persistência no DOM para evitar descontinuidade de nós.
+- **Direcionamento para Resolução Futura:** Avaliar adoção de biblioteca especializada em layout físico (como [Motion](https://motion.dev) ou [shadcn/ui Sidebar](https://ui.shadcn.com/docs/components/sidebar)) em uma sprint dedicada a polimento fino de animações de shell, sem impactar as entregas do roadmap de produto.
 
 ---
 
@@ -794,3 +932,13 @@ Para garantir que o **Fatura Ótica** seja escalável como SaaS B2B e adaptável
 
 O diretório da aplicação foi renomeado de `fatura-otica/` para `frontend/`. O repositório Git, as regras comuns dos agentes e o grafo Graphify passam a usar a raiz `C:\Fatura-ótica`, ao lado de `backend/`.
 Os componentes e as rotas do Next.js mantêm seus caminhos relativos dentro do frontend. Os comandos comuns estão no `package.json` da raiz. A decisão e os critérios de aceite estão em `../../docs/PROJECT_STRUCTURE.md`, relativo a este documento.
+
+## Fix — Fluidez da sidebar (2026-10-06)
+
+- Sidebar desktop com largura fixa (256px). Recolher/expandir anima apenas `transform` (aside `-184px`, conteúdo `+184px`), deixando visível a faixa de 72px com os ícones. Sem animação de `width`.
+- Links com largura constante; apenas uma camada de fundo absoluta muda de largura. Rótulos não são re-truncados; texto faz fade com atraso na expansão.
+- Títulos de grupo mantêm altura constante (sem salto vertical); divisor aparece por opacidade quando recolhida.
+- Conteúdo principal muda `margin-left` uma única vez, via CSS (`#app-shell-main-wrapper`), sem transição.
+- Estado em `localStorage` (`fatura_otica_sidebar_collapsed`) refletido em `<html data-sidebar="collapsed">` por script inline no `<head>` antes da pintura; `SidebarContext` lê via `useSyncExternalStore`. Rotas permanecem estáticas (sem cookie/`cookies()`).
+- Padrões reutilizáveis: `frontend/docs/PERFORMANCE_UI.md`.
+

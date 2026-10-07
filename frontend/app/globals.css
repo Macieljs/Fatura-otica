@@ -83,3 +83,20 @@ body {
   background-color: var(--color-background);
   color: var(--color-on-surface);
 }
+
+/* Sidebar: largura fixa 256px; recolher = deslizar com transform (composto na GPU, sem layout por frame).
+   O aside desloca -184px e o conteúdo +184px: a faixa visível de 72px mostra os ícones. */
+#sidebar-nav-desktop-aside,
+#sidebar-nav-desktop-content {
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+#sidebar-nav-desktop-aside { width: 16rem; contain: layout paint; }
+html[data-sidebar="collapsed"] #sidebar-nav-desktop-aside { transform: translateX(-184px); }
+html[data-sidebar="collapsed"] #sidebar-nav-desktop-content { transform: translateX(184px); }
+
+/* Margem do conteúdo muda uma única vez (sem animação). */
+@media (min-width: 768px) {
+  #app-shell-main-wrapper { margin-left: 16rem; }
+  html[data-sidebar="collapsed"] #app-shell-main-wrapper { margin-left: 72px; }
+}
+

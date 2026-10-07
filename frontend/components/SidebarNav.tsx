@@ -40,7 +40,7 @@ export default function SidebarNav() {
       group: isManager ? "Visão Executiva" : "Visão Operacional",
       items: [
         { id: "nav-link-dashboard", href: "/", label: "Dashboard", icon: "dashboard", exact: true },
-        { id: "nav-link-kardex", href: "/kardex", label: "Kardex", icon: "monitoring", exact: true },
+        { id: "nav-link-kardex", href: "/kardex", label: "Kardex", icon: "swap_horiz", exact: true },
       ],
     },
     {
@@ -65,7 +65,7 @@ export default function SidebarNav() {
           id: "nav-link-nova-os",
           href: "/ordens-de-servico",
           label: "Nova Venda / OS",
-          icon: "add_shopping_cart",
+          icon: "add_circle",
           shortcut: "[F2]",
           exact: true,
         },
@@ -75,23 +75,38 @@ export default function SidebarNav() {
       group: "Estoque & Logística",
       items: isManager
         ? [
-            { id: "nav-link-estoque", href: "/estoque", label: "Catálogo Armações", icon: "qr_code_2" },
+            { id: "nav-link-estoque", href: "/estoque", label: "Catálogo Armações", icon: "inventory_2" },
             { id: "nav-link-entrada-nfe", href: "/kardex/entrada-nfe", label: "Entrada NF-e XML", icon: "receipt_long" },
-            { id: "nav-link-ajuste-manual", href: "/kardex/ajuste-manual", label: "Ajuste & Avaria", icon: "construction" },
+            { id: "nav-link-ajuste-manual", href: "/kardex/ajuste-manual", label: "Ajuste & Avaria", icon: "tune" },
             {
               id: "nav-link-sugestoes-compra",
               href: "/kardex/sugestoes-compra",
               label: "Sugestões de Compra",
-              icon: "production_quantity_limits",
+              icon: "shopping_cart",
               badge: "8",
               badgeColor: "bg-red-500/20 text-red-300 border border-red-500/40",
             },
           ]
         : [
-            { id: "nav-link-estoque", href: "/estoque", label: "Catálogo Armações", icon: "qr_code_2" },
+            { id: "nav-link-estoque", href: "/estoque", label: "Catálogo Armações", icon: "inventory_2" },
             { id: "nav-link-entrada-nfe", href: "/kardex/entrada-nfe", label: "Entrada NF-e XML", icon: "receipt_long" },
           ],
     },
+    ...(isManager
+      ? [
+          {
+            group: "Administração & Acessos",
+            items: [
+              {
+                id: "nav-link-admin-usuarios",
+                href: "/admin/usuarios",
+                label: "Colaboradores & Acessos",
+                icon: "badge",
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 
   const isItemActive = (href: string, exact?: boolean) => {
@@ -123,13 +138,11 @@ export default function SidebarNav() {
         {/* Top Section */}
         <div className="flex flex-col overflow-y-auto overflow-x-hidden">
           {/* Brand Header */}
-          <div className={`h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 transition-all ${
-            collapsed ? "px-2 justify-center" : "px-4 justify-between"
-          }`}>
-            <Link id="nav-link-brand-home" href="/" prefetch={true} className={`flex items-center cursor-pointer active:scale-95 transition-transform duration-100 ${collapsed ? "justify-center w-full" : ""}`}>
+          <div className="h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 px-4 justify-between">
+            <Link id="nav-link-brand-home" href="/" prefetch={true} className="flex items-center cursor-pointer active:scale-95 transition-transform duration-100">
               {collapsed ? (
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#052659] to-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white shadow-xs">
-                  <span className="material-symbols-outlined text-[22px]">visibility</span>
+                  <OpticalBrandLogo size="sm" showText={false} />
                 </div>
               ) : (
                 <OpticalBrandLogo size="md" subtitle="v4.8 Enterprise" badge="MATRIZ" />
@@ -162,7 +175,7 @@ export default function SidebarNav() {
 
           {/* Desktop Expand Toggle Button (When Collapsed - Centered Perfectly) */}
           {collapsed && !forceExpanded && (
-            <div className="px-2 pt-2.5 pb-0.5 flex justify-center">
+            <div className="pl-4 pt-2.5 pb-0.5 flex justify-start">
               <button
                 id="btn-sidebar-toggle-collapse-collapsed"
                 type="button"
@@ -175,46 +188,31 @@ export default function SidebarNav() {
             </div>
           )}
 
-          {/* Live Optical Engine Pulse Badge */}
-          {collapsed ? (
-            <div 
-              className="mx-auto mt-2 w-8 h-8 rounded-lg bg-[#021024]/70 border border-[#5483B3]/30 flex items-center justify-center shadow-2xs"
-              title="EDI Óptico Conectado • Tolerância ±0.25D"
-            >
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </span>
-            </div>
-          ) : (
-            <div className="mx-3 mt-3 px-2.5 py-1.5 rounded-lg bg-[#021024]/70 border border-[#5483B3]/30 flex items-center justify-between shadow-2xs">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span className="text-[10px] font-mono text-[#C1E8FF] font-semibold">
-                  EDI Óptico Conectado
-                </span>
-              </div>
-              <span className="text-[9px] font-mono text-[#7DA0CA] bg-[#052659] px-1.5 py-0.2 rounded font-bold border border-[#5483B3]/40">
-                ±0.25D
-              </span>
-            </div>
-          )}
-
           {/* Navigation Groups */}
-          <div className={`space-y-4 ${collapsed ? "p-2" : "p-3"}`}>
+          <div className="space-y-3 p-3">
             {navGroups.map((group, gIdx) => (
               <div key={gIdx}>
-                {!collapsed && (
-                  <div className="px-2.5 pb-1.5 text-[10px] font-bold tracking-wider text-[#7DA0CA] uppercase">
+                {/* Group Heading: altura constante; texto faz fade e um divisor aparece quando recolhido */}
+                <div className="relative h-5 select-none">
+                  <div
+                    id={`nav-group-heading-${gIdx}`}
+                    aria-hidden={collapsed}
+                    className={`px-2 text-[10px] leading-5 font-bold tracking-wider text-[#7DA0CA] uppercase whitespace-nowrap transition-opacity ease-out ${
+                      collapsed ? "opacity-0 duration-100" : "opacity-100 duration-200 delay-100"
+                    }`}
+                  >
                     {group.group}
                   </div>
-                )}
-                {collapsed && gIdx > 0 && (
-                  <div className="my-2 border-t border-[#021024]" />
-                )}
+                  {gIdx > 0 && (
+                    <div
+                      aria-hidden="true"
+                      className={`absolute left-1 w-[40px] top-1/2 border-t border-[#021024] transition-opacity duration-200 ease-out ${
+                        collapsed ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+                  )}
+                </div>
+
                 <nav className="space-y-1">
                   {group.items.map((item, iIdx) => {
                     const active = isItemActive(item.href, item.exact);
@@ -225,32 +223,61 @@ export default function SidebarNav() {
                         href={item.href}
                         prefetch={true}
                         title={collapsed ? `${item.label} ${item.shortcut ? `(${item.shortcut})` : ""}` : undefined}
-                        className={`rounded-lg transition-all relative group flex items-center cursor-pointer active:scale-95 duration-100 ${
-                          collapsed
-                            ? "h-11 w-11 mx-auto justify-center"
-                            : "w-full px-2.5 py-2 justify-between font-medium text-[13px]"
-                        } ${
-                          active
-                            ? "bg-[#5483B3] text-white shadow-xs font-semibold"
-                            : "text-[#C1E8FF] hover:bg-[#5483B3]/25 hover:text-white transition-colors duration-150"
+                        className={`group h-11 w-full relative flex items-center px-3.5 font-medium text-[13px] cursor-pointer active:scale-95 transition-colors duration-150 ${
+                          active ? "text-white font-semibold" : "text-[#C1E8FF] hover:text-white"
                         }`}
                       >
-                        <div className={`flex items-center pointer-events-none ${collapsed ? "justify-center" : "gap-2.5 min-w-0"}`}>
+                        {/* Fundo animado: única parte que muda de largura; o conteúdo fica estável */}
+                        <span
+                          aria-hidden="true"
+                          className={`absolute inset-y-0 left-0 rounded-lg transition-[width,background-color] duration-200 ease-out ${
+                            collapsed ? "w-12" : "w-full"
+                          } ${active ? "bg-[#5483B3] shadow-xs" : "group-hover:bg-[#5483B3]/25"}`}
+                        />
+                        <div className="relative flex items-center min-w-0 flex-1 gap-2.5">
                           <span
-                            className={`material-symbols-outlined text-[20px] ${
+                            className={`material-symbols-outlined text-[20px] shrink-0 ${
                               active ? "text-white" : "text-[#7DA0CA]"
                             }`}
                           >
                             {item.icon}
                           </span>
-                          {!collapsed && <span className="truncate">{item.label}</span>}
+
+                          {/* Camada de texto: largura do link é constante, então não re-trunca durante a animação; só faz fade */}
+                          <div
+                            aria-hidden={collapsed}
+                            className={`flex items-center justify-between min-w-0 flex-1 transition-opacity ease-out select-none ${
+                              collapsed ? "opacity-0 pointer-events-none duration-100" : "opacity-100 duration-200 delay-100"
+                            }`}
+                          >
+                            <span className="truncate whitespace-nowrap text-white font-medium">{item.label}</span>
+                            <div className="flex items-center gap-1 shrink-0 ml-1.5">
+                              {item.badge && (
+                                <span
+                                  className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${
+                                    item.badgeColor || "bg-[#5483B3] text-white"
+                                  }`}
+                                >
+                                  {item.badge}
+                                </span>
+                              )}
+                              {item.shortcut && (
+                                <span className="text-[10px] font-mono text-[#7DA0CA]">
+                                  {item.shortcut}
+                                </span>
+                              )}
+                              {active && !item.badge && !item.shortcut && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                              )}
+                            </div>
+                          </div>
                         </div>
 
                         {/* Collapsed Tooltip / Floating Badge */}
-                        {collapsed ? (
+                        {collapsed && (
                           <>
                             {item.badge && (
-                              <span className="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-[#5483B3] text-white text-[9px] font-mono font-bold flex items-center justify-center border border-[#052659]">
+                              <span className="absolute -top-1 left-9 h-4 min-w-[16px] px-1 rounded-full bg-[#5483B3] text-white text-[9px] font-mono font-bold flex items-center justify-center border border-[#052659]">
                                 {item.badge}
                               </span>
                             )}
@@ -258,24 +285,6 @@ export default function SidebarNav() {
                               <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#C1E8FF]"></span>
                             )}
                           </>
-                        ) : (
-                          <div className="flex items-center gap-1 flex-shrink-0">
-                            {item.badge && (
-                              <span
-                                className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${item.badgeColor}`}
-                              >
-                                {item.badge}
-                              </span>
-                            )}
-                            {item.shortcut && (
-                              <span className="text-[10px] font-mono text-[#7DA0CA]">
-                                {item.shortcut}
-                              </span>
-                            )}
-                            {active && !item.badge && !item.shortcut && (
-                              <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-                            )}
-                          </div>
                         )}
                       </Link>
                     );
@@ -289,7 +298,7 @@ export default function SidebarNav() {
         {/* Sidebar Footer User Card */}
         <div className={`border-t border-[#021024] bg-[#021024]/60 flex-shrink-0 ${collapsed ? "p-2" : "p-3"}`}>
           {collapsed ? (
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-2 w-9 ml-2.5">
               <Link
                 id="btn-sidebar-user-avatar"
                 href="/login"
@@ -371,11 +380,12 @@ export default function SidebarNav() {
       {/* Desktop Persistent Sidebar (Adaptive Collapsible Width) */}
       <aside 
         id="sidebar-nav-desktop-aside"
-        className={`hidden md:flex flex-shrink-0 bg-[#052659] border-r border-[#021024] flex-col fixed top-0 bottom-0 left-0 z-40 select-none transition-[width] duration-200 ease-in-out ${
-          isCollapsed ? "w-[72px]" : "w-64"
-        }`}
+        className="hidden md:flex flex-shrink-0 bg-[#052659] border-r border-[#021024] flex-col fixed top-0 bottom-0 left-0 z-40 select-none overflow-hidden"
       >
-        {navContent(false)}
+        {/* Largura fixa: o aside apenas recorta, o conteúdo não se reorganiza a cada frame */}
+        <div id="sidebar-nav-desktop-content" className="w-64 h-full shrink-0">
+          {navContent(false)}
+        </div>
       </aside>
 
       {/* Mobile Drawer Backdrop */}
