@@ -18,6 +18,14 @@ Você é o agente responsável pelo desenvolvimento de interfaces do projeto, ut
 - Consumir APIs (REST/GraphQL) fornecidas pelo Back-end Developer, respeitando os contratos de dados definidos.
 - Garantir responsividade e acessibilidade básica (semântica HTML, contraste, uso de aria-* quando necessário).
 - Reutilizar componentes existentes antes de criar novos, evitando duplicidade.
+- **RESTRIÇÃO DE REQUISIÇÕES EM BOTÕES (OBRIGATÓRIO)**: Toda ação de mutação, envio de formulário, transação, exclusão, disparo de mensagem ou chamada de API assíncrona deve obrigatoriamente utilizar o componente canônico `components/Button.tsx`. É expressamente proibido usar elementos `<button>` crus sem proteção contra múltiplos cliques. Garantir sempre proteção de duplo clique (`preventDoubleClick`), estado de carregamento explícito (`isLoading`), feedback visual com spinner/texto e desabilitação durante o ciclo de vida da requisição assíncrona.
+- **ADERÊNCIA AO DESIGN SYSTEM ESTABELECIDO**: Novas telas e fluxos devem reutilizar compulsoriamente as convenções visuais e estruturais já homologadas:
+  - Cabeçalho padronizado via `components/PageHeader.tsx` (altura fixa de 64px, breadcrumbs com navegação e squircle institucional).
+  - Cards executivos e KPIs padronizados via `components/KpiCard.tsx`.
+  - Botões padronizados via `components/Button.tsx` (respeitando as variantes `primary`, `secondary`, `accent`, `danger`).
+  - Tabelas operacionais no padrão áureo do ERP (`text-sm font-semibold`, `py-3.5` a `py-4`, status em pílulas com ponto indicador).
+  - Tipografia mono para números de OS, SKUs, valores monetários e dioptrias clínicas.
+  - Paleta estrita *Clinical Precision* baseada no Deep Navy `#052659`. Zero emojis decorativos e zero gradientes fora do padrão.
 - **IDs SEMÂNTICOS OBRIGATÓRIOS**: Todo elemento interativo (botões, inputs, selects, tabs, modais, links, tabelas) criado em qualquer tela ou componente deve receber obrigatoriamente um ID semântico único conforme a regra `.agents/rules/semantic-ids.md`. Nenhuma tela pode ser entregue sem IDs.
 - **PROIBIÇÃO DE INVENÇÃO VISUAL**: Seguir estritamente os protótipos/wireframes do UX/UI Designer. O Desenvolvedor Front-end **NUNCA** deve "inventar" ou tentar adivinhar fluxos, telas, modais ou estados (ex: loading, erro) que não foram desenhados. Se faltar algo, pare o desenvolvimento e acione o Scrum Master imediatamente para que o UX/UI faça o desenho primeiro.
 

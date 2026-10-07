@@ -86,6 +86,11 @@ A aplicação utiliza estritamente o sistema de cores do Fatura Ótica:
 
 #### E. Padrão de Destaque e Hierarquia de Botões (`components/Button.tsx`)
 - Componente oficial: `components/Button.tsx` (suporta `asLink` via prop `href`).
+- **Blindagem Obrigatória de Concorrência & Restrição de Requisições:** É expressamente proibido usar `<button>` cru desprotegido em ações de mutação, envio ou chamadas assíncronas. Todo botão deve usar `components/Button.tsx`, que provê por padrão:
+  - Proteção contra duplo clique (`preventDoubleClick={true}`, janela padrão de `debounceMs={500}`).
+  - Trava síncrona por ref (`isExecutingRef`) durante a execução de Promises assíncronas.
+  - Indicador de carregamento (`isLoading` ou auto-resolvido na Promise), substituindo o ícone por spinner `progress_activity animate-spin`.
+  - Desabilitação visual e funcional completa (`disabled`, `aria-busy`, `disabled:pointer-events-none`).
 - **Primary CTA (`variant="primary"`):** `bg-[#052659] hover:bg-[#021024] text-white shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#052659]/20 font-bold`.
 - **Secondary CTA / Cabeçalho (`variant="secondary"` ou Cerulean Sólido):** Para botões como `btn-fila-imprimir-romaneio`, `btn-dash-atualizar` e `btn-estoque-exportar-excel`, usar preenchimento sólido Cerulean `bg-[#5483B3] hover:bg-[#052659] text-white font-bold shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 ring-2 ring-[#5483B3]/25` com ícone branco, erradicando botões vazados/camaleões contra o cabeçalho.
 - **Accent / Conversão (`variant="accent"`):** `bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:scale-95 font-bold` para WhatsApp e entregas.
@@ -123,12 +128,13 @@ Formato: `[modulo]-[submodulo-ou-contexto]-[tipo-elemento]-[acao-ou-nome]`
 ## 4. Definition of Done (DoD) & Ciclo de Sprints
 
 Antes de qualquer conclusão de tarefa ou entrega ao PO/usuário:
-1. **Auditoria de Design & Fidelidade:** O layout respeita a sobriedade clínica, a paleta `#052659` e zero elementos fora de padrão.
-2. **IDs Semânticos Auditados:** 100% de conformidade verificada.
-3. **Análise Estática & Build de Produção:** O comando `npm run build` deve compilar com **Exit Code 0** (zero erros de TypeScript, zero rotas estáticas quebradas).
-4. **Registro Formal em `SPEC.md`:** A sprint correspondente deve estar devidamente descrita, com motivação, especificação técnica detalhada e critérios de aceite marcados.
-5. **Atualização do `AGENTS.md`:** Toda alteração de grande porte, padrão de tela ou decisão arquitetural deve ser registrada neste documento.
-6. **Back-end (.NET + TDD):** testes de aceite escritos antes do código, `dotnet build` sem warnings, `dotnet test` 100% verde, cobertura do Domínio ≥ 90% e testes de isolamento entre tenants (ver `../.agents/rules/back-end-developer.md` e `../backend/docs/adr/`).
+1. **Auditoria de Design & Fidelidade:** O layout respeita a sobriedade clínica, a paleta `#052659` e zero elementos fora de padrão. Reúso de `PageHeader.tsx`, `KpiCard.tsx` e padrões homologados.
+2. **IDs Semânticos Auditados:** 100% de conformidade verificada (regra `semantic-ids.md`).
+3. **Restrição de Requisições & Blindagem de Botões:** 100% dos botões de ação assíncrona/mutação utilizam `components/Button.tsx` com prevenção contra duplo clique, estado `isLoading` e desabilitação durante a execução.
+4. **Análise Estática & Build de Produção:** O comando `npm run build` deve compilar com **Exit Code 0** (zero erros de TypeScript, zero rotas estáticas quebradas).
+5. **Registro Formal em `SPEC.md`:** A sprint correspondente deve estar devidamente descrita, com motivação, especificação técnica detalhada e critérios de aceite marcados.
+6. **Atualização do `AGENTS.md`:** Toda alteração de grande porte, padrão de tela ou decisão arquitetural deve ser registrada neste documento.
+7. **Back-end (.NET + TDD):** testes de aceite escritos antes do código, `dotnet build` sem warnings, `dotnet test` 100% verde, cobertura do Domínio ≥ 90% e testes de isolamento entre tenants (ver `../.agents/rules/back-end-developer.md` e `../backend/docs/adr/`).
 
 ---
 
