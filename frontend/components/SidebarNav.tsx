@@ -134,61 +134,60 @@ export default function SidebarNav() {
     const initials = getInitials(operator.name);
 
     return (
-      <div className="flex flex-col h-full justify-between">
-        {/* Top Section */}
-        <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-          {/* Brand Header */}
-          <div className="h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 px-4 justify-between">
-            <Link id="nav-link-brand-home" href="/" prefetch={true} className="flex items-center cursor-pointer active:scale-95 transition-transform duration-100">
-              {collapsed ? (
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#052659] to-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white shadow-xs">
-                  <OpticalBrandLogo size="sm" showText={false} />
-                </div>
-              ) : (
-                <OpticalBrandLogo size="md" subtitle="v4.8 Enterprise" badge="MATRIZ" />
-              )}
-            </Link>
-
-            {/* Desktop Collapse Toggle Button (When Expanded) */}
-            {!forceExpanded && !collapsed && (
-              <button
-                id="btn-sidebar-toggle-collapse"
-                type="button"
-                onClick={toggleCollapse}
-                title="Recolher Menu Lateral [Alt+B]"
-                className="hidden md:flex p-1.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/20 transition-colors cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">first_page</span>
-              </button>
+      <div className="flex flex-col h-full justify-between overflow-hidden">
+        {/* Brand Header: Fixo no topo, nunca rola */}
+        <div className="h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 px-4 justify-between">
+          <Link id="nav-link-brand-home" href="/" prefetch={true} className="flex items-center cursor-pointer active:scale-95 transition-transform duration-100">
+            {collapsed ? (
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#052659] to-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white shadow-xs">
+                <OpticalBrandLogo size="sm" showText={false} />
+              </div>
+            ) : (
+              <OpticalBrandLogo size="md" subtitle="v4.8 Enterprise" badge="MATRIZ" />
             )}
+          </Link>
 
-            {/* Mobile close button */}
+          {/* Desktop Collapse Toggle Button (When Expanded) */}
+          {!forceExpanded && !collapsed && (
             <button
-              id="btn-sidebar-mobile-close"
-              onClick={() => setMobileOpen(false)}
-              className="md:hidden text-[#C1E8FF] hover:text-white p-1"
-              title="Fechar menu"
+              id="btn-sidebar-toggle-collapse"
+              type="button"
+              onClick={toggleCollapse}
+              title="Recolher Menu Lateral [Alt+B]"
+              className="hidden md:flex p-1.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/20 transition-colors cursor-pointer"
             >
-              <span className="material-symbols-outlined text-xl">close</span>
+              <span className="material-symbols-outlined text-[18px]">first_page</span>
             </button>
-          </div>
-
-          {/* Desktop Expand Toggle Button (When Collapsed - Centered Perfectly) */}
-          {collapsed && !forceExpanded && (
-            <div className="pl-4 pt-2.5 pb-0.5 flex justify-start">
-              <button
-                id="btn-sidebar-toggle-collapse-collapsed"
-                type="button"
-                onClick={toggleCollapse}
-                title="Expandir Menu Lateral [Alt+B]"
-                className="hidden md:flex w-10 h-7.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/25 transition-colors cursor-pointer items-center justify-center border border-[#5483B3]/30 shadow-2xs"
-              >
-                <span className="material-symbols-outlined text-[18px]">last_page</span>
-              </button>
-            </div>
           )}
 
-          {/* Navigation Groups */}
+          {/* Mobile close button */}
+          <button
+            id="btn-sidebar-mobile-close"
+            onClick={() => setMobileOpen(false)}
+            className="md:hidden text-[#C1E8FF] hover:text-white p-1"
+            title="Fechar menu"
+          >
+            <span className="material-symbols-outlined text-xl">close</span>
+          </button>
+        </div>
+
+        {/* Desktop Expand Toggle Button (When Collapsed - Centered Perfectly) */}
+        {collapsed && !forceExpanded && (
+          <div className="pl-4 pt-2.5 pb-0.5 flex justify-start flex-shrink-0">
+            <button
+              id="btn-sidebar-toggle-collapse-collapsed"
+              type="button"
+              onClick={toggleCollapse}
+              title="Expandir Menu Lateral [Alt+B]"
+              className="hidden md:flex w-10 h-7.5 rounded-lg text-[#C1E8FF] hover:text-white hover:bg-[#5483B3]/25 transition-colors cursor-pointer items-center justify-center border border-[#5483B3]/30 shadow-2xs"
+            >
+              <span className="material-symbols-outlined text-[18px]">last_page</span>
+            </button>
+          </div>
+        )}
+
+        {/* Scrollable Navigation Groups: Scrollbar sofisticada e ultrafina */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll">
           <div className="space-y-3 p-3">
             {navGroups.map((group, gIdx) => (
               <div key={gIdx}>
