@@ -29,3 +29,10 @@ Nenhum achado P0/P1/P2 foi identificado.
 - Configuração real/segredos, sessão persistente S1-05, integração de frontend e deploy ficam fora desta aprovação.
 
 A revisão autoriza somente a integração técnica do snapshot A1 em `develop`, após confirmar checkout limpo, árvore imutável e gates aplicáveis. Não aprova S1-04A2, MVP, sprint completa, `main` ou deploy.
+
+## Integração local
+
+- Branch de feature: `feature/s1-04a-pending-profiles`, commit `9be100d`.
+- Merge local em `develop`: `8ec47d9`.
+- Árvore do merge e árvore da feature revisada coincidem: `aa6e7922171782d7d0962e522560b243cfe5d1b8`.
+- CI remoto fica pendente até a publicação de `develop`; nenhuma promoção para `main` foi feita.

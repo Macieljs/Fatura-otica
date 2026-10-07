@@ -1,7 +1,7 @@
 # Sprint 01 — Identidade e acesso empresarial
 
 - Data: 2026-10-06 (America/Fortaleza).
-- Estado: `implementing`. S1-01/02/03A/03B integrados em develop; S1-03B passou Feature (149/149), revisão independente e CI remoto (Backend/Frontend success). A contagem antiga 3/7 (≈43%) é somente referência histórica, sem previsão de esforço. MVP replanejado em `MVP-SCOPE-DECISION-2026-10-06.md`; S1-04A1 passou Feature 254/254 e revisão independente, aguardando integração/CI remoto. Cadastro pendente/autorizações após A1, ativação, login/sessões e integração de rotas ainda não concluídos. Acompanhar `docs/sprints/SPRINT-01-STATUS.md`.
+- Estado: `implementing`. S1-01/02/03A/03B integrados em develop; S1-03B passou Feature (149/149), revisão independente e CI remoto (Backend/Frontend success). A contagem antiga 3/7 (≈43%) é somente referência histórica, sem previsão de esforço. MVP replanejado em `MVP-SCOPE-DECISION-2026-10-06.md`; S1-04A1 passou Feature 254/254 e revisão independente, merge local `8ec47d9` em develop com CI remoto pendente. Cadastro pendente/autorizações após A1, ativação, login/sessões e integração de rotas ainda não concluídos. Acompanhar `docs/sprints/SPRINT-01-STATUS.md`.
 - Autorização: usuário confirmou iniciar esta sprint, atualizar specs e delegar execução na conversa de 06/10/2026. Reutilizar essa autorização no escopo descrito; não aprovar módulos futuros ou publicação por inferência.
 - Base: `f412f5194b07fb263a1d95f259a25cacea06197f`.
 - Integração: `develop`; incremento atual em `feature/s1-03b-audit`; estabilidade/release em `main`.

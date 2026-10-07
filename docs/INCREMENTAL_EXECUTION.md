@@ -33,7 +33,7 @@ Mudanças de persistência/RLS exigem PostgreSQL real; ausência do banco impede
 | S1-02 | Núcleo de autorização | Validado inicialmente com30testes e revisão; incorporado à candidata local develop7d2c205 com Feature91/91. |
 | S1-03A | Persistência básica Identity e isolamento | Validado: migration, RLS/filtro/FKs/reader/transações; PostgreSQL17 real,61Integration e Feature91/91 na candidata local develop7d2c205. Publicação remota registrada no STATUS. |
 | S1-03B | Auditoria de alterações de acesso | Persistência append-only e evidência de quem/quando/alvo, sem credenciais; depende03A. |
-| S1-04A1 | Cadastro de perfil pendente | Green Feature 254/254 e revisão independente aprovados; integração em develop/CI remoto pendentes. Parecer em `docs/sprints/S1-04A1-REVIEW.md`. |
+| S1-04A1 | Cadastro de perfil pendente | Feature 254/254 e revisão aprovados; merge local `8ec47d9` em develop com tree igual à feature; CI remoto pendente. Parecer em `docs/sprints/S1-04A1-REVIEW.md`. |
 | S1-04A2 | Concessão de acessos | Administrador de acessos/dono autorizado concede e revoga papéis/filiais; testes negativos e auditoria. |
 | S1-04B | Token de primeiro acesso e ativação | Token hash/uso único/expiração; link repassado manualmente pelo administrador; senha Argon2id; conta ativa somente após conclusão válida. |
 | S1-04C (pós-MVP) | Envio SMTP de ativação | Adiado. Integrar entrega automática do link sem alterar geração, hash, validade ou uso único do token. |

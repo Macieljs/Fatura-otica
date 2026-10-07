@@ -151,7 +151,7 @@ Publicação em staging, configuração de secrets, ambientes e produção depen
 
 ## Ordem de implantação
 
-1. Integrar S1-04A1 após Feature e revisão aprovados; conferir árvore e CI remoto.
+1. Confirmar CI remoto do merge local S1-04A1 em develop; tree de integração foi idêntica ao snapshot revisado.
 2. Seguir com S1-04A2 para concessão explícita e S1-04B para ativação segura com link/token repassado manualmente; SMTP não é requisito do MVP.
 3. Entregar login/sessões e integrar frontend nas fatias correspondentes. Testes automatizados frontend/E2E permanecem adiados.
 4. Configurar verificações obrigatórias no repositório remoto e proteger a integração, conforme os critérios atuais de cada frente. YAML local não altera regras de branch.

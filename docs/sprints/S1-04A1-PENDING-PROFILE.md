@@ -1,6 +1,6 @@
 # S1-04A1 — Cadastro de perfil pendente
 
-- Estado: `review-approved-awaiting-integration`
+- Estado: `locally-integrated-awaiting-remote-ci`
 - Tipo: feature
 - Escopo: backend
 - Objetivo: permitir que gestor autorizado crie perfil de funcionário pendente dentro da própria filial, sem senha, token de ativação, papel ou acesso operacional concedido.
@@ -41,7 +41,7 @@
 - Red: PEND-01..10 concluído em 2026-10-06: 92 testes novos executados, 87 falhas funcionais esperadas, 5 aprovados, zero ignorados. Regressões149/149 verdes; PEND-11 também concluído: 13 falhas funcionais em execução focada separada, após corrigir a fixture de valores ausentes. Detalhe/limites em S1-04A1-QA.md.
 - Green/Feature: aprovado em artifacts/quality/backend/20261007-003109-90ada1f5, snapshot `f4fa97bc6e34748eac9831cf7fbf617c8cc53a7e146e3e366e383e9ce67d9840`; checkout sujo sobre HEAD3c79faf, sem autorização de release.
 - Revisão independente: aprovada por agente GPT-6.1 Sol; ver `S1-04A1-REVIEW.md`. Snapshot técnico `f4fa97bc6e34748eac9831cf7fbf617c8cc53a7e146e3e366e383e9ce67d9840`; 59 hashes técnicos conferidos sem divergência após documentação.
-- Integração em develop: pendente; exige revisão e gates aplicáveis.
+- Integração em develop: merge local `8ec47d9`; tree `aa6e792` igual à feature revisada; CI remoto pendente.
 
 Este recorte não declara S1-04A, MVP ou Sprint 01 completos. Próximo recorte após aprovação: S1-04A2 concessão explícita de papéis/filiais por administrador de acessos/dono.
 
