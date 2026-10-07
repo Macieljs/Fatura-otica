@@ -632,20 +632,42 @@ export default function AdminUsuariosPage() {
                               id={`btn-usuario-toggle-bloqueio-${p.id}`}
                               type="button"
                               onClick={() => handleToggleStatus(p)}
-                              className={`p-1.5 rounded-lg transition-colors ${
+                              className={`group/lock relative w-8 h-8 rounded-lg transition-all duration-200 active:scale-90 flex items-center justify-center cursor-pointer ${
                                 p.status === "blocked"
-                                  ? "text-emerald-700 hover:bg-emerald-50"
-                                  : "text-rose-600 hover:bg-rose-50"
+                                  ? "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 hover:shadow-2xs"
+                                  : "text-rose-600 hover:text-rose-700 hover:bg-rose-50 hover:shadow-2xs"
                               }`}
                               title={
                                 p.status === "blocked"
-                                  ? "Reativar acesso do colaborador"
-                                  : "Suspender/bloquear acesso do colaborador"
+                                  ? "Clique para reativar/desbloquear o acesso deste colaborador"
+                                  : "Clique para suspender/bloquear o acesso deste colaborador"
                               }
                             >
-                              <span className="material-symbols-outlined text-[18px]">
-                                {p.status === "blocked" ? "lock_open" : "lock"}
-                              </span>
+                              <div className="relative w-5 h-5 flex items-center justify-center pointer-events-none">
+                                {p.status === "blocked" ? (
+                                  <>
+                                    {/* Estado normal (Verde): lock_open */}
+                                    <span className="material-symbols-outlined text-[19px] absolute transition-all duration-200 ease-out group-hover/lock:opacity-0 group-hover/lock:scale-75 group-hover/lock:-rotate-12">
+                                      lock_open
+                                    </span>
+                                    {/* Estado hover: lock (sinaliza fechamento de trava) */}
+                                    <span className="material-symbols-outlined text-[19px] absolute transition-all duration-200 ease-out opacity-0 scale-75 rotate-12 group-hover/lock:opacity-100 group-hover/lock:scale-110 group-hover/lock:rotate-0">
+                                      lock
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    {/* Estado normal (Vermelho): lock */}
+                                    <span className="material-symbols-outlined text-[19px] absolute transition-all duration-200 ease-out group-hover/lock:opacity-0 group-hover/lock:scale-75 group-hover/lock:rotate-12">
+                                      lock
+                                    </span>
+                                    {/* Estado hover: lock_open (sinaliza abertura de trava) */}
+                                    <span className="material-symbols-outlined text-[19px] absolute transition-all duration-200 ease-out opacity-0 scale-75 -rotate-12 group-hover/lock:opacity-100 group-hover/lock:scale-110 group-hover/lock:rotate-0">
+                                      lock_open
+                                    </span>
+                                  </>
+                                )}
+                              </div>
                             </button>
                           </div>
                         </td>
@@ -994,13 +1016,16 @@ export default function AdminUsuariosPage() {
                   id="btn-drawer-toggle-bloqueio"
                   type="button"
                   onClick={() => handleToggleStatus(selectedUser)}
-                  className={`flex-1 py-2 px-3 rounded-xl border text-xs font-bold transition-colors ${
+                  className={`group/drawer-lock flex-1 py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${
                     selectedUser.status === "blocked"
-                      ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
-                      : "bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100"
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100 hover:shadow-2xs"
+                      : "bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100 hover:shadow-2xs"
                   }`}
                 >
-                  {selectedUser.status === "blocked" ? "Reativar Colaborador" : "Suspender Acesso"}
+                  <span className="material-symbols-outlined text-[16px] transition-transform duration-200 group-hover/drawer-lock:scale-110">
+                    {selectedUser.status === "blocked" ? "lock_open" : "lock"}
+                  </span>
+                  <span>{selectedUser.status === "blocked" ? "Reativar Colaborador" : "Suspender Acesso"}</span>
                 </button>
 
                 {selectedUser.status === "pending" && (
