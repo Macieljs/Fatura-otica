@@ -30,8 +30,8 @@ public sealed class IdentityAuditMigrationTests(IdentityPostgreSqlFixture fixtur
             await seed.ExecuteNonQueryAsync();
             await context.Database.MigrateAsync();
             var migrations = (await context.Database.GetAppliedMigrationsAsync()).ToArray();
-            Assert.Equal(2, migrations.Length);
-            Assert.EndsWith("_AddIdentityAudit", migrations[1]);
+            Assert.Contains("20261006165846_InitialIdentity", migrations);
+            Assert.Contains("20261006223501_AddIdentityAudit", migrations);
             await context.Database.MigrateAsync();
             await using var check = new NpgsqlCommand("SELECT u.nome,t.nome FROM identity.usuarios u JOIN identity.tenants t ON t.id=u.tenant_id WHERE u.id=@user; SELECT count(*) FROM identity.auditoria", connection);
             check.Parameters.AddWithValue("user", user);

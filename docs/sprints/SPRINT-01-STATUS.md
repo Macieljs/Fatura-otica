@@ -4,10 +4,13 @@ Data: 2026-10-06. Estado da sprint: em execução; conclusão funcional ainda bl
 
 ## Estimativa de conclusão
 
-- O backlog define 7 itens principais, sem pontos ou pesos. S1-01/02/03 estão integrados em `develop`: 3/7, aproximadamente 43%; CI remoto do merge/doc status SHA `48716bbbd8f861cd7b76f45f962b4c6b9840268a` passou nos jobs Backend e Frontend.
-- Esse percentual mede marcos por contagem igual, não esforço, prazo ou completude funcional. S1-04/05 (cadastro/ativação e autenticação/sessões), S1-06 (cliente TS/passagem frontend) e S1-07 (integração final) continuam pendentes; não há rotas Identity desta fatia para ligar às telas.
+- O estado anterior registrava S1-01/02/03 integrados: 3/7 (≈43%) por contagem igual dos marcos. Em 2026-10-06 o escopo do MVP foi replanejado; esse número não estima esforço nem proximidade funcional e deixa de ser indicador atual. S1-04/05, integração frontend e candidata final seguem pendentes.
 
 ## Estado atual — 06/10/2026
+
+- Decisão do Product Owner: SMTP de ativação e recuperação self-service foram adiados para pós-MVP. Ativação segue necessária, com link/token de uso único gerado pelo backend, exibido uma vez a administrador autorizado e entregue manualmente por canal externo. O administrador pode revogar e reemitir link sem ver/definir a senha. Não relaxar hash, validade, uso único, auditoria ou autorização.
+- Incremento S1-04A1 Green/revisão: Feature passou 254/254, Domain100%65 linhas, build0warning/0error; QA Red 92 casos + PEND-11 focal13, sem erros de ambiente. Revisor independente GPT-6.1 Sol aprovou snapshot técnico `f4fa97bc6e34748eac9831cf7fbf617c8cc53a7e146e3e366e383e9ce67d9840`, sem achados bloqueantes e com 59 hashes técnicos conferidos. Parecer e limites em `S1-04A1-REVIEW.md`. Branch `feature/s1-04a-pending-profiles` aguarda commit/integrar em develop e CI remoto; main/MVP/sprint continuam pendentes.
+- S1-04B ativação manual e login/sessões seguem MVP; S1-04C SMTP e S1-05D recuperação ficam pós-MVP. Ver recorte revisado em `SPRINT-01-IDENTITY.md` e `INCREMENTAL_EXECUTION.md`.
 
 - S1-03B: contrato interno e testes de auditoria registrados em `S1-03B-AUDIT.md`, branch `feature/s1-03b-audit`. Build Debug da solução aprovado após correção de analyzer somente no teste: 0 warnings/0 errors em 18,62s.
 - Red funcional de Integration executado fora da sandbox: PostgreSQL 17 e fixture passaram readiness; 30 testes, 30 falhas, 0 êxitos/skips, TRX `artifacts/s103b-integration-red/identity-audit-red.trx`, ~1m14s. Writer stub causou `NotImplementedException`; migração/tabela ausentes causaram migration count 1 em vez de 2 e SQLSTATE `42P01`. Testes de check/FK/RLS/trigger que bateram na relação ausente ainda não comprovam seus critérios específicos. Relatório por método em `S1-03B-QA.md`.
@@ -102,3 +105,43 @@ Revisões desta política: apoio documental solicitado explicitamente a gpt-6-lu
 - Próxima passagem: contrato/modelagem → QA Red → Green focado → Feature final/revisão → integração/CI. Nenhum endpoint, SMTP ou tela neste recorte.
 - S1-03A está publicado em develop ca5e378; Quality37505523256 concluiu Frontend/Backend success. Falha de criaçãoPR403 no conector permanece limitação conhecida; não repetir autenticação/permissão sem mudança de evidência.
 
+
+## S1-04A1 — QA Red em execução (2026-10-06)
+
+- Contrato fechado; QA escreve somente testes e registros. Risco crítico (bearer/autorização/tenant/RLS); modelo GPT-6.1 Sol herdado.
+- Docker 29.1.3 confirmado com acesso adequado à named pipe; falha inicial de permissão do sandbox não representa PostgreSQL indisponível.
+- Superfícies novas Application/Domain ainda ausentes; prioridade API real + migration/PostgreSQL, sem implementar produção. Red funcional e regressões ainda não executados.
+- Evidências serão gravadas em artifacts/qa/s1-04a1-red; próximo responsável Backend somente após a passagem Red.
+
+
+## S1-04A1 — QA Red concluído (2026-10-06)
+
+- Estado do incremento: qa-red-complete, sem Green/liberação. Três arquivos novos somente de teste, contrato/produção preservados; report S1-04A1-QA.md e critérios mapeados na spec.
+- Build final0warnings0errors8,87s; runner Feature build10,53s. PostgreSQL17 real/runtime NOBYPASSRLS; Docker29.1.3. Snapshot a5161af368c29a30850733dbc87ee4e1aa294175b9401d76fb10702a127d9b12 sobre3c79faf.
+- Feature executado exit1 esperado: Architecture3/3,Domain48/48,Application7/7,Integration183 (96aprovados/87falhas),0skips; total241 (154aprovados/87falhas). Novos92:5aprovados/87falhas; regressões anteriores149/149 verdes. CoberturaDomain100%65/65linhas.
+- 87 falhas funcionais:81POST404;1OpenAPI sem rota;1modelo sem propriedade;4guards de catálogo sem proveniência. FixtureJWT e4cenários do authorizer atual passaram. Readiness/fixture/compilação finais passaram; falhas iniciais de preparação não foram usadas como Red.
+- As assertions de comportamento específicas após status/coluna ainda não foram alcançadas. Report registra limites e não declara criação, constraints, grant zero,401/403, rollback do endpoint ou corrida de índice já validados.
+- Evidências artifacts/quality/backend/20261006-234556-d2b3979e e artifacts/qa/s1-04a1-red. Próximo responsável Backend Green preservando contrato/testes, completando testes de superfícies adicionais antes do código; depois QA/gateFeature/revisão independente. Sem commit/push/deploy nesta passagem QA.
+
+## S1-04A1 — PEND-11 QA Red complementar em execução
+
+- SM adicionou PEND-11: configuração JWT obrigatória ausente/inválida deve falhar fechada, sem defaults/fallback.
+- QA adicionará teste de startup ou recusa explícita por configuração e executará somente o filtro novo. A execução Feature anterior permanece evidência histórica; não representa a revisão com novos testes.
+- Testes anteriores preservados. Sem alteração em produção/contrato e sem Green.
+
+- PEND-11 primeira execução:8 falhas funcionais e5 falhas de verificação da fixture (host normalizou null para vazio), não usadas como Red. QA corrige somente injeção de configuração ausente; repetição do mesmo filtro em andamento.
+
+## S1-04A1 — PEND-11 QA Red complementar concluído
+
+- 13 casos executados/13 falhas funcionais/0 aprovados/0 ignorados, após corrigir exclusivamente a fixture que normalizava null em vazio. Primeira tentativa preservada:8 Reds funcionais+5 falhas de fixture, não usadas como Red dos ausentes.
+- Build focado final0 erros/0 warnings,1m04,71s. PostgreSQL17 real; valores exatos de configuração e JWT da fixture verificados. Todos os13 casos iniciaram API com health200 e POST404, sem mutação, em vez de startup failure por configuração ou recusa explícita500/503.
+- Filtro PendingProfileConfigurationTests executado com exit1 esperado. Snapshot deb130e40ae62e0d4b2fe9f932b67a849154143eb7403ab315944baf857559ae; TRX/log/source/hashes/CSV/summary em artifacts/qa/s1-04a1-red/configuration. Spec/QA report atualizados.
+- Limitação: comprova guard/recusa de configuração ausentes; não comprova token default aceito porque handler/rota não existem. Gate Feature anterior é histórico; sem novo gate combinado neste complemento. Atualmente105 novos casos preparados (92+13), Red em passagens separadas.
+- Estado qa-red-complete; próximo responsável Backend Green preservando critérios/testes, seguido de QA/gate completo/revisão independente. Sem produção, commit/push ou Green nesta passagem QA.
+
+## S1-04A1 — compatibilidade da regressão de migration
+
+- QA ajustou somente a assertion antiga de IdentityAuditMigrationTests: exige InitialIdentity/AddIdentityAudit aplicadas sem congelar total2/posição da migration. Preservadas reaplicação e integridade dos dados; todos os aceites A1 mantidos.
+- Migration incremental de A1 não deve invalidar o teste de auditoria anterior. Teste focado aguardando coordenação/liberação de build pelo Backend; sem nova execução Feature ou alteração de produção pelo QA. Incremento continua green-in-progress.
+
+- Compatibilidade de migration encerrada: filtro legado passou1/1,0 falhas/0 ignorados, PostgreSQL17 real, exit0. Reutilizado build Backend0 erros/0 warnings92,95s com terceira migration A1; sem build/teste paralelo nem Feature novo pelo QA. TRX e hashes em artifacts/qa/s1-04a1-migration-compat. Backend avisado e já retomou o recorte A1; green-in-progress/gates/revisão do incremento permanecem pendentes.

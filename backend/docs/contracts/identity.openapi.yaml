@@ -658,10 +658,10 @@
         "tags": [
           "Identity"
         ],
-        "description": "Owner ou BranchManager autorizado à filial cadastra perfil pending, sem senha e sem concessão implícita.",
+        "description": "S1-04A1: bearer JWT validado; tenant/autor confiáveis do ambiente/principal. Owner ou BranchManager ativo e atualmente autorizado à filial existente/ativa cria perfil pending. branchId é proveniência, nunca concessão; sem senha, token, papéis ou acesso operacional.",
         "responses": {
           "201": {
-            "description": "Sucesso",
+            "description": "Perfil criado; status sempre pending; email normalizado; sem credenciais ou concessões.",
             "content": {
               "application/json": {
                 "schema": {
@@ -671,7 +671,7 @@
             }
           },
           "400": {
-            "description": "Entrada inválida",
+            "description": "identity.validation_failed: campos inválidos ou propriedades não declaradas.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -681,7 +681,7 @@
             }
           },
           "401": {
-            "description": "Sessão/credencial inválida",
+            "description": "identity.invalid_credentials: bearer ausente/inválido ou principal/tenant incompatível.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -691,7 +691,7 @@
             }
           },
           "403": {
-            "description": "Acesso negado",
+            "description": "identity.access_denied: conta/capacidade negada ou filial inexistente, inativa, não autorizada ou de outro tenant; resposta uniforme.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -701,7 +701,7 @@
             }
           },
           "409": {
-            "description": "Conflito de estado",
+            "description": "identity.email_already_exists: email normalizado duplicado no próprio tenant; nenhuma criação parcial.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -710,8 +710,8 @@
               }
             }
           },
-          "429": {
-            "description": "Limite de solicitações",
+          "500": {
+            "description": "Falha inesperada; Problem genérico, sem detalhes internos; transação revertida.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1234,6 +1234,7 @@
       },
       "CreateProfileRequest": {
         "type": "object",
+        "description": "Cadastro pendente fechado: nenhum campo de tenant, autor, status, papel ou credencial é aceito. Tenant/autor vêm do contexto autenticado confiável.",
         "additionalProperties": false,
         "required": [
           "email",
@@ -1251,6 +1252,7 @@
           },
           "branchId": {
             "type": "string",
+            "description": "Filial de contexto/destino, existente, ativa e autorizada. Preservada como CreatedForBranchId; não concede acesso operacional. UUID não vazio.",
             "format": "uuid"
           }
         }
@@ -1538,7 +1540,10 @@
     "identity.access_denied",
     "identity.invalid_token",
     "identity.profile_pending",
-    "identity.concurrency_conflict"
+    "identity.concurrency_conflict",
+    "identity.validation_failed",
+    "identity.email_already_exists",
+    "identity.internal_error"
   ],
   "x-pending-business-decisions": [
     "Proteção do último administrador ativo é proposta técnica a confirmar antes implementação; fora S1-02."

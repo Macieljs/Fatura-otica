@@ -42,6 +42,11 @@ public sealed class IdentityDbContext : DbContext
         users.Property(e => e.EmailNormalized).HasColumnName("email_normalizado").HasColumnType("text");
         users.Property(e => e.Status).HasColumnName("status").HasConversion<string>().HasColumnType("text");
         users.Property(e => e.PasswordHash).HasColumnName("senha_hash").HasColumnType("text");
+        users.Property(e => e.CreatedForBranchId).HasColumnName("criado_para_filial_id");
+        users.HasIndex(e => new { e.TenantId, e.CreatedForBranchId }).HasDatabaseName("ix_usuarios_tenant_id_criado_para_filial_id");
+        users.HasOne<IdentityBranch>().WithMany().HasForeignKey(e => new { e.TenantId, e.CreatedForBranchId })
+            .HasPrincipalKey(e => new { e.TenantId, e.Id }).OnDelete(DeleteBehavior.NoAction)
+            .HasConstraintName("fk_usuarios_filiais_proveniencia");
         users.HasAlternateKey(e => new { e.TenantId, e.Id }).HasName("ux_usuarios_tenant_id_id");
         users.HasIndex(e => new { e.TenantId, e.EmailNormalized }).IsUnique().HasDatabaseName("ux_usuarios_tenant_id_email_normalizado");
         users.ToTable("usuarios", t =>
@@ -49,6 +54,7 @@ public sealed class IdentityDbContext : DbContext
             t.HasCheckConstraint("ck_usuarios_status", "status IN ('Pending', 'Active', 'Blocked')");
             t.HasCheckConstraint("ck_usuarios_email_normalizado", "length(email_normalizado) > 0 AND email_normalizado = lower(btrim(email_normalizado))");
             t.HasCheckConstraint("ck_usuarios_senha_hash", "senha_hash IS NULL OR length(btrim(senha_hash)) > 0");
+            t.HasCheckConstraint("ck_usuarios_criado_para_filial_id_nao_vazio", "criado_para_filial_id IS NULL OR criado_para_filial_id <> '00000000-0000-0000-0000-000000000000'::uuid");
         });
 
         var branches = modelBuilder.Entity<IdentityBranch>();
