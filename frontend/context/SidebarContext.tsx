@@ -1,23 +1,29 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useCallback, useSyncExternalStore } from "react";
 
-const getInitialCollapsed = (): boolean => {
-  if (typeof window !== "undefined") {
-    try {
-      const saved = localStorage.getItem("fatura_otica_sidebar_collapsed");
-      if (saved !== null) {
-        return saved === "true";
-      }
-      if (window.innerWidth >= 1024 && window.innerWidth < 1340) {
-        return true;
-      }
-    } catch {
-      // Ignora erro de storage
-    }
-  }
-  return false;
+const STORAGE_KEY = "fatura_otica_sidebar_collapsed";
+const listeners = new Set<() => void>();
+
+// Fonte da verdade: atributo data-sidebar no <html>, definido antes da pintura pelo script do layout.
+const getSnapshot = () => document.documentElement.dataset.sidebar === "collapsed";
+const getServerSnapshot = () => false;
+const subscribe = (cb: () => void) => {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
 };
+
+const apply = (collapsed: boolean) => {
+  if (collapsed) document.documentElement.dataset.sidebar = "collapsed";
+  else delete document.documentElement.dataset.sidebar;
+  try {
+    localStorage.setItem(STORAGE_KEY, String(collapsed));
+  } catch {}
+  listeners.forEach((l) => l());
+};
+
+/** Script inline (layout) que aplica a preferência antes da primeira pintura. */
+export const SIDEBAR_INIT_SCRIPT = `try{var s=localStorage.getItem("${STORAGE_KEY}");if(s==="true"||(s===null&&innerWidth>=1024&&innerWidth<1340))document.documentElement.dataset.sidebar="collapsed"}catch(e){}`;
 
 interface SidebarContextType {
   isCollapsed: boolean;
@@ -32,24 +38,9 @@ const SidebarContext = createContext<SidebarContextType>({
 });
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(getInitialCollapsed);
-
-  const toggleCollapse = useCallback(() => {
-    setIsCollapsed((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem("fatura_otica_sidebar_collapsed", String(next));
-      } catch {}
-      return next;
-    });
-  }, []);
-
-  const setCollapsed = useCallback((val: boolean) => {
-    setIsCollapsed(val);
-    try {
-      localStorage.setItem("fatura_otica_sidebar_collapsed", String(val));
-    } catch {}
-  }, []);
+  const isCollapsed = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const toggleCollapse = useCallback(() => apply(!getSnapshot()), []);
+  const setCollapsed = useCallback((val: boolean) => apply(val), []);
 
   return (
     <SidebarContext.Provider value={{ isCollapsed, toggleCollapse, setCollapsed }}>

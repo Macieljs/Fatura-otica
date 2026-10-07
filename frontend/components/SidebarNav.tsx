@@ -138,10 +138,8 @@ export default function SidebarNav() {
         {/* Top Section */}
         <div className="flex flex-col overflow-y-auto overflow-x-hidden">
           {/* Brand Header */}
-          <div className={`h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 transition-all ${
-            collapsed ? "px-2 justify-center" : "px-4 justify-between"
-          }`}>
-            <Link id="nav-link-brand-home" href="/" prefetch={true} className={`flex items-center cursor-pointer active:scale-95 transition-transform duration-100 ${collapsed ? "justify-center w-full" : ""}`}>
+          <div className="h-16 flex items-center border-b border-[#021024] bg-[#031c44] flex-shrink-0 px-4 justify-between">
+            <Link id="nav-link-brand-home" href="/" prefetch={true} className="flex items-center cursor-pointer active:scale-95 transition-transform duration-100">
               {collapsed ? (
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#052659] to-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white shadow-xs">
                   <OpticalBrandLogo size="sm" showText={false} />
@@ -177,7 +175,7 @@ export default function SidebarNav() {
 
           {/* Desktop Expand Toggle Button (When Collapsed - Centered Perfectly) */}
           {collapsed && !forceExpanded && (
-            <div className="px-2 pt-2.5 pb-0.5 flex justify-center">
+            <div className="pl-4 pt-2.5 pb-0.5 flex justify-start">
               <button
                 id="btn-sidebar-toggle-collapse-collapsed"
                 type="button"
@@ -191,28 +189,29 @@ export default function SidebarNav() {
           )}
 
           {/* Navigation Groups */}
-          <div className={`space-y-3 ${collapsed ? "p-2" : "p-3"}`}>
+          <div className="space-y-3 p-3">
             {navGroups.map((group, gIdx) => (
               <div key={gIdx}>
-                {/* Group Heading (Permanently mounted, fades together) */}
-                <div
-                  aria-hidden={collapsed}
-                  className={`px-2 pb-1 text-[10px] font-bold tracking-wider text-[#7DA0CA] uppercase transition-opacity duration-200 ease-out select-none ${
-                    collapsed ? "opacity-0 h-0 my-0 overflow-hidden pointer-events-none" : "opacity-100"
-                  }`}
-                >
-                  {group.group}
-                </div>
-
-                {/* Collapsed Section Divider */}
-                {gIdx > 0 && (
+                {/* Group Heading: altura constante; texto faz fade e um divisor aparece quando recolhido */}
+                <div className="relative h-5 select-none">
                   <div
-                    aria-hidden={!collapsed}
-                    className={`border-t border-[#021024] transition-opacity duration-200 ease-out ${
-                      collapsed ? "my-2 opacity-100" : "my-0 opacity-0 h-0 overflow-hidden"
+                    id={`nav-group-heading-${gIdx}`}
+                    aria-hidden={collapsed}
+                    className={`px-2 text-[10px] leading-5 font-bold tracking-wider text-[#7DA0CA] uppercase whitespace-nowrap transition-opacity ease-out ${
+                      collapsed ? "opacity-0 duration-100" : "opacity-100 duration-200 delay-100"
                     }`}
-                  />
-                )}
+                  >
+                    {group.group}
+                  </div>
+                  {gIdx > 0 && (
+                    <div
+                      aria-hidden="true"
+                      className={`absolute left-1 w-[40px] top-1/2 border-t border-[#021024] transition-opacity duration-200 ease-out ${
+                        collapsed ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+                  )}
+                </div>
 
                 <nav className="space-y-1">
                   {group.items.map((item, iIdx) => {
@@ -224,17 +223,18 @@ export default function SidebarNav() {
                         href={item.href}
                         prefetch={true}
                         title={collapsed ? `${item.label} ${item.shortcut ? `(${item.shortcut})` : ""}` : undefined}
-                        className={`h-11 rounded-lg relative flex items-center cursor-pointer active:scale-95 duration-150 transition-colors ${
-                          collapsed
-                            ? "w-11 mx-auto justify-center px-0"
-                            : "w-full px-2.5 justify-between font-medium text-[13px]"
-                        } ${
-                          active
-                            ? "bg-[#5483B3] text-white shadow-xs font-semibold"
-                            : "text-[#C1E8FF] hover:bg-[#5483B3]/25 hover:text-white"
+                        className={`group h-11 w-full relative flex items-center px-3.5 font-medium text-[13px] cursor-pointer active:scale-95 transition-colors duration-150 ${
+                          active ? "text-white font-semibold" : "text-[#C1E8FF] hover:text-white"
                         }`}
                       >
-                        <div className={`flex items-center min-w-0 ${collapsed ? "justify-center" : "flex-1 gap-2.5 overflow-hidden"}`}>
+                        {/* Fundo animado: única parte que muda de largura; o conteúdo fica estável */}
+                        <span
+                          aria-hidden="true"
+                          className={`absolute inset-y-0 left-0 rounded-lg transition-[width,background-color] duration-200 ease-out ${
+                            collapsed ? "w-12" : "w-full"
+                          } ${active ? "bg-[#5483B3] shadow-xs" : "group-hover:bg-[#5483B3]/25"}`}
+                        />
+                        <div className="relative flex items-center min-w-0 flex-1 gap-2.5">
                           <span
                             className={`material-symbols-outlined text-[20px] shrink-0 ${
                               active ? "text-white" : "text-[#7DA0CA]"
@@ -243,11 +243,11 @@ export default function SidebarNav() {
                             {item.icon}
                           </span>
 
-                          {/* Unified Text Layer: Permanently mounted in DOM, fades in unison as a single plane */}
+                          {/* Camada de texto: largura do link é constante, então não re-trunca durante a animação; só faz fade */}
                           <div
                             aria-hidden={collapsed}
-                            className={`flex items-center justify-between min-w-0 flex-1 transition-opacity duration-200 ease-out select-none ${
-                              collapsed ? "opacity-0 pointer-events-none w-0 overflow-hidden" : "opacity-100"
+                            className={`flex items-center justify-between min-w-0 flex-1 transition-opacity ease-out select-none ${
+                              collapsed ? "opacity-0 pointer-events-none duration-100" : "opacity-100 duration-200 delay-100"
                             }`}
                           >
                             <span className="truncate whitespace-nowrap text-white font-medium">{item.label}</span>
@@ -277,7 +277,7 @@ export default function SidebarNav() {
                         {collapsed && (
                           <>
                             {item.badge && (
-                              <span className="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-[#5483B3] text-white text-[9px] font-mono font-bold flex items-center justify-center border border-[#052659]">
+                              <span className="absolute -top-1 left-9 h-4 min-w-[16px] px-1 rounded-full bg-[#5483B3] text-white text-[9px] font-mono font-bold flex items-center justify-center border border-[#052659]">
                                 {item.badge}
                               </span>
                             )}
@@ -298,7 +298,7 @@ export default function SidebarNav() {
         {/* Sidebar Footer User Card */}
         <div className={`border-t border-[#021024] bg-[#021024]/60 flex-shrink-0 ${collapsed ? "p-2" : "p-3"}`}>
           {collapsed ? (
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-2 w-9 ml-2.5">
               <Link
                 id="btn-sidebar-user-avatar"
                 href="/login"
@@ -380,11 +380,12 @@ export default function SidebarNav() {
       {/* Desktop Persistent Sidebar (Adaptive Collapsible Width) */}
       <aside 
         id="sidebar-nav-desktop-aside"
-        className={`hidden md:flex flex-shrink-0 bg-[#052659] border-r border-[#021024] flex-col fixed top-0 bottom-0 left-0 z-40 select-none overflow-x-hidden sidebar-hardware-transition ${
-          isCollapsed ? "w-[72px]" : "w-64"
-        }`}
+        className="hidden md:flex flex-shrink-0 bg-[#052659] border-r border-[#021024] flex-col fixed top-0 bottom-0 left-0 z-40 select-none overflow-hidden"
       >
-        {navContent(false)}
+        {/* Largura fixa: o aside apenas recorta, o conteúdo não se reorganiza a cada frame */}
+        <div id="sidebar-nav-desktop-content" className="w-64 h-full shrink-0">
+          {navContent(false)}
+        </div>
       </aside>
 
       {/* Mobile Drawer Backdrop */}

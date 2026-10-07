@@ -932,3 +932,13 @@ Para garantir que o **Fatura Ótica** seja escalável como SaaS B2B e adaptável
 
 O diretório da aplicação foi renomeado de `fatura-otica/` para `frontend/`. O repositório Git, as regras comuns dos agentes e o grafo Graphify passam a usar a raiz `C:\Fatura-ótica`, ao lado de `backend/`.
 Os componentes e as rotas do Next.js mantêm seus caminhos relativos dentro do frontend. Os comandos comuns estão no `package.json` da raiz. A decisão e os critérios de aceite estão em `../../docs/PROJECT_STRUCTURE.md`, relativo a este documento.
+
+## Fix — Fluidez da sidebar (2026-10-06)
+
+- Sidebar desktop com largura fixa (256px). Recolher/expandir anima apenas `transform` (aside `-184px`, conteúdo `+184px`), deixando visível a faixa de 72px com os ícones. Sem animação de `width`.
+- Links com largura constante; apenas uma camada de fundo absoluta muda de largura. Rótulos não são re-truncados; texto faz fade com atraso na expansão.
+- Títulos de grupo mantêm altura constante (sem salto vertical); divisor aparece por opacidade quando recolhida.
+- Conteúdo principal muda `margin-left` uma única vez, via CSS (`#app-shell-main-wrapper`), sem transição.
+- Estado em `localStorage` (`fatura_otica_sidebar_collapsed`) refletido em `<html data-sidebar="collapsed">` por script inline no `<head>` antes da pintura; `SidebarContext` lê via `useSyncExternalStore`. Rotas permanecem estáticas (sem cookie/`cookies()`).
+- Padrões reutilizáveis: `frontend/docs/PERFORMANCE_UI.md`.
+
