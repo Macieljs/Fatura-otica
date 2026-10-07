@@ -135,7 +135,7 @@ O Release promove o artefato testado, identifica migrations aplicáveis e confir
 
 Publicação em staging, configuração de secrets, ambientes e produção dependem do destino definido. O ambiente de produção pode usar proteção do provedor, além da autorização registrada. As possibilidades de aprovação de ambientes no GitHub variam conforme o plano e a visibilidade do repositório; não presumir que essa proteção esteja habilitada. Até essas integrações existirem, o estado máximo verificável localmente é uma candidata revisada, sem afirmar que foi publicada.
 
-## Situação observada em 6 de outubro de 2026 — candidata S1-03A
+## Situação observada em 6 de outubro de 2026 — S1-03B integrada; MVP replanejado
 
 | Verificação | Resultado |
 | --- | --- |
@@ -144,16 +144,16 @@ Publicação em staging, configuração de secrets, ambientes e produção depen
 | Testes frontend | Adiados por decisão do usuário; ausência não bloqueia o frontend nesta fase. |
 | Build backend | Release passou sem erros ou warnings na candidata limpa 7d2c205. |
 | Testes backend | Feature aprovado: Architecture3, Domain21, Application6, Integration61; 91/91, zero skips, Domain100%31linhas. PostgreSQL17 real. |
-| Spec de identidade | Sprint01 autorizada; S1-01/02/03A entregues no recorte interno. PRD legado Node/Drizzle não governa esta sprint. |
-| CI | Configurado em develop/main e PRs. O run remoto inicial falhou; resultado local atual passou. Novo resultado remoto deve ser conferido após push. |
+| Spec de identidade | Sprint01 autorizada; S1-01/02/03A/03B integradas em develop. PRD legado Node/Drizzle não governa esta sprint. SMTP e recuperação self-service adiados para pós-MVP por decisão do usuário em 2026-10-06. |
+| CI | Run remoto da integração S1-03B passou em Backend e Frontend, SHA documentado em `docs/sprints/SPRINT-01-STATUS.md`. |
 | PR | Criação pelo conector GitHub recusada com403/permissão insuficiente; branch feature publicada e revisão independente versionada. Nenhum PR foi criado. |
 | Publicação | Destino do backend, credenciais, smoke tests e política de promoção precisam de definição/configuração. |
 
 ## Ordem de implantação
 
-1. Fechar a publicação da integração S1-03A em develop e conferir o CI remoto; ver S1-03A-INTEGRATION-REVIEW e STATUS da sprint.
-2. Executar o próximo incremento pronto, S1-03B auditoria de acessos, mantendo contrato → QA Red → Green → gate/revisão.
-3. Entregar rotas Identity e integrar frontend nas fatias seguintes; nenhuma rota de login/cadastro foi implementada em S1-03A. Testes automatizados frontend/E2E permanecem adiados.
+1. Integrar S1-04A1 após Feature e revisão aprovados; conferir árvore e CI remoto.
+2. Seguir com S1-04A2 para concessão explícita e S1-04B para ativação segura com link/token repassado manualmente; SMTP não é requisito do MVP.
+3. Entregar login/sessões e integrar frontend nas fatias correspondentes. Testes automatizados frontend/E2E permanecem adiados.
 4. Configurar verificações obrigatórias no repositório remoto e proteger a integração, conforme os critérios atuais de cada frente. YAML local não altera regras de branch.
 5. Conectar o ambiente de homologação, definir smoke tests e configurar a promoção autorizada para produção.
 

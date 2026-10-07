@@ -1,7 +1,7 @@
 # Sprint 01 — Identidade e acesso empresarial
 
 - Data: 2026-10-06 (America/Fortaleza).
-- Estado: `implementing`. S1-01/02/03 integrados em develop; S1-03B passou Feature (149/149), revisão independente e CI remoto (Backend/Frontend success) no SHA `48716bb`. Merge `9fd17be`. São 3/7 itens principais integrados (≈43%), contados igualmente; backlog sem estimativas de peso/esforço. Cadastro/ativação/sessões e integração de rotas ainda pendentes. Acompanhar docs/sprints/SPRINT-01-STATUS.md e S1-03B-QA.md.
+- Estado: `implementing`. S1-01/02/03A/03B integrados em develop; S1-03B passou Feature (149/149), revisão independente e CI remoto (Backend/Frontend success). A contagem antiga 3/7 (≈43%) é somente referência histórica, sem previsão de esforço. MVP replanejado em `MVP-SCOPE-DECISION-2026-10-06.md`; S1-04A1 passou Feature 254/254 e revisão independente, aguardando integração/CI remoto. Cadastro pendente/autorizações após A1, ativação, login/sessões e integração de rotas ainda não concluídos. Acompanhar `docs/sprints/SPRINT-01-STATUS.md`.
 - Autorização: usuário confirmou iniciar esta sprint, atualizar specs e delegar execução na conversa de 06/10/2026. Reutilizar essa autorização no escopo descrito; não aprovar módulos futuros ou publicação por inferência.
 - Base: `f412f5194b07fb263a1d95f259a25cacea06197f`.
 - Integração: `develop`; incremento atual em `feature/s1-03b-audit`; estabilidade/release em `main`.
@@ -28,10 +28,10 @@ Disponibilizar a base de identidade empresarial: perfil cadastrado, acesso autor
 
 - Primeiro dono/admin provisionado por comando administrativo explícito, sem cadastro público e sem senha padrão versionada. Comando deve respeitar tenant configurado e ser idempotente ou rejeitar duplicata de forma segura.
 - Token de ativação/recuperação aleatório, armazenado somente por hash, de uso único, com expiração e revogação. Não é sessão operacional; não dá acesso a endpoints de negócio.
-- Canal confirmado pelo usuário: envio automático por SMTP. Implementar porta de entrega e adaptador SMTP configurável; desenvolvimento usa servidor de captura local para não enviar a destinatários reais. Segredos somente em configuração externa; não divulgar token em logs ou assumir credenciais. Provedor, host, porta, remetente e credenciais de homologação/produção ainda precisam ser configurados.
+- Decisão de escopo do MVP em 2026-10-06: adiar a integração SMTP para reduzir custo e tempo até a primeira entrega funcional. O fluxo de ativação permanece; o sistema gera link/token temporário de uso único, que um administrador autorizado copia e entrega por um canal externo já utilizado pela empresa. Exibir o segredo uma única vez, guardar somente hash, nunca registrar em logs e permitir emissão/revogação administrativa auditada. Não implementar entrega automática nesta sprint.
 - Proposta técnica reversível: ativação 24h; recuperação 15min; JWT 15min conforme ADR; refresh rotativo com validade absoluta de 7 dias, logout revoga sessão. Confirmar/documentar esses parâmetros no contrato, configuráveis, sem implementar remember-device com validade ilimitada.
 - Senhas Argon2id conforme ADR; sem senha/hash/token em DTOs comuns, logs ou listagem de usuários.
-- Recuperação pública retorna resposta genérica para existência/inexistência de conta; rate limiting e auditoria sem credenciais.
+- Recuperação self-service fica fora do MVP. Para restabelecer acesso inicialmente, o administrador autorizado revoga tokens pendentes e emite um novo link de ativação/definição de senha, sem visualizar ou definir a senha do usuário. Não expor se um e-mail existe em endpoints públicos quando a recuperação for retomada.
 
 ## Matriz mínima de autorização
 
@@ -43,6 +43,16 @@ Disponibilizar a base de identidade empresarial: perfil cadastrado, acesso autor
 | Administrador de acessos | Próprio tenant | Conceder/revogar papéis e filiais; bloquear usuário; emitir ativação autorizada |
 
 Administrador de acessos é capacidade explícita, não privilégio automático de todo gestor. Cadastro não autoriza promoção de papéis. Filial ativa é contexto operacional, não fonte de direitos. Usuário sem filial operacional pode administrar acessos se autorizado para essa capacidade.
+
+## Recorte do MVP após replanejamento — 2026-10-06
+
+Em decisão do Product Owner, os itens de automação de e-mail e recuperação self-service foram movidos para depois da primeira entrega. O objetivo imediato é entregar identidade empresarial funcional com ativação manual segura, sem reduzir os requisitos de autorização, isolamento de tenant ou auditoria.
+
+**Incluído no MVP:** criação de perfil pendente pelo gestor; concessão explícita de papel/filiais por administrador de acessos ou dono autorizado; ativação por link/token de uso único com senha definida pelo próprio usuário; login e autorização por tenant/filial; auditoria das mudanças de acesso; fluxo mínimo de sessão/logout conforme critérios de segurança da sprint.
+
+**Adiado:** SMTP automático de ativação, recuperação self-service por e-mail, multi-tenant SaaS/subdomínios e testes automatizados/E2E de frontend. O mecanismo manual não pode introduzir senha fixa, senha revelada ao gestor, token persistido em claro ou token reutilizável.
+
+O percentual anterior de 3/7 (≈43%) era uma contagem uniforme de marcos, sem estimativas de esforço. Com o recorte revisado, essa porcentagem não serve como previsão de esforço nem de proximidade do MVP; recalcular progresso por critérios funcionais verificáveis após decompor os itens restantes.
 
 ## Critérios BDD
 
@@ -59,7 +69,7 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 | AC-09 | Dado dono do tenant A, quando operar em filiais de A, então permite; quando acessar B, então nega. |
 | AC-10 | Dada concessão removida/conta bloqueada durante sessão, quando fizer a próxima operação, então a operação é negada mesmo com JWT ainda válido. |
 | AC-11 | Dado refresh válido, quando renovar, então token anterior deixa de valer; logout revoga a sessão. Concorrência/reutilização não gera sessões adicionais válidas. |
-| AC-12 | Dada solicitação de recuperação, quando informar e-mail existente ou inexistente, então resposta pública não revela existência; token válido troca senha e revoga sessões antigas. |
+| AC-12 (pós-MVP) | Dada solicitação de recuperação, quando informar e-mail existente ou inexistente, então resposta pública não revela existência; token válido troca senha e revoga sessões antigas. Não implementado no MVP. |
 | AC-13 | Dados registros de outro tenant no PostgreSQL, quando a aplicação consultar com role operacional, então RLS/filtro/integridade bloqueiam vazamento. Teste com banco real e role sem BYPASSRLS. |
 | AC-14 | Dada concessão/revogação/bloqueio, quando persistir a mudança, então auditoria registra autor, tenant, alvo e horário, sem senha/token. |
 
@@ -70,8 +80,12 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 | S1-01 | Contrato OpenAPI e modelo Identity, alinhamento ADR/PRD | entregue na branch feature | Esta spec |
 | S1-02 | Políticas de domínio: usuário ativo, papéis e filiais | núcleo validado e integrado | Red → Green → revisão comprovados |
 | S1-03 | Persistência/migrations/RLS e auditoria | 03A/03B integrados em develop; CI remoto verde | PostgreSQL + QA Red + revisão independente |
-| S1-04 | Cadastro pendente, concessão e ativação | ready após contrato | SMTP configurável + S1-02/03 |
-| S1-05 | Login, sessão, refresh/logout e recuperação | ready após contrato | S1-02/03/04 |
+| S1-04A1 | Cadastro de perfil pendente pelo gestor | Incremento ativo; critérios em `S1-04A1-PENDING-PROFILE.md` | S1-02/03; sem concessão implícita |
+| S1-04A2 | Concessão explícita de papéis/filiais | Próximo após A1 | Administrador de acessos/dono autorizado |
+| S1-04B | Ativação manual e definição de senha | Planejado para MVP | Token seguro, hash/uso único/expiração; sem dependência de SMTP |
+| S1-05 | Login, sessão, refresh/logout | Planejado para MVP após S1-04 | S1-02/03/04 |
+| S1-05D (pós-MVP) | Recuperação self-service | Adiado | SMTP e fluxo de recuperação revisado |
+| S1-04C (pós-MVP) | Envio SMTP de ativação | Adiado | Adaptador/configuração SMTP; pode substituir o repasse manual sem alterar semântica do token |
 | S1-06 | Cliente TS gerado e passagem para frente UX/frontend | aguardando contrato | Sem implementação visual neste checkout |
 | S1-07 | Integração, revisão independente e candidata develop | aguardando entregas | Gate Feature completo |
 
@@ -95,11 +109,11 @@ Administrador de acessos é capacidade explícita, não privilégio automático 
 ## Impedimentos iniciais
 
 - Docker instalado, motor Linux indisponível na verificação de início. Integração real e DoD bloqueados até servidor Docker/PostgreSQL estar disponível.
-- SMTP confirmado; configuração real de envio ainda indisponível. Contrato/domínio e adaptador com servidor de captura local podem avançar; não declarar e-mail real entregue sem evidência.
+- SMTP foi explicitamente adiado para depois do MVP em 2026-10-06; não é impedimento para ativação manual com token de uso único.
 - PRD antigo em frontend/docs ainda descreve Node/Drizzle e modelos incompatíveis. Esta spec governa somente a Sprint 01; módulos futuros permanecem em refinamento.
 - Proteções remotas de develop/main e ambiente de homologação não configurados/verificados. YAML não impõe revisão nem deploy automaticamente.
 
 
 ## Execução em incrementos — refinamento do plano
 
-Por decisão do usuário, cada run executa somente um incremento pequeno. Os itens03/04/05 foram decompostos em `docs/INCREMENTAL_EXECUTION.md`; S1-01 e núcleoS1-02 já foram entregues nesta etapa inicial. Incremento validado, integração e sprintDone são estados distintos. S1-03A foi concluído e integrado com PostgreSQL real e CI aprovado. O incremento atual S1-03B está detalhado em S1-03B-AUDIT.md; ambiente e dependências foram conferidos e reutilizados. Nenhum critério BDD ou gate Feature foi removido.
+Por decisão do usuário, cada run executa somente um incremento pequeno. Os itens03/04/05 estão decompostos em `docs/INCREMENTAL_EXECUTION.md`; S1-01/02/03A/03B foram entregues e integrados com as evidências registradas. Incremento validado, integração e sprintDone são estados distintos. SMTP e recuperação self-service foram adiados do MVP, sem remoção dos requisitos de segurança de ativação, autorização ou auditoria. Nenhum gate técnico do backend foi removido.

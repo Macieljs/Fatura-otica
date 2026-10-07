@@ -33,13 +33,14 @@ Mudanças de persistência/RLS exigem PostgreSQL real; ausência do banco impede
 | S1-02 | Núcleo de autorização | Validado inicialmente com30testes e revisão; incorporado à candidata local develop7d2c205 com Feature91/91. |
 | S1-03A | Persistência básica Identity e isolamento | Validado: migration, RLS/filtro/FKs/reader/transações; PostgreSQL17 real,61Integration e Feature91/91 na candidata local develop7d2c205. Publicação remota registrada no STATUS. |
 | S1-03B | Auditoria de alterações de acesso | Persistência append-only e evidência de quem/quando/alvo, sem credenciais; depende03A. |
-| S1-04A | Cadastro pendente e concessão de acessos | Gestor cadastra sem conceder; admin/dono autoriza escopo; contratos/HTTP e testes negativos. |
-| S1-04B | Token de primeiro acesso e ativação | Token hash/uso único/expiração, senha Argon2id e conta ativa somente após conclusão válida. |
-| S1-04C | Envio SMTP de ativação | Adaptador, captura local e tratamento de falha/reenvio; sem envio real sem destino configurado. |
+| S1-04A1 | Cadastro de perfil pendente | Green Feature 254/254 e revisão independente aprovados; integração em develop/CI remoto pendentes. Parecer em `docs/sprints/S1-04A1-REVIEW.md`. |
+| S1-04A2 | Concessão de acessos | Administrador de acessos/dono autorizado concede e revoga papéis/filiais; testes negativos e auditoria. |
+| S1-04B | Token de primeiro acesso e ativação | Token hash/uso único/expiração; link repassado manualmente pelo administrador; senha Argon2id; conta ativa somente após conclusão válida. |
+| S1-04C (pós-MVP) | Envio SMTP de ativação | Adiado. Integrar entrega automática do link sem alterar geração, hash, validade ou uso único do token. |
 | S1-05A | Login e perfil autenticado | Conta ativa, tenant configurado, filiais autorizadas e JWT15min. |
 | S1-05B | Seleção/troca de filial | Validação server-side da filial e leitura atual das concessões. |
 | S1-05C | Refresh e logout | Rotação/revogação atômicas, cookie e CSRF conforme contrato. |
-| S1-05D | Recuperação de senha | Resposta pública genérica, token único, SMTP e revogação de sessões antigas. |
+| S1-05D (pós-MVP) | Recuperação self-service de senha | Adiado. Inicialmente administrador autorizado pode revogar e emitir novo link; nunca visualizar/definir a senha. |
 | S1-06 | Integração frontend em fatias correspondentes | Cliente gerado + cada fluxo acordado com a frente UX/frontend; lint/build/revisão/manual, sem E2E automatizado. |
 | S1-07 | Candidata integrada e encerramento da sprint | Feature completo, combinação front/back e revisão; main apenas quando estável. |
 
@@ -47,7 +48,7 @@ Antes de executar qualquer linha ampla, o SM a divide novamente se não houver a
 
 ## Dependências de branches
 
-Cada nova tarefa registra o commit base que contém suas dependências. S1-03A incorporou explicitamente o núcleo revisado55ea2cd e o workflow develop5154670 em checkout próprio. A candidata local develop7d2c205 contém essas dependências e a persistência validada; conferir sua publicação remota no STATUS antes de iniciar S1-03B a partir de origin/develop. O SM coordena integração e repete validações afetadas pela combinação.
+Cada nova tarefa registra o commit base que contém suas dependências. S1-03A/03B estão integrados em `develop`, e o CI remoto passou conforme `SPRINT-01-STATUS.md`. S1-04A1 inicia a partir do HEAD de develop após registrar esta mudança de escopo; o SM coordena integração e repete validações afetadas pela combinação.
 
 ## Passagem de uma execução
 

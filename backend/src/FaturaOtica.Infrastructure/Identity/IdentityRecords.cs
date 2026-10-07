@@ -27,6 +27,7 @@ public sealed class IdentityUser : TenantIdentityRecord
     public string EmailNormalized { get; set; } = string.Empty;
     public UserStatus Status { get; set; }
     public string? PasswordHash { get; set; }
+    public Guid? CreatedForBranchId { get; set; }
 }
 
 public sealed class IdentityBranch : TenantIdentityRecord
