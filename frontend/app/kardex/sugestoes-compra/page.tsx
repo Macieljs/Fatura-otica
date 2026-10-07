@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useOperator } from "@/hooks/useOperator";
 import { useToast } from "@/components/ToastProvider";
 import PageHeader from "@/components/PageHeader";
+import Button from "@/components/Button";
 
 interface SugestaoItem {
   id: string;
@@ -84,7 +85,7 @@ export default function SugestoesCompraPage() {
       custoUnitario: 472.5,
       urgencia: "critico",
       urgenciaLabel: "Crítico / Ruptura",
-      selected: true,
+      selected: false,
     },
     {
       id: "2",
@@ -100,7 +101,7 @@ export default function SugestoesCompraPage() {
       custoUnitario: 410.0,
       urgencia: "atencao",
       urgenciaLabel: "Atenção / Ponto Pedido",
-      selected: true,
+      selected: false,
     },
     {
       id: "3",
@@ -116,7 +117,7 @@ export default function SugestoesCompraPage() {
       custoUnitario: 520.0,
       urgencia: "critico",
       urgenciaLabel: "Esgotado / Balcão Zero",
-      selected: true,
+      selected: false,
     },
     {
       id: "4",
@@ -132,7 +133,7 @@ export default function SugestoesCompraPage() {
       custoUnitario: 297.5,
       urgencia: "atencao",
       urgenciaLabel: "Atenção / Giro Alto",
-      selected: true,
+      selected: false,
     },
     {
       id: "5",
@@ -148,7 +149,7 @@ export default function SugestoesCompraPage() {
       custoUnitario: 17.25,
       urgencia: "normal",
       urgenciaLabel: "Normal / Reposição",
-      selected: true,
+      selected: false,
     },
   ]);
 
@@ -530,54 +531,75 @@ export default function SugestoesCompraPage() {
         </section>
       </div>
 
-      {/* Sticky Bottom Bar de Execução em Lote */}
-      <footer className="fixed bottom-0 left-0 md:left-64 right-0 z-30 bg-[#FFFFFF] border-t border-[#7DA0CA] px-6 lg:px-10 py-3 shadow-md">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4 text-xs font-medium text-slate-700">
-            <div>
-              <span className="text-slate-400">Itens Selecionados:</span>{" "}
-              <strong className="text-[#052659] font-mono">{totalItensSelecionados} de {itens.length}</strong>
+      {/* 4. BARRA FLUTUANTE DE AÇÕES EM LOTE (Sobe em caixa somente quando há itens marcados) */}
+      {totalItensSelecionados > 0 && (
+        <aside
+          id="bar-sugestoes-acoes-em-lote"
+          aria-label="Ações em lote de reposição"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-5xl bg-[#052659] text-white px-4 py-3 sm:px-6 sm:py-3.5 rounded-2xl shadow-2xl border border-[#5483B3]/40 flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-5 duration-200 backdrop-blur-md"
+        >
+          {/* Metadados de Seleção */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs">
+            <div className="flex items-center gap-2 pr-3 border-r border-[#5483B3]/40">
+              <span className="h-6 px-2.5 rounded-full bg-[#C1E8FF] text-[#052659] text-xs font-mono font-bold flex items-center justify-center shadow-xs">
+                {totalItensSelecionados} de {itens.length}
+              </span>
+              <span className="font-semibold text-slate-200 hidden sm:inline">
+                {totalItensSelecionados === 1 ? "item selecionado" : "itens selecionados"}
+              </span>
             </div>
-            <span>•</span>
-            <div>
-              <span className="text-slate-400">Total Unidades:</span>{" "}
-              <strong className="text-[#052659] font-mono">{totalUnidadesSelecionadas} un</strong>
+
+            <div className="text-[#C1E8FF]">
+              <span className="text-[#7DA0CA]">Unidades:</span>{" "}
+              <strong className="text-white font-mono">{totalUnidadesSelecionadas} un</strong>
             </div>
-            <span>•</span>
-            <div>
-              <span className="text-slate-400">Custo Total Previsto:</span>{" "}
-              <strong className="text-[#052659] font-mono text-sm">
+
+            <span className="hidden sm:inline text-[#5483B3]">•</span>
+
+            <div className="text-[#C1E8FF]">
+              <span className="text-[#7DA0CA]">Custo Previsto:</span>{" "}
+              <strong className="text-white font-mono text-sm ml-1">
                 R$ {valorTotalInvestimento.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
               </strong>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-            <button
+          {/* Botões de Ação com proteção contra múltiplos cliques e alto contraste */}
+          <div className="flex items-center gap-2.5 w-full md:w-auto justify-end">
+            <Button
               id="btn-sugestoes-desmarcar-todos"
-              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => toggleSelectAll(false)}
-              className="px-4 py-2 rounded border border-[#7DA0CA] text-[#052659] hover:bg-[#F0F6FC] text-xs font-semibold transition-colors"
+              className="text-[#C1E8FF] hover:text-white hover:bg-white/10"
             >
               Desmarcar Todos
-            </button>
-            <button
+            </Button>
+
+            <Button
               id="btn-sugestoes-gerar-cotacao-pdf"
-              type="button"
+              variant="outline"
+              size="sm"
+              icon="picture_as_pdf"
               onClick={() =>
-                toast.info("Gerando cotação consolidada em PDF para os 5 fornecedores mapeados...", {
+                toast.info("Gerando cotação consolidada em PDF para os fornecedores mapeados...", {
                   title: "Cotação em Lote",
                   icon: "picture_as_pdf",
                 })
               }
-              className="px-4 py-2 rounded bg-[#C1E8FF] text-[#052659] hover:bg-[#a9daf8] text-xs font-semibold transition-colors"
+              className="bg-white/10 hover:bg-white/20 text-white border-[#5483B3]/60 shadow-xs"
             >
-              Gerar Cotação (PDF)
-            </button>
-            <button
+              Cotação (PDF)
+            </Button>
+
+            <Button
               id="btn-sugestoes-emitir-pedidos-lote"
-              type="button"
-              onClick={() => {
+              variant="accent"
+              size="sm"
+              icon="shopping_cart_checkout"
+              preventDoubleClick={true}
+              onClick={async () => {
+                await new Promise((resolve) => setTimeout(resolve, 600));
                 setPedidosGeradosSucesso(true);
                 toast.success(
                   `${totalItensSelecionados} Ordens de Compra geradas com sucesso para os fornecedores!`,
@@ -587,14 +609,12 @@ export default function SugestoesCompraPage() {
                   }
                 );
               }}
-              className="px-5 py-2.5 rounded bg-[#052659] hover:bg-[#021024] text-white text-xs font-bold transition-colors shadow-sm flex items-center gap-2"
             >
-              <span className="material-symbols-outlined text-[17px]">shopping_cart_checkout</span>
-              Gerar Pedidos de Compra Automáticos ({totalItensSelecionados} Ordens)
-            </button>
+              Gerar Pedidos ({totalItensSelecionados})
+            </Button>
           </div>
-        </div>
-      </footer>
+        </aside>
+      )}
 
       {/* Modal Corporativo de Ajuste de Parâmetros de Reposição */}
       {itemParaAjuste && (
