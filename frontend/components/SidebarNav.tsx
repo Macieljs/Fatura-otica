@@ -186,8 +186,8 @@ export default function SidebarNav() {
           </div>
         )}
 
-        {/* Scrollable Navigation Groups: Scrollbar sofisticada e ultrafina */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll">
+        {/* Scrollable Container (engloba grupos de navegação e card do usuário com scroll sofisticado) */}
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scroll flex flex-col justify-between">
           <div className="space-y-3 p-3">
             {navGroups.map((group, gIdx) => (
               <div key={gIdx}>
@@ -292,68 +292,68 @@ export default function SidebarNav() {
               </div>
             ))}
           </div>
-        </div>
 
-        {/* Sidebar Footer User Card */}
-        <div className={`border-t border-[#021024] bg-[#021024]/60 flex-shrink-0 ${collapsed ? "p-2" : "p-3"}`}>
-          {collapsed ? (
-            <div className="flex flex-col items-center gap-2 w-9 ml-2.5">
-              <Link
-                id="btn-sidebar-user-avatar"
-                href="/login"
-                title={`${operator.name} • ${operator.role} • Trocar`}
-                className="relative w-9 h-9 rounded-xl bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shadow-xs hover:border-white transition-all cursor-pointer"
-              >
-                <span>{initials}</span>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#052659]"></span>
-              </Link>
-              <Link
-                id="btn-sidebar-trocar-operador"
-                href="/login"
-                title="Sair / Trocar de Terminal"
-                className="p-1 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">logout</span>
-              </Link>
-            </div>
-          ) : (
-            <div className="p-2.5 rounded-xl bg-[#031c44] border border-[#7DA0CA]/30 shadow-xs flex items-center justify-between gap-2.5">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-full bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs">
-                  {initials}
-                </div>
-                <div className="flex flex-col min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[12px] font-semibold text-white truncate">{operator.name}</span>
-                    {isManager ? (
-                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 border border-amber-400/40 font-mono">
-                        GERENTE
-                      </span>
-                    ) : (
-                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 font-mono">
-                        BALCÃO
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-[10px] text-[#C1E8FF]/70 truncate">{operator.role}</div>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span className="text-[9px] font-mono text-emerald-300 font-medium truncate">
-                      Terminal • {operator.branch.split(" - ")[0]}
-                    </span>
-                  </div>
-                </div>
+          {/* Sidebar Footer User Card: Acompanha a navegação e nunca sobrepõe os itens */}
+          <div className={`border-t border-[#021024] bg-[#021024]/60 flex-shrink-0 mt-auto ${collapsed ? "p-2" : "p-3"}`}>
+            {collapsed ? (
+              <div className="flex flex-col items-center gap-2 w-9 ml-2.5">
+                <Link
+                  id="btn-sidebar-user-avatar"
+                  href="/login"
+                  title={`${operator.name} • ${operator.role} • Trocar`}
+                  className="relative w-9 h-9 rounded-xl bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shadow-xs hover:border-white transition-all cursor-pointer"
+                >
+                  <span>{initials}</span>
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#052659]"></span>
+                </Link>
+                <Link
+                  id="btn-sidebar-trocar-operador"
+                  href="/login"
+                  title="Sair / Trocar de Terminal"
+                  className="p-1 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]">logout</span>
+                </Link>
               </div>
-              <Link
-                id="btn-sidebar-trocar-operador"
-                href="/login"
-                title="Sair / Trocar de Terminal"
-                className="p-1.5 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center flex-shrink-0"
-              >
-                <span className="material-symbols-outlined text-[18px]">logout</span>
-              </Link>
-            </div>
-          )}
+            ) : (
+              <div className="p-2.5 rounded-xl bg-[#031c44] border border-[#7DA0CA]/30 shadow-xs flex items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs">
+                    {initials}
+                  </div>
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[12px] font-semibold text-white truncate">{operator.name}</span>
+                      {isManager ? (
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 border border-amber-400/40 font-mono">
+                          GERENTE
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 font-mono">
+                          BALCÃO
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[10px] text-[#C1E8FF]/70 truncate">{operator.role}</div>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span className="text-[9px] font-mono text-emerald-300 font-medium truncate">
+                        Terminal • {operator.branch.split(" - ")[0]}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <Link
+                  id="btn-sidebar-trocar-operador"
+                  href="/login"
+                  title="Sair / Trocar de Terminal"
+                  className="p-1.5 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center flex-shrink-0"
+                >
+                  <span className="material-symbols-outlined text-[18px]">logout</span>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
