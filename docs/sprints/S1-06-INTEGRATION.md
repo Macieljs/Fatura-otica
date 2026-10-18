@@ -34,7 +34,7 @@ O navegador omite Origin em GET de mesma origem. Por isso `/api/v1/identity/csrf
 - `npm --prefix frontend run build` passou após as últimas alterações; rotas `/login`, `/ativar-conta`, `/admin/usuarios` e proxy CSRF compiladas.
 - Revisão independente do diff sem bloqueadores de código.
 - Gate backend Feature aprovado no worktree da API: 369/369, zero skips, Domain 100%/72 linhas. Evidência `artifacts/quality/backend/20261018-213328-13def3ec`.
-- Graphify atualizado nos dois worktrees (backend 1.813 nós/3.741 arestas/136 comunidades; frontend 1.470 nós/2.642 arestas/123 comunidades).
+- Graphify atualizado nos dois worktrees e na integração `develop` (backend 1.813 nós/3.741 arestas/136 comunidades; frontend 1.470 nós/2.642 arestas/123 comunidades; develop 1.924 nós/3.998 arestas/150 comunidades). Query `IdentitySessionService` encontrou serviço, endpoints e testes associados.
 
 Pendente: verificar manualmente login, seleção de filial, ativação, administração, restauração e logout com API configurada; conferir CI remoto e regras de proteção antes da promoção para `main`.
 
