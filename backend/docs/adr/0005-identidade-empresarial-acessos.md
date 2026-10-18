@@ -7,7 +7,9 @@
 
 Uma empresa por ambiente, URL única e tenant definido em configuração confiável do servidor; sem código de empresa/subdomínio no login. Preservar TenantId nos dados, FKs compostas, filtros EF e RLS para isolamento e evolução futura.
 
-Owner tem administração de acessos e operação em todas as filiais válidas do próprio tenant. AccessAdministrator é capacidade empresarial delegável, sem acesso operacional implícito. Seller/BranchManager recebem concessões por filial. Gestor cria perfil pendente; administrador concede acesso; usuário define senha via ativação enviada automaticamente por SMTP. Sem autorregistro público ou senha padrão.
+Owner tem administração de acessos e operação em todas as filiais válidas do próprio tenant. `AccessAdministrator` é capacidade empresarial delegável para gerir concessões `Seller`/`BranchManager`, sem acesso operacional implícito e sem autoridade para conceder/remover papéis `Owner`/`AccessAdministrator`. Somente Owner altera esses papéis empresariais. Deve permanecer pelo menos um Owner ativo por tenant; impedir revogação, bloqueio ou remoção do último, inclusive em alterações concorrentes. Gestor cria perfil pendente; administrador concede acesso; usuário define senha via token de uso único. SMTP automático foi adiado para pós-MVP; no MVP o link é repassado manualmente. Sem autorregistro público ou senha padrão.
+
+O Owner inicial é provisionado após migrations por um comando explícito de instalação, uma vez por tenant. O comando não executa a cada startup da API, não cria senha padrão e rejeita duplicatas sem alterar acessos/credenciais existentes. O Owner começa pendente e define sua senha por ativação de uso único.
 
 Autorização consulta estado atual na próxima operação; claims role/filial do JWT são informativos/contexto e nunca suficientes para autorizar. Tenant do token deve corresponder ao ambiente configurado; contexto RLS deriva do ambiente autenticado e validado, sem confiar em cabeçalho/tenant do payload.
 

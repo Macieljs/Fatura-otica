@@ -2,6 +2,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using FaturaOtica.Infrastructure.Identity;
 
 namespace FaturaOtica.Api.Identity;
 
@@ -60,12 +62,14 @@ internal sealed class IdentityJwtConfiguration
         };
         options.Events = new()
         {
-            OnTokenValidated = context =>
+            OnTokenValidated = async context =>
             {
-                if (!TryIdentifier(context.Principal, "sub", out _) ||
-                    !TryIdentifier(context.Principal, "tenant_id", out var tenant) || tenant != TenantId)
+                if (!TryIdentifier(context.Principal, "sub", out var user) ||
+                    !TryIdentifier(context.Principal, "tenant_id", out var tenant) || tenant != TenantId ||
+                    !TryIdentifier(context.Principal, "sid", out var sid) ||
+                    !await context.HttpContext.RequestServices.GetRequiredService<IdentitySessionService>()
+                        .ValidateBearerSessionAsync(user, sid, context.HttpContext.RequestAborted).ConfigureAwait(false))
                     context.Fail("Invalid authenticated identity context.");
-                return Task.CompletedTask;
             },
             OnChallenge = async context =>
             {
@@ -75,6 +79,15 @@ internal sealed class IdentityJwtConfiguration
             },
             OnForbidden = context => IdentityProblems.AccessDenied(context.HttpContext).ExecuteAsync(context.HttpContext),
         };
+    }
+
+    public string Issue(Guid user, Guid sid)
+    {
+        var now = DateTime.UtcNow;
+        var token = new JwtSecurityToken(Issuer, Audience,
+            [new Claim("sub", user.ToString()), new Claim("tenant_id", TenantId.ToString()), new Claim("sid", sid.ToString())],
+            now, now.AddMinutes(15), new SigningCredentials(new SymmetricSecurityKey(SigningKey), AllowedAlgorithms[0]));
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     internal static bool TryIdentifier(ClaimsPrincipal? principal, string claimType, out Guid identifier)

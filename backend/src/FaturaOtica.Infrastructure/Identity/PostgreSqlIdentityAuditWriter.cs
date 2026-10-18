@@ -1,6 +1,8 @@
 using FaturaOtica.Application.Identity;
 using FaturaOtica.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using NpgsqlTypes;
 
 namespace FaturaOtica.Infrastructure.Identity;
 
@@ -26,10 +28,14 @@ public sealed class PostgreSqlIdentityAuditWriter : IIdentityAuditWriter
                 throw new InvalidOperationException("The audit event belongs to another tenant.");
             cancellationToken.ThrowIfCancellationRequested();
             var role = auditEvent.Role?.ToString();
+            var actor = new NpgsqlParameter("actor", NpgsqlDbType.Uuid)
+            {
+                Value = (object?)auditEvent.ActorUserId ?? DBNull.Value,
+            };
             await context.Database.ExecuteSqlInterpolatedAsync($"""
                 INSERT INTO identity.auditoria
                     (id, tenant_id, autor_usuario_id, alvo_usuario_id, acao, ocorrido_em, papel, filial_id)
-                VALUES ({auditEvent.Id}, {auditEvent.TenantId}, {auditEvent.ActorUserId}, {auditEvent.TargetUserId},
+                VALUES ({auditEvent.Id}, {auditEvent.TenantId}, {actor}, {auditEvent.TargetUserId},
                     {auditEvent.Action.ToString()}, {auditEvent.OccurredAt}, {role}, {auditEvent.BranchId})
                 """, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();

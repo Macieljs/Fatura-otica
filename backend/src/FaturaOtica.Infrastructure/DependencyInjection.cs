@@ -27,6 +27,10 @@ public static class DependencyInjection
             provider.GetRequiredService<ICurrentUserAccessReader>(),
             provider.GetRequiredService<IdentityDbContext>().ConfiguredTenantId));
         services.AddScoped<IPendingProfileStore, PostgreSqlPendingProfileStore>();
+        services.AddSingleton<IdentityCredentialHasher>();
+        services.AddScoped<IdentitySessionService>();
+        services.AddScoped<PostgreSqlIdentityDirectory>();
+        services.AddScoped<PostgreSqlAccessAdministration>();
         return services;
     }
 }

@@ -340,156 +340,6 @@
         }
       }
     },
-    "/api/v1/identity/password-recovery": {
-      "post": {
-        "operationId": "identityRequestPasswordRecovery",
-        "tags": [
-          "Identity"
-        ],
-        "description": "Resposta 202 idêntica para contas existentes/inexistentes. Envio SMTP assíncrono seguro e rate limiting; não retorna token.",
-        "responses": {
-          "202": {
-            "description": "Sucesso sem corpo"
-          },
-          "400": {
-            "description": "Entrada inválida",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Sessão/credencial inválida",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Acesso negado",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflito de estado",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Limite de solicitações",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          }
-        },
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RecoveryRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/identity/password-recovery/complete": {
-      "post": {
-        "operationId": "identityCompletePasswordRecovery",
-        "tags": [
-          "Identity"
-        ],
-        "description": "Consome token uma vez, default 15min; troca senha e revoga sessões anteriores.",
-        "responses": {
-          "204": {
-            "description": "Sucesso sem corpo"
-          },
-          "400": {
-            "description": "Entrada inválida",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Sessão/credencial inválida",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Acesso negado",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflito de estado",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Limite de solicitações",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          }
-        },
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResetPasswordRequest"
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/identity/me": {
       "get": {
         "operationId": "identityGetMe",
@@ -736,6 +586,60 @@
             }
           }
         }
+      },
+      "get": {
+        "operationId": "identityListUsers",
+        "tags": [
+          "Identity"
+        ],
+        "description": "Lista perfis do tenant. Owner/Admin veem o tenant; BranchManager vê colaboradores cuja filial de cadastro está entre suas filiais ativas geridas. Nunca inclui hashes, tokens nem credenciais.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consulta autorizada; somente tenant atual e filiais ativas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsersDirectory"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sessão inválida",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permissão atual insuficiente",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Falha inesperada",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/identity/users/{userId}/grants": {
@@ -744,7 +648,7 @@
         "tags": [
           "Identity"
         ],
-        "description": "Owner/AccessAdministrator no tenant. Scope tenant só owner/accessAdministrator; scope branch só seller/branchManager com branchId obrigatório. Alvo do mesmo tenant; auditoria transacional.",
+        "description": "Owner no tenant pode conceder papel empresarial ou de filial. AccessAdministrator pode conceder somente Seller/BranchManager por filial. Somente Owner concede Owner/AccessAdministrator. branchId é obrigatório para papel de filial e proibido para papel empresarial. Alvo do mesmo tenant; auditoria transacional.",
         "responses": {
           "201": {
             "description": "Sucesso",
@@ -841,7 +745,7 @@
         "tags": [
           "Identity"
         ],
-        "description": "Owner/AccessAdministrator. Revogação vale próxima operação; não permite deixar empresa sem último administrador ativo.",
+        "description": "Owner pode revogar papéis empresariais ou de filial; AccessAdministrator somente Seller/BranchManager de filial. Revogação vale na próxima operação. Não permite revogar ou remover o último Owner ativo do tenant.",
         "responses": {
           "204": {
             "description": "Sucesso sem corpo"
@@ -930,10 +834,17 @@
         "tags": [
           "Identity"
         ],
-        "description": "Owner/AccessAdministrator emite/reemite ativação após concessão; invalida token anterior e envia SMTP. Resposta sem segredo.",
+        "description": "Owner/AccessAdministrator autorizado emite/reemite ativação após concessão; invalida token anterior. O link é entregue manualmente no MVP; resposta mostra o segredo uma única vez e não o persiste em claro.",
         "responses": {
           "202": {
-            "description": "Sucesso sem corpo"
+            "description": "Segredo retornado uma única vez para compor link de ativação manual; somente o hash é persistido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationSecret"
+                }
+              }
+            }
           },
           "400": {
             "description": "Entrada inválida",
@@ -1010,7 +921,7 @@
         "tags": [
           "Identity"
         ],
-        "description": "Owner/AccessAdministrator bloqueia/reativa conta já ativada. Pending só ativa pelo token; protege último administrador ativo; audita.",
+        "description": "Owner/AccessAdministrator bloqueia/reativa conta já ativada. Pending só ativa pelo token; não permite bloquear o último Owner ativo; audita.",
         "responses": {
           "200": {
             "description": "Sucesso",
@@ -1132,6 +1043,65 @@
           }
         }
       }
+    },
+    "/api/v1/identity/branches": {
+      "get": {
+        "operationId": "identityListBranches",
+        "tags": [
+          "Identity"
+        ],
+        "description": "Lista filiais ativas do tenant para Owner/Admin, ou apenas filiais geridas pelo BranchManager.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consulta autorizada; somente tenant atual e filiais ativas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Branch"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sessão inválida",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permissão atual insuficiente",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Falha inesperada",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1196,39 +1166,6 @@
           "name": {
             "type": "string",
             "minLength": 1
-          }
-        }
-      },
-      "RecoveryRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "email"
-        ],
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email"
-          }
-        }
-      },
-      "ResetPasswordRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "token",
-          "password"
-        ],
-        "properties": {
-          "token": {
-            "type": "string",
-            "minLength": 1,
-            "writeOnly": true
-          },
-          "password": {
-            "type": "string",
-            "minLength": 1,
-            "writeOnly": true
           }
         }
       },
@@ -1529,6 +1466,91 @@
             "readOnly": true
           }
         }
+      },
+      "ActivationSecret": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "token",
+          "expiresAt"
+        ],
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DirectoryProfile": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "email",
+          "status",
+          "branchId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "active",
+              "blocked"
+            ]
+          },
+          "branchId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "UsersDirectory": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profiles",
+          "grantsMap"
+        ],
+        "properties": {
+          "profiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DirectoryProfile"
+            }
+          },
+          "grantsMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Grant"
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -1545,7 +1567,10 @@
     "identity.email_already_exists",
     "identity.internal_error"
   ],
-  "x-pending-business-decisions": [
-    "Proteção do último administrador ativo é proposta técnica a confirmar antes implementação; fora S1-02."
+  "x-identity-access-decisions": [
+    "Owner recebe ManageAccess no próprio tenant e pode conceder/remover papéis empresariais e de filial.",
+    "AccessAdministrator pode gerir Seller/BranchManager por filial, mas não Owner/AccessAdministrator.",
+    "O tenant deve manter pelo menos um Owner ativo; concessões, revogações e bloqueios devem preservar essa invariante sob concorrência.",
+    "O Owner inicial é provisionado uma vez por comando explícito após migrations, começa Pending e define a própria senha por ativação de uso único."
   ]
 }

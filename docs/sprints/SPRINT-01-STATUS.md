@@ -1,16 +1,35 @@
 # Sprint 01 — acompanhamento do Scrum Master
 
-Data: 2026-10-06. Estado da sprint: em execução; conclusão funcional ainda bloqueada.
+Data: 2026-10-18. Estado da sprint: implementação backend aprovada no gate/revisão; integração em develop e verificação manual da interface pendentes.
+
+## Estado atual da candidata — 18/10/2026
+
+- A2a1 audit/evento de bootstrap, A2a2 console para provisionar Owner Pending e emitir sua ativação inicial, A2b grants/status e S1-04B/S1-05 identidade, ativação e sessão implementados em `feature/s1-04a2-access-grants`.
+- S1-06 frontend foi conectado em `feature/s1-06-identity-integration`, branch separada baseada em `develop` 8ffa44c, com autorização do usuário. O outro checkout `C:\Fatura-ótica` permaneceu intacto.
+- Gate final: `artifacts/quality/backend/20261018-213328-13def3ec` — Feature aprovado, 369/369 (Architecture 3, Domain 69, Application 7, Integration 290), zero falhas/skips, build 0 avisos/0 erros, Domain 100% de 72 linhas. Snapshot `ea251e75eee1920f39abf84b256da9b1a11dbb42e444df9f4fe85e015cd55879`.
+- Revisão independente final: sem bloqueadores de código; conferiu o snapshot e o gate final. Corrigidas assertions de migração e contaminação de privilégio na fixture.
+- Frontend lint e build de produção passaram após as últimas alterações. Graphify atualizado: backend 1.813 nós/3.741 arestas/136 comunidades; frontend 1.470 nós/2.642 arestas/123 comunidades.
+- Pendências: verificação manual de login/seleção de filial/ativação/administração/logout com API configurada e integração dos dois worktrees em `develop` após a validação da candidata combinada. Não houve commit, merge ou deploy.
+- SMTP, recuperação self-service e testes frontend automatizados/E2E continuam adiados pelo PO. A ativação manual e senha definida pelo usuário continuam no MVP.
 
 ## Estimativa de conclusão
 
 - O estado anterior registrava S1-01/02/03 integrados: 3/7 (≈43%) por contagem igual dos marcos. Em 2026-10-06 o escopo do MVP foi replanejado; esse número não estima esforço nem proximidade funcional e deixa de ser indicador atual. S1-04/05, integração frontend e candidata final seguem pendentes.
 
-## Estado atual — 06/10/2026
+## Estado atual — 18/10/2026
+
+### Ajuste do fluxo de testes para o MVP — 18/10/2026
+
+- Graphify foi executado no checkout `feature/s1-04a2-access-grants` e consultado para localizar o fluxo de testes/gates: 1.457 nós, 2.599 arestas e 119 comunidades. A leitura confirmou que a lentidão decorre sobretudo de repetir a validação completa e o custo de build/Testcontainers em ciclos locais; Graphify não mede qualidade nem cobertura.
+- Runner executável `scripts/test-backend-focused.ps1` + `npm run test:backend:focused`: recebe projeto/filtro explícitos, mostra os casos executados, registra TRX/snapshot, contagem e duração; é ferramenta de ciclo local, não gate de integração.
+- Prova do runner: filtro `Domain / FullyQualifiedName~BootstrapOwnerAuditDomainTests`, 21/21 passaram, 0 ignorados; dotnet 2,52 s e total do runner 3,50 s. TRX/snapshot em `artifacts/quality/backend/focused/20261018-162946-917c1cb9/`. Tentativa dentro do sandbox travou no VSTest; a repetição autorizada fora dele passou, confirmando o bloqueio de IPC local.
+- Estratégia registrada em `docs/TESTING_STRATEGY_MVP.md`: test-first por fatia e risco; filtros/projetos afetados durante implementação; PostgreSQL real em uma execução focada para persistência/RLS; `Feature` e cobertura somente no candidato final. Se CI validar o mesmo SHA, evitar rodar o mesmo gate local de novo sem uma falha/risco concreto.
+- O requisito de qualidade permanece: build sem warnings, quatro suítes do backend, zero skips, Domain ≥90%, testes PostgreSQL para persistência/isolamento, e revisão independente. Nenhum limite foi reduzido e o YAML de CI não foi alterado.
 
 - Decisão do Product Owner: SMTP de ativação e recuperação self-service foram adiados para pós-MVP. Ativação segue necessária, com link/token de uso único gerado pelo backend, exibido uma vez a administrador autorizado e entregue manualmente por canal externo. O administrador pode revogar e reemitir link sem ver/definir a senha. Não relaxar hash, validade, uso único, auditoria ou autorização.
 - Incremento S1-04A1 Green/revisão: Feature passou 254/254, Domain100%65 linhas, build0warning/0error; QA Red 92 casos + PEND-11 focal13, sem erros de ambiente. Revisor independente GPT-6.1 Sol aprovou snapshot técnico `f4fa97bc6e34748eac9831cf7fbf617c8cc53a7`, sem achados bloqueantes e com 59 hashes técnicos conferidos. Commit feature `9be100d`; merge local em `develop` `8ec47d9`, árvore `aa6e792` idêntica à feature revisada. CI remoto Quality #13, run `37553300673`, passou Backend e Frontend no SHA `63a31135ac952d5cec8941374cd87775aa15aa96`. Parecer e limites em `S1-04A1-REVIEW.md`; `main`/MVP/sprint continuam pendentes.
-- S1-04B ativação manual e login/sessões seguem MVP; S1-04C SMTP e S1-05D recuperação ficam pós-MVP. Ver recorte revisado em `SPRINT-01-IDENTITY.md` e `INCREMENTAL_EXECUTION.md`.
+- S1-04B ativação manual e S1-05 login/sessões implementados; S1-04C SMTP e S1-05D recuperação ficam pós-MVP. Ver recorte revisado em `SPRINT-01-IDENTITY.md` e `INCREMENTAL_EXECUTION.md`.
+- A2a1/A2a2/A2b foram executados na branch backend `feature/s1-04a2-access-grants` (worktree atualizado; base local observada `5983e23`). Owner administra acessos; AccessAdministrator gerencia somente Seller/BranchManager; último Owner ativo protegido; provisionamento e emissão de ativação inicial por comando explícito após migrations, sem senha padrão. A2a1 relatório/revisão em `S1-04A2a1-IMPLEMENTATION.md`/`S1-04A2a1-REVIEW.md`; evidência de provisionamento em `S1-04A2a2-QA.md`; grants em `S1-04A2b-IMPLEMENTATION.md`. Gate Feature e revisão aprovados em `20261018-213328-13def3ec`; Graphify atualizado nos dois worktrees.
 
 - S1-03B: contrato interno e testes de auditoria registrados em `S1-03B-AUDIT.md`, branch `feature/s1-03b-audit`. Build Debug da solução aprovado após correção de analyzer somente no teste: 0 warnings/0 errors em 18,62s.
 - Red funcional de Integration executado fora da sandbox: PostgreSQL 17 e fixture passaram readiness; 30 testes, 30 falhas, 0 êxitos/skips, TRX `artifacts/s103b-integration-red/identity-audit-red.trx`, ~1m14s. Writer stub causou `NotImplementedException`; migração/tabela ausentes causaram migration count 1 em vez de 2 e SQLSTATE `42P01`. Testes de check/FK/RLS/trigger que bateram na relação ausente ainda não comprovam seus critérios específicos. Relatório por método em `S1-03B-QA.md`.
@@ -46,15 +65,15 @@ Frontend quality: success. Backend quality: failure na etapa Behavioral tests an
 | --- | --- |
 | Analyzer CA1711 no nome AccessPermission | Backend e QA renomearam contrato para AccessAction. Compilação passou; erro de build não foi aceito como Red. |
 | Builds simultâneos compartilhando DLL no checkout | QA passou a executar suites em sequência. Dev aguarda QA encerrar antes do próprio build. Worktree separa frontend/backend, não torna builds simultâneos na mesma árvore seguros. |
-| Docker Desktop sem motor Linux | Tentativa start sem progresso interrompida; status/info continuam sem servidor. PostgreSQL real/AC13 e conclusão funcional bloqueados. |
-| SMTP real sem configuração | Canal automático SMTP aprovado. Contrato pode avançar; host/porta/remetente/segredos externos e captura local/entrega real ainda precisam ser configurados e verificados. |
-| Integração frontend em outro terminal | Entregar contrato e critérios à frente; não editar suas telas. Cliente gerado/fluxo integrado/manual ainda pendentes. |
+| Docker Desktop sem motor Linux | Resolvido em 18/10 com recuperação limitada dos sockets locais; PostgreSQL 17/Testcontainers passou. |
+| SMTP real sem configuração | SMTP foi adiado pelo PO; sem bloqueio para token manual de uso único. |
+| Integração frontend em outro terminal | Resolvido por autorização do usuário: telas conectadas em worktree separado `feature/s1-06-identity-integration`. Revisão, conferência manual e integração permanecem pendentes. |
 | Proteções de branches sem comprovação | CI aciona develop/main; revisão obrigatória/proteções precisam ser configuradas/verificadas no provedor antes de promover candidata estável. |
 
 ## Próximos passos
 
 - Núcleo S1-02 concluído nesta etapa de início: código testado/revisado e publicado em feature/sprint-01-identity, commit55ea2cd. Não representa endpoints ou sprintDone.
-- Persistência/RLS com PostgreSQL real, cadastro/ativação SMTP, autenticação/sessão/recuperação e integração frontend seguem no backlog da sprint.
+- Histórico da preparação inicial; estado atual e próximos passos estão no bloco “Estado atual da candidata” no topo deste documento.
 - Código parcial permanece na branch de tarefa; não promover candidata funcional a develop/main sem gates aplicáveis e evidências da combinação.
 - Não houve merge de develop para main ou publicação autorizada pelo SM nesta sprint.
 

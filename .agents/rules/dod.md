@@ -21,8 +21,8 @@ Para que qualquer agente autônomo (UX, Front-end ou Back-end) considere uma tar
 ## 2.1 Código e Implementação (Back-end .NET)
 - O PRD correspondente está **aprovado pelo PO** e possui critérios de aceite testáveis (Given/When/Then ou tabela de exemplos).
 - Testes de aceite escritos **antes** da implementação (evidência do estado Red registrada).
-- `dotnet build` sem erros nem warnings e `dotnet test` 100% verde.
-- Cobertura de linhas do projeto `Domain` ≥ 90%.
+- Testes afetados 100% verdes durante o ciclo; no candidato final, build sem erros/warnings e Feature backend 100% verde.
+- Cobertura de linhas do projeto `Domain` ≥ 90% no gate final da candidata; não coletar cobertura em cada iteração local. Ver `docs/TESTING_STRATEGY_MVP.md`.
 - Testes de integração com PostgreSQL real (Testcontainers) cobrindo isolamento entre tenants para todo endpoint novo.
 - Contrato OpenAPI atualizado e client TS do front regenerado quando houver mudança de contrato.
 

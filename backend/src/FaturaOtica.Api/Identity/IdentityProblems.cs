@@ -14,6 +14,8 @@ internal static class IdentityProblems
         => Create(context, 401, "Invalid credentials", "identity.invalid_credentials");
     public static IResult AccessDenied(HttpContext context)
         => Create(context, 403, "Access denied", "identity.access_denied");
+    public static IResult InvalidToken(HttpContext context)
+        => Create(context, 400, "Invalid token", "identity.invalid_token");
     public static IResult Validation(HttpContext context, IDictionary<string, string[]>? errors = null)
         => Create(context, 400, "Invalid input", "identity.validation_failed", errors);
     public static IResult EmailConflict(HttpContext context)

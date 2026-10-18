@@ -35,6 +35,7 @@ public sealed class IdentityDbContext : DbContext
         ConfigureTenantRecord(modelBuilder.Entity<IdentityBranch>(), "filiais");
         ConfigureTenantRecord(modelBuilder.Entity<IdentityTenantRole>(), "papeis_usuarios");
         ConfigureTenantRecord(modelBuilder.Entity<IdentityBranchGrant>(), "concessoes_filiais");
+        IdentitySessionModel.Configure(modelBuilder, this);
 
         modelBuilder.Entity<IdentityTenant>().Property(e => e.Name).HasColumnName("nome").HasColumnType("text");
         var users = modelBuilder.Entity<IdentityUser>();
@@ -104,10 +105,15 @@ public sealed class IdentityDbContext : DbContext
             foreach (var column in AuditRequiredIdentifierColumns)
                 table.HasCheckConstraint($"ck_auditoria_{column}_nao_vazio", $"{column} <> {empty}");
             table.HasCheckConstraint("ck_auditoria_filial_id_nao_vazio", $"filial_id IS NULL OR filial_id <> {empty}");
-            table.HasCheckConstraint("ck_auditoria_acao", "acao IN ('GrantAccess', 'RevokeAccess', 'BlockUser')");
+            table.HasCheckConstraint("ck_auditoria_acao", "acao IN ('GrantAccess', 'RevokeAccess', 'BlockUser', 'BootstrapOwner', 'UnblockUser', 'IssueActivation', 'ActivateUser', 'BootstrapOwnerActivation')");
+            table.HasCheckConstraint("ck_auditoria_autoria", """
+                (acao IN ('BootstrapOwner', 'BootstrapOwnerActivation') AND autor_usuario_id IS NULL) OR
+                (acao IN ('GrantAccess', 'RevokeAccess', 'BlockUser', 'UnblockUser', 'IssueActivation', 'ActivateUser') AND autor_usuario_id IS NOT NULL)
+                """);
             table.HasCheckConstraint("ck_auditoria_papel", "papel IS NULL OR papel IN ('Owner', 'AccessAdministrator', 'Seller', 'BranchManager')");
             table.HasCheckConstraint("ck_auditoria_escopo", """
-                (acao = 'BlockUser' AND papel IS NULL AND filial_id IS NULL) OR
+                (acao IN ('BootstrapOwner', 'BootstrapOwnerActivation') AND papel IS NOT NULL AND papel = 'Owner' AND filial_id IS NULL) OR
+                (acao IN ('BlockUser', 'UnblockUser', 'IssueActivation', 'ActivateUser') AND papel IS NULL AND filial_id IS NULL) OR
                 (acao IN ('GrantAccess', 'RevokeAccess') AND papel IS NOT NULL AND
                     ((papel IN ('Owner', 'AccessAdministrator') AND filial_id IS NULL) OR
                      (papel IN ('Seller', 'BranchManager') AND filial_id IS NOT NULL)))
@@ -117,7 +123,7 @@ public sealed class IdentityDbContext : DbContext
         audit.HasKey(e => e.Id).HasName("pk_auditoria");
         audit.Property(e => e.Id).HasColumnName("id").ValueGeneratedNever();
         audit.Property(e => e.TenantId).HasColumnName("tenant_id");
-        audit.Property(e => e.ActorUserId).HasColumnName("autor_usuario_id");
+        audit.Property(e => e.ActorUserId).HasColumnName("autor_usuario_id").IsRequired(false);
         audit.Property(e => e.TargetUserId).HasColumnName("alvo_usuario_id");
         audit.Property(e => e.Action).HasColumnName("acao").HasConversion<string>().HasColumnType("text");
         audit.Property(e => e.OccurredAt).HasColumnName("ocorrido_em").HasColumnType("timestamptz");
@@ -136,6 +142,8 @@ public sealed class IdentityDbContext : DbContext
         audit.HasOne<IdentityBranch>().WithMany().HasForeignKey(e => new { e.TenantId, e.BranchId })
             .HasPrincipalKey(e => new { e.TenantId, e.Id }).OnDelete(DeleteBehavior.NoAction).HasConstraintName("fk_auditoria_filiais");
         audit.HasIndex(e => e.TenantId).HasDatabaseName("ix_auditoria_tenant_id");
+        audit.HasIndex(e => e.TenantId, "BootstrapOwnerPerTenant").IsUnique()
+            .HasFilter("acao = 'BootstrapOwner'").HasDatabaseName("ux_auditoria_bootstrap_tenant_id");
         audit.HasIndex(e => new { e.TenantId, e.ActorUserId }).HasDatabaseName("ix_auditoria_tenant_id_autor_usuario_id");
         audit.HasIndex(e => new { e.TenantId, e.TargetUserId }).HasDatabaseName("ix_auditoria_tenant_id_alvo_usuario_id");
         audit.HasIndex(e => new { e.TenantId, e.BranchId }).HasDatabaseName("ix_auditoria_tenant_id_filial_id");

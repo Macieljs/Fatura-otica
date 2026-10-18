@@ -2,11 +2,13 @@
 
 Adotada por decisão do usuário em 2026-10-06. A sprint permanece como objetivo geral; cada execução entrega um incremento pequeno verificável e encerra esse recorte após revisão ou bloqueio concreto. Não tentar executar toda a sprint em uma única run por padrão.
 
+Autorização vigente em 2026-10-18: o usuário definiu como objetivo persistente concluir a Sprint 01 inteira. Nesse objetivo, encadear incrementos pequenos após suas verificações, sem aguardar um novo prompt a cada módulo. A divisão limita o tamanho das mudanças/testes; a conclusão continua exigindo todos os critérios da sprint.
+
 ## Unidade de trabalho
 
 - Uma execução = uma tarefa pequena ou conjunto mínimo inseparável com objetivo, critérios, dependências e dono claros.
 - Um módulo pode exigir vários incrementos. Uma sprint pode conter vários módulos; conclusão de um incremento não conclui o módulo ou a sprint.
-- Selecionar uma tarefa pronta, registrar o que está fora do recorte e executar o mesmo ciclo: spec/contrato → QA Red quando aplicável → Dev Green → verificações → revisão independente → evidências/passagem.
+- Selecionar uma tarefa pronta, registrar o que está fora do recorte e executar o mesmo ciclo em fatias: spec/contrato → testes Red focados antes do comportamento backend → Dev Green → testes afetados → revisão independente → evidências/passagem. Usar `docs/TESTING_STRATEGY_MVP.md`; evitar repetir suítes completas no ciclo local.
 - Evitar misturar diagnóstico do ambiente, persistência, SMTP, login e integração visual na mesma execução. Dependências obrigatórias são explícitas, não simuladas para afirmar conclusão.
 - Encerrar com resultado, commit/branch, evidências, bloqueios e próxima tarefa pronta. Não iniciar automaticamente outro incremento de implementação na mesma run; isso não exige renovar a aprovação do escopo já concedida. O próximo prompt pode indicar o ID ou solicitar que o SM selecione a próxima tarefa pronta.
 
@@ -21,7 +23,7 @@ Registrar separadamente:
 3. Sprint concluída: todos os critérios e dependências da sprint atendidos, incluindo frontend quando aplicável.
 4. Release: candidata estável e autorização de ambiente aplicável.
 
-O CI backend atual continua exigindo Feature com quatro suítes reais e cobertura. Esta divisão não modifica o YAML, não substitui Feature por Bootstrap e não torna CI vermelho verde. Enquanto o gate de integração não passar, o incremento pode ficar validado na branch de tarefa com integração pendente.
+O CI backend continua exigindo Feature com quatro suítes reais e cobertura ≥90% de Domain. Executar o gate uma vez no candidato final; se o CI validar o mesmo SHA, não duplicar localmente sem risco/falha concreta. Esta divisão não modifica o YAML, não substitui Feature por Bootstrap e não torna CI vermelho verde. Enquanto o gate de integração não passar, o incremento pode ficar validado na branch de tarefa com integração pendente.
 
 Mudanças de persistência/RLS exigem PostgreSQL real; ausência do banco impede concluir esse incremento. Testes de autorização sem banco não substituem esse requisito. O SM pode escolher um diagnóstico de ambiente delimitado antes do incremento dependente, registrando os resultados sem inventar testes de produto.
 
@@ -34,7 +36,9 @@ Mudanças de persistência/RLS exigem PostgreSQL real; ausência do banco impede
 | S1-03A | Persistência básica Identity e isolamento | Validado: migration, RLS/filtro/FKs/reader/transações; PostgreSQL17 real,61Integration e Feature91/91 na candidata local develop7d2c205. Publicação remota registrada no STATUS. |
 | S1-03B | Auditoria de alterações de acesso | Persistência append-only e evidência de quem/quando/alvo, sem credenciais; depende03A. |
 | S1-04A1 | Cadastro de perfil pendente | Integrado em develop; Feature254/254, revisão aprovada, Quality #13 Backend/Frontend success. Parecer em `docs/sprints/S1-04A1-REVIEW.md`. |
-| S1-04A2 | Concessão de acessos | Administrador de acessos/dono autorizado concede e revoga papéis/filiais; testes negativos e auditoria. |
+| S1-04A2a1 | Evento de auditoria do bootstrap | Validado localmente: migration incremental representa `BootstrapOwner` com ator de sistema nulo; schema 12/12, Domain 21/21, writer PostgreSQL 10/10 e revisão independente aprovada. Feature/cobertura e integração ainda pendentes. |
+| S1-04A2a2 | Comando do Owner inicial | Próximo incremento pronto: console explícito pós-migrations provisiona um Owner Pending uma vez por tenant, sem senha padrão; ativação de uso único define a senha. |
+| S1-04A2b | Concessão/revogação de acessos | Owner pode gerir papéis empresariais e de filial; AccessAdministrator somente Seller/BranchManager por filial. Preservar sempre o último Owner ativo, inclusive sob concorrência; auditar. |
 | S1-04B | Token de primeiro acesso e ativação | Token hash/uso único/expiração; link repassado manualmente pelo administrador; senha Argon2id; conta ativa somente após conclusão válida. |
 | S1-04C (pós-MVP) | Envio SMTP de ativação | Adiado. Integrar entrega automática do link sem alterar geração, hash, validade ou uso único do token. |
 | S1-05A | Login e perfil autenticado | Conta ativa, tenant configurado, filiais autorizadas e JWT15min. |

@@ -48,7 +48,7 @@ Ao delegar, sempre estruture a mensagem para o agente responsável com:
 
 ## Comunicação com o usuário e Autonomia
 - **EXECUÇÃO AUTÔNOMA (Agentic Workflow):** Você NÃO DEVE parar para pedir aprovação do usuário a cada micro-tarefa (como pedir validação de plano ou aprovação antes de passar para o código).
-- Trabalhe em "Background", encadeando as chamadas (Front: UX → Front → QA; Back: BDD → Contrato → QA Red → Dev Green → QA Revisão) sem pausas. Reutilizar a autorização de escopo já dada pelo PO na conversa ou no PRD; não solicitar novamente a mesma aprovação. Um PRD ainda em rascunho não é aprovado pelo agente. Bloqueios concretos e decisões fora do escopo autorizado precisam ser registrados e resolvidos.
+- Trabalhe em "Background", encadeando as chamadas (Front: UX → Front → revisão/QA; Back: BDD → Contrato → testes focados test-first conforme risco → Dev → revisão/QA) sem pausas. Rodar o Feature/cobertura completos uma vez no candidato final. Reutilizar a autorização de escopo já dada pelo PO na conversa ou no PRD; não solicitar novamente a mesma aprovação. Um PRD ainda em rascunho não é aprovado pelo agente. Bloqueios concretos e decisões fora do escopo autorizado precisam ser registrados e resolvidos.
 - Só chame o usuário quando a tarefa/sprint atual atingir 100% do **Definition of Done (DoD)** ou se encontrar um erro crítico que exija decisão humana.
 - Use linguagem objetiva e entregue resultados completos.
 ## Workflow operacional e liberação

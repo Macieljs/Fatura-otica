@@ -4,7 +4,7 @@
 - Revisor independente:
 - SHA candidato / snapshot local:
 - Diff e critérios inspecionados:
-- Execução de CI e relatórios de testes:
+- Execução de CI e relatórios de testes (SHA/snapshot, suites/casos e duração; não repetir se o mesmo snapshot já tem evidência válida):
 - Conclusão: pendente / aprovado / correções necessárias
 
 ## Achados
