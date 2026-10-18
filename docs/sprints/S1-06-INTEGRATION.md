@@ -1,6 +1,6 @@
 # S1-06 — integração das telas de identidade
 
-Estado: integrada em `develop`; revisão de código, gate backend e lint/build aprovados; verificação manual pendente.
+Estado: integrada em `develop`; revisão de código, gate backend, lint/build e smoke manual aprovados em ambiente local descartável. CI remoto ainda pendente.
 
 O usuário autorizou conectar login, ativação e administração neste worktree, preservando o visual existente. A branch `feature/s1-06-identity-integration` partiu de `develop` em `8ffa44c`, commit `83d3344`, e foi integrada em `develop` no commit `1d723db`; o checkout do outro terminal não foi alterado.
 
@@ -34,8 +34,18 @@ O navegador omite Origin em GET de mesma origem. Por isso `/api/v1/identity/csrf
 - `npm --prefix frontend run build` passou após as últimas alterações; rotas `/login`, `/ativar-conta`, `/admin/usuarios` e proxy CSRF compiladas.
 - Revisão independente do diff sem bloqueadores de código.
 - Gate backend Feature aprovado no worktree da API: 369/369, zero skips, Domain 100%/72 linhas. Evidência `artifacts/quality/backend/20261018-213328-13def3ec`.
-- Graphify atualizado nos dois worktrees e na integração `develop` (backend 1.813 nós/3.741 arestas/136 comunidades; frontend 1.470 nós/2.642 arestas/123 comunidades; develop 1.924 nós/3.998 arestas/150 comunidades). Query `IdentitySessionService` encontrou serviço, endpoints e testes associados.
+- Graphify das branches de tarefa foi atualizado durante a implementação (backend 1.813 nós/3.741 arestas/136 comunidades; frontend 1.470 nós/2.642 arestas/123 comunidades). Após o smoke e as correções, o grafo atual de `develop` ficou com 1.926 nós/4.002 arestas/154 comunidades; query `IdentitySessionService` encontrou 165 nós em BFS de profundidade 2, entre eles serviço, endpoints, testes e esta documentação.
 
-Pendente: verificar manualmente login, seleção de filial, ativação, administração, restauração e logout com API configurada; conferir CI remoto e regras de proteção antes da promoção para `main`. No ambiente local desta execução, as configurações obrigatórias `Identity__*`/`ConnectionStrings__Identity` não estão definidas e não há PostgreSQL escutando na porta 5432.
+### Smoke manual local — 18/10/2026
+
+- Ambiente temporário: PostgreSQL 17 sem volume persistente, migrations aplicadas, API e Next em loopback. Foi encerrado após os testes; nenhuma credencial de produção foi usada.
+- Owner: login, filial autorizada, diretório, criação de colaborador pendente, concessão seller + filial, exibição do link manual e logout passaram. Endpoint de ativação de Owner e de Vendedor retornaram HTTP 204.
+- Vendedor: login, filial e dashboard por papel passaram. A tentativa de abrir `/admin/usuarios` foi negada (403), com redirect e um único aviso após corrigir a repetição do efeito React.
+- Restauração da sessão após reload passou via refresh cookie. O fragmento do link foi capturado pela tela de ativação e removido da barra de endereço. SMTP não foi exercitado; envio continua manual.
+- O smoke encontrou e corrigiu a recriação da função `toast` a cada render, que repetia efeitos de rota; o aviso também ficou protegido contra execução duplicada no modo estrito. Login e ativação tiveram alegações não verificadas de certificação/compliance substituídas por texto factual.
+- Validação final após as correções: `npm run lint` aprovado; `npm run build` aprovado e rotas de identidade compiladas. Não foram adicionados testes frontend/E2E, conforme decisão do PO.
+- Limite observado: cards e tabelas do dashboard ainda usam dados demonstrativos. O smoke valida autenticação e autorização, não a integração de ordens, faturamento ou indicadores com a API.
+
+Pendente: conferir CI remoto e regras de proteção antes da promoção para `main`. Para reproduzir localmente, configurar as variáveis de identidade e iniciar PostgreSQL conforme o guia de desenvolvimento; a instância do smoke foi removida.
 
 Testes automatizados frontend/E2E continuam adiados conforme decisão do usuário. Resultados dos módulos isolados não aprovam esta integração.

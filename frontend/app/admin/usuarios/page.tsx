@@ -70,6 +70,7 @@ export default function AdminUsuariosPage() {
   const router = useRouter();
   const toast = useToast();
   const { isLoaded } = useOperator();
+  const accessDeniedHandled = useRef(false);
   const me = identityClient.getCurrentMe();
   const isOwner = me?.tenantRoles.includes("owner") ?? false;
   const canManageAccess = !!me?.tenantRoles.some(role => role === "owner" || role === "accessAdministrator");
@@ -87,7 +88,8 @@ export default function AdminUsuariosPage() {
 
   // Proteção de rota corporativa: apenas gestores e administradores podem acessar
   useEffect(() => {
-    if (isLoaded && !isManager) {
+    if (isLoaded && !isManager && !accessDeniedHandled.current) {
+      accessDeniedHandled.current = true;
       toast.warning("Acesso restrito a gestores e administradores de acesso.", {
         title: "Acesso Negado (403)",
         icon: "lock",

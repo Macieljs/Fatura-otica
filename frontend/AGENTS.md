@@ -162,3 +162,13 @@ Git, instruções comuns e configurações de agentes ficam na raiz. A documenta
 ## Workflow — fase atual do frontend
 
 Por decisão do usuário, testes automatizados frontend (unitários/componentes) e E2E ficam adiados. Não instalar runners nem exigir essas suítes ou o gate Frontend para concluir sprints nesta fase. Exigir lint, build, critérios de aceite, revisão independente e verificação manual dos fluxos disponíveis, registrando evidências e limitações. Seguir o workflow e DoD da raiz; backend mantém seus requisitos de testes/TDD/cobertura.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

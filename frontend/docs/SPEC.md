@@ -954,4 +954,7 @@ Os componentes e as rotas do Next.js mantêm seus caminhos relativos dentro do f
 - Editor aplica diferenças de concessões com chamadas sequenciais e relê o diretório em falha parcial. Papéis operacionais são editados por filial, preservando outras concessões.
 - Emissão de ativação apresenta link para entrega manual e expiração retornada pelo servidor; não afirma envio de e-mail. O segredo é mantido apenas no estado da tela.
 - Formulários usam Button canônico, estado de carregamento e trava síncrona contra submissões concorrentes; containers e controles possuem IDs semânticos.
-- Verificação: lint/build e revisão coordenados no incremento de integração. Testes automatizados frontend/E2E e SMTP/recuperação permanecem adiados conforme escopo autorizado.
+- Telas de login e ativação usam texto factual sobre perfis, filiais e links temporários; removidas alegações de certificação, estabilidade, compliance e suporte não verificadas.
+- A guarda de `/admin/usuarios` informa uma única vez o bloqueio e redireciona papéis sem permissão; funções de toast mantêm referência estável entre renders.
+- Smoke local com PostgreSQL descartável validou login de Owner/Vendedor, seleção de filial, ativação HTTP 204, criação e concessão por filial, emissão do link, restauração de sessão e 403 administrativo para Vendedor. Cards e tabelas do dashboard permanecem demonstrativos.
+- Verificação: lint/build, revisão independente e smoke manual aprovados no worktree integrado. Testes automatizados frontend/E2E, SMTP e recuperação permanecem adiados conforme escopo autorizado.

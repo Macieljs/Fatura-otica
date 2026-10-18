@@ -94,8 +94,7 @@ function AtivarContaContent() {
               <div id="ativar-conta-div-estrutura-7" className="space-y-1">
                 <h2 className="text-xl font-bold text-[#052659]">Conta Ativada com Sucesso!</h2>
                 <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto">
-                  Você já pode acessar o terminal
-                  clínico com suas novas credenciais.
+                  Sua conta foi ativada. Você já pode entrar com seu e-mail e sua nova senha.
                 </p>
               </div>
               <div id="ativar-conta-div-estrutura-8" className="pt-3">
@@ -121,8 +120,8 @@ function AtivarContaContent() {
                   Definição de Senha Pessoal
                 </h1>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Bem-vindo à equipe do Fatura Ótica. Para garantir a rastreabilidade fiscal das
-                  suas operações, defina sua senha exclusiva de acesso.
+                  Defina sua senha pessoal usando o link de uso único emitido pelo administrador da
+                  sua empresa.
                 </p>
               </div>
 
@@ -276,8 +275,8 @@ function AtivarContaContent() {
 
       {/* Institutional Footer */}
       <footer id="ativar-conta-footer-estrutura-23" className="w-full max-w-lg mx-auto pt-6 text-center text-slate-500 text-[11px] space-y-1">
-        <p>Fatura Ótica Enterprise • Protocolo de Identidade e Acesso RLS</p>
-        <p className="text-slate-400">Em conformidade com as diretrizes da LGPD e ISO 13485</p>
+        <p>Fatura Ótica • Ativação de conta corporativa</p>
+        <p className="text-slate-400">O link de ativação é temporário e pode ser reemitido por um administrador.</p>
       </footer>
     </div>
   );

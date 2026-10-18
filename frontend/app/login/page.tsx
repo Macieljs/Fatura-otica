@@ -80,7 +80,7 @@ export default function LoginPage() {
 
             <div id="login-div-estrutura-7" className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#021024] border border-[#5483B3]">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="text-xs font-mono font-medium text-white">v4.8 Enterprise</span>
+              <span className="text-xs font-mono font-medium text-white">Acesso empresarial</span>
             </div>
           </div>
 
@@ -89,19 +89,16 @@ export default function LoginPage() {
             <div id="login-div-estrutura-9" className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-[#021024] border border-[#7DA0CA]/40">
               <span className="material-symbols-outlined text-[15px] text-[#5483B3]">biotech</span>
               <span className="text-[11px] font-bold text-[#C1E8FF] tracking-wider uppercase">
-                Plataforma Certificada ISO 13485
+                Gestão para óticas
               </span>
             </div>
 
             <h1 className="text-2xl lg:text-3xl font-bold text-white leading-tight">
-              O ERP definitivo para controle dióptrico, rastreabilidade fiscal de lentes e automação
-              de atendimento de óticas.
+              Gestão da sua ótica em um só lugar.
             </h1>
 
             <p className="text-sm text-[#C1E8FF] leading-relaxed max-w-xl">
-              Ambiente unificado para redes de óticas e laboratórios oftálmicos de alta precisão.
-              Processamento de ordens técnicas, comunicação direta com a SEFAZ e padronização
-              clínica estrita sem margem para refrações divergentes.
+              Acesse as operações da sua empresa com permissões configuradas por perfil e filial.
             </p>
           </div>
 
@@ -114,14 +111,13 @@ export default function LoginPage() {
               </div>
               <div id="login-div-estrutura-13" className="space-y-0.5">
                 <div id="login-div-estrutura-14" className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-white">SEFAZ NF-e 4.0 Integrado</span>
+                  <span className="text-sm font-bold text-white">Ordens de serviço</span>
                   <span className="px-1.5 py-0.2 rounded bg-[#052659] text-[#C1E8FF] font-mono text-[10px] font-bold">
-                    SYNC 0.3s
+                    Equipe
                   </span>
                 </div>
                 <p className="text-xs text-[#C1E8FF]/80">
-                  Sincronização imediata de entrada de notas e cálculo automatizado de custo médio
-                  ponderado por dioptria.
+                  Acompanhe as ordens da equipe conforme o acesso liberado para cada filial.
                 </p>
               </div>
             </div>
@@ -134,15 +130,14 @@ export default function LoginPage() {
               <div id="login-div-estrutura-17" className="space-y-0.5">
                 <div id="login-div-estrutura-18" className="flex items-center gap-2">
                   <span className="text-sm font-bold text-white">
-                    Matriz Dióptrica em Tempo Real
+                    Operação da loja
                   </span>
                   <span className="px-1.5 py-0.2 rounded bg-[#052659] text-[#C1E8FF] font-mono text-[10px] font-bold">
-                    ±0.25D
+                    Por filial
                   </span>
                 </div>
                 <p className="text-xs text-[#C1E8FF]/80">
-                  Validação rígida de passos 0.25, cilindro negativo e regras técnicas internacionais
-                  de astigmatismo e adição multifocal.
+                  Consulte as áreas disponíveis para o seu perfil e unidade de trabalho.
                 </p>
               </div>
             </div>
@@ -154,14 +149,13 @@ export default function LoginPage() {
               </div>
               <div id="login-div-estrutura-21" className="space-y-0.5">
                 <div id="login-div-estrutura-22" className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-white">Auditoria Fiscal Kardex A1</span>
+                  <span className="text-sm font-bold text-white">Acessos da equipe</span>
                   <span className="px-1.5 py-0.2 rounded bg-[#052659] text-[#C1E8FF] font-mono text-[10px] font-bold">
-                    ISO LAB
+                    Perfis
                   </span>
                 </div>
                 <p className="text-xs text-[#C1E8FF]/80">
-                  Rastreabilidade imutável de blocos brutos, armações de grife e controle contábil
-                  de perdas em surfaçagem e quebras de balcão.
+                  A administração de usuários e permissões é controlada pela sua empresa.
                 </p>
               </div>
             </div>
@@ -173,15 +167,15 @@ export default function LoginPage() {
           <div id="login-div-estrutura-24" className="flex flex-wrap items-center justify-between gap-3 text-[#C1E8FF] font-mono text-xs">
             <div id="login-div-estrutura-25" className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Status dos Servidores: Operação 100% Estável</span>
+              <span>Conta corporativa</span>
             </div>
             <div id="login-div-estrutura-26" className="flex items-center gap-4 text-xs">
               <span className="text-[#C1E8FF]/70">
-                Latência: <strong className="text-white">14ms</strong>
+                Acesso por perfil
               </span>
               <span className="inline-flex items-center gap-1 text-[#C1E8FF]">
                 <span className="material-symbols-outlined text-[15px] text-[#5483B3]">verified</span>
-                ICP-Brasil A1 Homologado
+                Filiais autorizadas
               </span>
             </div>
           </div>
@@ -194,12 +188,12 @@ export default function LoginPage() {
         <div id="login-div-estrutura-28" className="w-full max-w-xl mx-auto flex items-center justify-between pb-4">
           <div id="login-div-estrutura-29" className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#7DA0CA]/50 text-[#052659] shadow-2xs">
             <span className="material-symbols-outlined text-[16px] text-emerald-600">lock</span>
-            <span className="text-xs font-semibold">Terminal Autenticado & Seguro | TLS 1.3</span>
+            <span className="text-xs font-semibold">Acesso à conta da empresa</span>
           </div>
           <div id="login-div-estrutura-30" className="flex items-center gap-2">
             <span className="font-mono text-xs text-slate-500">Ambiente:</span>
             <span className="px-2 py-0.5 rounded bg-amber-50 border border-amber-300 font-mono text-xs text-amber-800 font-bold">
-              PRODUÇÃO SP-01
+              Ambiente empresarial
             </span>
           </div>
         </div>
@@ -383,9 +377,8 @@ export default function LoginPage() {
                 verified_user
               </span>
               <p className="text-[11px] text-slate-600 leading-relaxed">
-                O acesso a este ambiente é monitorado sob as normas da LGPD e Diretrizes Clínicas
-                ANVISA RDC 327. Qualquer emissão de NF-e e receita vinculada registra o hash SHA-256
-                do usuário logado no Kardex.
+                Seu acesso segue os papéis e as filiais autorizadas pela empresa. Um administrador
+                pode revisar permissões e bloquear o acesso quando necessário.
               </p>
             </div>
           </div>
@@ -398,8 +391,7 @@ export default function LoginPage() {
               support_agent
             </span>
             <span>
-              Suporte Técnico: <strong className="text-[#052659]">0800 892 4000</strong> (Plantão
-              24/7)
+              Precisa de acesso? Fale com o administrador da sua empresa.
             </span>
           </div>
           <div id="login-div-estrutura-52" className="flex items-center gap-4 text-[11px]">

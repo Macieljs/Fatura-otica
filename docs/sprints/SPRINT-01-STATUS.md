@@ -1,19 +1,21 @@
 # Sprint 01 — acompanhamento do Scrum Master
 
-Data: 2026-10-18. Estado da sprint: candidata integrada e aprovada em gates técnicos locais; verificação manual e promoção estável pendentes.
+Data: 2026-10-18. Estado da sprint: S1-04/05/06 integradas e verificadas localmente; CI remoto e promoção para `main` pendentes.
 
 ## Estado atual da candidata — 18/10/2026
 
 - Backend commit `368ff0f` e frontend commit `83d3344` foram integrados localmente em `develop` nos merges `435c614` e `1d723db`. O checkout paralelo `C:\Fatura-ótica` permaneceu intacto.
 - Gate Feature da candidata combinada em `develop`: `artifacts/quality/backend/20261018-213720-f983e3c8` — 369/369 (Architecture 3, Domain 69, Application 7, Integration 290), zero falhas/skips, build 0 avisos/0 erros, Domain 100% de 72 linhas. SHA `1d723db182da7bfdf723d161197e7f199edbb4ab`; snapshot `588ce3b269c7ae9b2a5093039327be77a80a0a6061e7629b9953d48b5c754091`.
 - Revisão independente da candidata combinada: sem achados P0–P2; conferiu as 14 operações geradas contra OpenAPI, migrations preservadas e gates.
-- Frontend lint e build de produção passaram na candidata combinada. Graphify foi atualizado nos dois worktrees de tarefa e no `develop`: backend 1.924 nós/3.998 arestas/150 comunidades. Query `IdentitySessionService` encontrou o serviço, endpoints e testes relacionados (BFS profundidade 2; 160 nós correspondentes).
-- Pendências: verificação manual de login/seleção de filial/ativação/administração/logout com API configurada; as variáveis obrigatórias de identidade estão ausentes e não há PostgreSQL local na porta 5432. CI remoto e revisão/proteções do provedor não foram verificados. `main` e deploy não foram alterados.
+- Frontend lint e build de produção passaram na candidata combinada. No smoke manual, Owner e Vendedor entraram e selecionaram filial; a ativação respondeu 204, a administração criou colaborador, gravou papel/filial e emitiu link, e o vendedor recebeu 403 ao abrir a área restrita. Logout e restauração por refresh cookie foram verificados. Ambiente PostgreSQL 17 descartável, migrations aplicadas; nenhum dado externo foi usado.
+- O smoke identificou e corrigiu duas falhas de frontend: aviso de acesso negado repetido durante o redirect e alegações de certificação/compliance sem comprovação no login/ativação. As mensagens foram simplificadas; lint e build passaram após as correções. O dashboard de operação segue com conteúdo demonstrativo e não foi considerado dado integrado da API.
+- Graphify foi atualizado após as correções e a atualização documental: `develop` com 1.926 nós, 4.002 arestas e 154 comunidades. Query `IdentitySessionService` encontrou 165 nós em BFS de profundidade 2, incluindo serviço, endpoints, testes e documentação relacionada.
+- Pendências: CI remoto e revisão/proteções do provedor não foram verificados. `main` e deploy não foram alterados.
 - SMTP, recuperação self-service e testes frontend automatizados/E2E continuam adiados pelo PO. A ativação manual e senha definida pelo usuário continuam no MVP.
 
 ## Estimativa de conclusão
 
-- O percentual histórico de 3/7 (≈43%) usava contagem uniforme de marcos e não estima esforço. Com o recorte atual, S1-04/05/S1-06 estão implementados e integrados em `develop`; restam verificação manual da interface, validação remota conforme disponível e critérios de estabilidade antes de promover a `main`.
+- O percentual histórico de 3/7 (≈43%) usava contagem uniforme de marcos e não estima esforço. S1-04/05/S1-06 estão implementadas e verificadas localmente; a candidata aguarda CI remoto e critérios de estabilidade antes de promover a `main`.
 
 ## Estado atual — 18/10/2026
 
