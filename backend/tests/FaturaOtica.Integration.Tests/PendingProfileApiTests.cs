@@ -103,6 +103,10 @@ public sealed class PendingProfileApiTests(IdentityPostgreSqlFixture database)
     [InlineData("sub-empty")]
     [InlineData("sub-malformed")]
     [InlineData("sub-absent")]
+    [InlineData("sid-absent")]
+    [InlineData("sid-empty")]
+    [InlineData("sid-malformed")]
+    [InlineData("sid-forged")]
     [InlineData("algorithm")]
     [InlineData("unsigned")]
     public async Task Post_BearerInvalido_401AntesDoBindingSemMutacao(string token)
@@ -126,7 +130,7 @@ public sealed class PendingProfileApiTests(IdentityPostgreSqlFixture database)
     [InlineData("Blocked")]
     [InlineData("ForeignActor")]
     [InlineData("MissingActor")]
-    public async Task Post_SemCapacidadeAtual_403MesmoComClaimsDeOwner(string condition)
+    public async Task Post_SemCapacidadeOuSessaoAtual_NegaMesmoComClaimsDeOwner(string condition)
     {
         var data = await IdentityTestData.CreateAsync(database);
         using var api = new PendingProfileApiFixture(database, data);
@@ -138,7 +142,9 @@ public sealed class PendingProfileApiTests(IdentityPostgreSqlFixture database)
         var before = await api.StateAsync();
         using var response = await PendingProfileApiFixture.PostAsync(client, api.Request(), api.Token(actor: actor, forgedPermissions: true));
         Assert.Equal(before, await api.StateAsync());
-        await PendingProfileApiFixture.ProblemAsync(response, HttpStatusCode.Forbidden, "identity.access_denied");
+        await PendingProfileApiFixture.ProblemAsync(response,
+            condition is "ForeignActor" or "MissingActor" ? HttpStatusCode.Unauthorized : HttpStatusCode.Forbidden,
+            condition is "ForeignActor" or "MissingActor" ? "identity.invalid_credentials" : "identity.access_denied");
     }
 
     [Theory]

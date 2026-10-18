@@ -14,14 +14,30 @@ internal static class IdentityOpenApi
             document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
             document.Components.SecuritySchemes["bearerAuth"] = new OpenApiSecurityScheme
                 { Type = SecuritySchemeType.Http, Scheme = "bearer", BearerFormat = "JWT" };
-            if (document.Paths.TryGetValue("/api/v1/identity/users", out var path) &&
-                path.Operations?.TryGetValue(HttpMethod.Post, out var post) == true)
-                post.Security = [new OpenApiSecurityRequirement
-                    { [new OpenApiSecuritySchemeReference("bearerAuth", document)] = [] }];
+            foreach (var entry in document.Paths.Where(p => p.Key.StartsWith("/api/v1/identity/", StringComparison.Ordinal)))
+            {
+                var isPublic = entry.Key is "/api/v1/identity/login" or "/api/v1/identity/activation/complete" or
+                    "/api/v1/identity/csrf" or "/api/v1/identity/refresh" or "/api/v1/identity/logout";
+                foreach (var operation in entry.Value.Operations?.Values.AsEnumerable() ?? [])
+                    operation.Security = isPublic ? [] : [new OpenApiSecurityRequirement
+                        { [new OpenApiSecuritySchemeReference("bearerAuth", document)] = [] }];
+            }
             return Task.CompletedTask;
         });
         options.AddSchemaTransformer((schema, context, _) =>
         {
+            if (context.JsonTypeInfo.Type == typeof(GrantRequest) || context.JsonTypeInfo.Type == typeof(Grant) ||
+                context.JsonTypeInfo.Type == typeof(UserStateRequest))
+            {
+                schema.AdditionalPropertiesAllowed = false;
+                schema.Required = schema.Properties!.Keys.Where(key => key != "branchId").ToHashSet(StringComparer.Ordinal);
+                if (schema.Properties.TryGetValue("role", out var role) && role is OpenApiSchema roleSchema)
+                    roleSchema.Enum = [JsonValue.Create("seller"), JsonValue.Create("branchManager"), JsonValue.Create("owner"), JsonValue.Create("accessAdministrator")];
+                if (schema.Properties.TryGetValue("scope", out var scope) && scope is OpenApiSchema scopeSchema)
+                    scopeSchema.Enum = [JsonValue.Create("tenant"), JsonValue.Create("branch")];
+                if (schema.Properties.TryGetValue("status", out var state) && state is OpenApiSchema stateSchema)
+                    stateSchema.Enum = [JsonValue.Create("active"), JsonValue.Create("blocked")];
+            }
             if (context.JsonTypeInfo.Type == typeof(CreateProfileRequest) || context.JsonTypeInfo.Type == typeof(Profile))
             {
                 schema.AdditionalPropertiesAllowed = false;

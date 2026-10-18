@@ -12,6 +12,7 @@
     "graph:query": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/graphify.ps1 query",
     "graph:explain": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/graphify.ps1 explain",
     "quality:backend": "pwsh -NoProfile -File scripts/test-backend.ps1 -Level Feature",
+    "test:backend:focused": "pwsh -NoProfile -File scripts/test-backend-focused.ps1",
     "quality:backend:bootstrap": "pwsh -NoProfile -File scripts/test-backend.ps1 -Level Bootstrap"
   }
 }

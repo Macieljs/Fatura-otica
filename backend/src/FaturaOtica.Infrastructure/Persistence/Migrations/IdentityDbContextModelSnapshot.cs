@@ -34,7 +34,7 @@ namespace FaturaOtica.Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("acao");
 
-                    b.Property<Guid>("ActorUserId")
+                    b.Property<Guid?>("ActorUserId")
                         .HasColumnType("uuid")
                         .HasColumnName("autor_usuario_id");
 
@@ -94,15 +94,22 @@ namespace FaturaOtica.Infrastructure.Persistence.Migrations
                     b.HasIndex("TenantId", "TargetUserId")
                         .HasDatabaseName("ix_auditoria_tenant_id_alvo_usuario_id");
 
+                    b.HasIndex(new[] { "TenantId" }, "BootstrapOwnerPerTenant")
+                        .IsUnique()
+                        .HasDatabaseName("ux_auditoria_bootstrap_tenant_id")
+                        .HasFilter("acao = 'BootstrapOwner'");
+
                     b.ToTable("auditoria", "identity", t =>
                         {
-                            t.HasCheckConstraint("ck_auditoria_acao", "acao IN ('GrantAccess', 'RevokeAccess', 'BlockUser')");
+                            t.HasCheckConstraint("ck_auditoria_acao", "acao IN ('GrantAccess', 'RevokeAccess', 'BlockUser', 'BootstrapOwner', 'UnblockUser', 'IssueActivation', 'ActivateUser', 'BootstrapOwnerActivation')");
 
                             t.HasCheckConstraint("ck_auditoria_alvo_usuario_id_nao_vazio", "alvo_usuario_id <> '00000000-0000-0000-0000-000000000000'::uuid");
 
                             t.HasCheckConstraint("ck_auditoria_autor_usuario_id_nao_vazio", "autor_usuario_id <> '00000000-0000-0000-0000-000000000000'::uuid");
 
-                            t.HasCheckConstraint("ck_auditoria_escopo", "(acao = 'BlockUser' AND papel IS NULL AND filial_id IS NULL) OR\r\n(acao IN ('GrantAccess', 'RevokeAccess') AND papel IS NOT NULL AND\r\n    ((papel IN ('Owner', 'AccessAdministrator') AND filial_id IS NULL) OR\r\n     (papel IN ('Seller', 'BranchManager') AND filial_id IS NOT NULL)))");
+                            t.HasCheckConstraint("ck_auditoria_autoria", "(acao IN ('BootstrapOwner', 'BootstrapOwnerActivation') AND autor_usuario_id IS NULL) OR\r\n(acao IN ('GrantAccess', 'RevokeAccess', 'BlockUser', 'UnblockUser', 'IssueActivation', 'ActivateUser') AND autor_usuario_id IS NOT NULL)");
+
+                            t.HasCheckConstraint("ck_auditoria_escopo", "(acao IN ('BootstrapOwner', 'BootstrapOwnerActivation') AND papel IS NOT NULL AND papel = 'Owner' AND filial_id IS NULL) OR\r\n(acao IN ('BlockUser', 'UnblockUser', 'IssueActivation', 'ActivateUser') AND papel IS NULL AND filial_id IS NULL) OR\r\n(acao IN ('GrantAccess', 'RevokeAccess') AND papel IS NOT NULL AND\r\n    ((papel IN ('Owner', 'AccessAdministrator') AND filial_id IS NULL) OR\r\n     (papel IN ('Seller', 'BranchManager') AND filial_id IS NOT NULL)))");
 
                             t.HasCheckConstraint("ck_auditoria_filial_id_nao_vazio", "filial_id IS NULL OR filial_id <> '00000000-0000-0000-0000-000000000000'::uuid");
 
@@ -113,6 +120,80 @@ namespace FaturaOtica.Infrastructure.Persistence.Migrations
                             t.HasCheckConstraint("ck_auditoria_papel", "papel IS NULL OR papel IN ('Owner', 'AccessAdministrator', 'Seller', 'BranchManager')");
 
                             t.HasCheckConstraint("ck_auditoria_tenant_id_nao_vazio", "tenant_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+                        });
+                });
+
+            modelBuilder.Entity("FaturaOtica.Infrastructure.Identity.IdentityActivationToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("criado_em")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("criado_por");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("expira_em");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("revogado_em");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("token_hash");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("atualizado_em");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("atualizado_por");
+
+                    b.Property<DateTimeOffset?>("UsedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("usado_em");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("usuario_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_ativacoes");
+
+                    b.HasIndex("TenantId", "TokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("ux_ativacoes_tenant_id_token_hash");
+
+                    b.HasIndex("TenantId", "UserId")
+                        .HasDatabaseName("ix_ativacoes_tenant_id_usuario_id");
+
+                    b.ToTable("ativacoes", "identity", t =>
+                        {
+                            t.HasCheckConstraint("ck_ativacoes_id_nao_vazio", "id <> '00000000-0000-0000-0000-000000000000'::uuid");
+
+                            t.HasCheckConstraint("ck_ativacoes_tenant_id_nao_vazio", "tenant_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+
+                            t.HasCheckConstraint("ck_ativacoes_token_hash", "token_hash ~ '^[0-9a-f]{64}$'");
+
+                            t.HasCheckConstraint("ck_ativacoes_usuario_id_nao_vazio", "usuario_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+
+                            t.HasCheckConstraint("ck_ativacoes_validade", "expira_em > criado_em");
                         });
                 });
 
@@ -242,6 +323,103 @@ namespace FaturaOtica.Infrastructure.Persistence.Migrations
                             t.HasCheckConstraint("ck_concessoes_filiais_tenant_id_nao_vazio", "tenant_id <> '00000000-0000-0000-0000-000000000000'::uuid");
 
                             t.HasCheckConstraint("ck_concessoes_filiais_usuario_id_nao_vazio", "usuario_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+                        });
+                });
+
+            modelBuilder.Entity("FaturaOtica.Infrastructure.Identity.IdentitySessionToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("ActiveBranchId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("filial_ativa_id");
+
+                    b.Property<DateTimeOffset?>("ConsumedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("consumido_em");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("criado_em")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("criado_por");
+
+                    b.Property<string>("CsrfHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("csrf_hash");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("expira_em");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("familia_id");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("revogado_em");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("token_hash");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamptz")
+                        .HasColumnName("atualizado_em");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("atualizado_por");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("usuario_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_sessoes");
+
+                    b.HasIndex("TenantId", "ActiveBranchId")
+                        .HasDatabaseName("ix_sessoes_tenant_id_filial_ativa_id");
+
+                    b.HasIndex("TenantId", "FamilyId")
+                        .HasDatabaseName("ix_sessoes_tenant_id_familia_id");
+
+                    b.HasIndex("TenantId", "TokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("ux_sessoes_tenant_id_token_hash");
+
+                    b.HasIndex("TenantId", "UserId")
+                        .HasDatabaseName("ix_sessoes_tenant_id_usuario_id");
+
+                    b.ToTable("sessoes", "identity", t =>
+                        {
+                            t.HasCheckConstraint("ck_sessoes_csrf_hash", "csrf_hash IS NULL OR csrf_hash ~ '^[0-9a-f]{64}$'");
+
+                            t.HasCheckConstraint("ck_sessoes_familia_id_nao_vazio", "familia_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+
+                            t.HasCheckConstraint("ck_sessoes_id_nao_vazio", "id <> '00000000-0000-0000-0000-000000000000'::uuid");
+
+                            t.HasCheckConstraint("ck_sessoes_tenant_id_nao_vazio", "tenant_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+
+                            t.HasCheckConstraint("ck_sessoes_token_hash", "token_hash ~ '^[0-9a-f]{64}$'");
+
+                            t.HasCheckConstraint("ck_sessoes_usuario_id_nao_vazio", "usuario_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+
+                            t.HasCheckConstraint("ck_sessoes_validade", "expira_em > criado_em");
                         });
                 });
 
@@ -446,7 +624,6 @@ namespace FaturaOtica.Infrastructure.Persistence.Migrations
                         .HasForeignKey("TenantId", "ActorUserId")
                         .HasPrincipalKey("TenantId", "Id")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired()
                         .HasConstraintName("fk_auditoria_usuarios_autor");
 
                     b.HasOne("FaturaOtica.Infrastructure.Identity.IdentityBranch", null)
@@ -463,6 +640,24 @@ namespace FaturaOtica.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("fk_auditoria_usuarios_alvo");
+                });
+
+            modelBuilder.Entity("FaturaOtica.Infrastructure.Identity.IdentityActivationToken", b =>
+                {
+                    b.HasOne("FaturaOtica.Infrastructure.Identity.IdentityTenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_ativacoes_tenants");
+
+                    b.HasOne("FaturaOtica.Infrastructure.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "UserId")
+                        .HasPrincipalKey("TenantId", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_ativacoes_usuarios");
                 });
 
             modelBuilder.Entity("FaturaOtica.Infrastructure.Identity.IdentityBranch", b =>
@@ -499,6 +694,31 @@ namespace FaturaOtica.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("fk_concessoes_filiais_usuarios");
+                });
+
+            modelBuilder.Entity("FaturaOtica.Infrastructure.Identity.IdentitySessionToken", b =>
+                {
+                    b.HasOne("FaturaOtica.Infrastructure.Identity.IdentityTenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_sessoes_tenants");
+
+                    b.HasOne("FaturaOtica.Infrastructure.Identity.IdentityBranch", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "ActiveBranchId")
+                        .HasPrincipalKey("TenantId", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_sessoes_filiais");
+
+                    b.HasOne("FaturaOtica.Infrastructure.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "UserId")
+                        .HasPrincipalKey("TenantId", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_sessoes_usuarios");
                 });
 
             modelBuilder.Entity("FaturaOtica.Infrastructure.Identity.IdentityTenantRole", b =>

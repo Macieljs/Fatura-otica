@@ -1,13 +1,15 @@
 # Sprint 01 — Identidade e acesso empresarial
 
 - Data: 2026-10-06 (America/Fortaleza).
-- Estado: `implementing`. S1-01/02/03A/03B integrados em develop; S1-03B passou Feature (149/149), revisão independente e CI remoto (Backend/Frontend success). A contagem antiga 3/7 (≈43%) é somente referência histórica, sem previsão de esforço. MVP replanejado em `MVP-SCOPE-DECISION-2026-10-06.md`; S1-04A1 passou Feature 254/254, revisão independente e CI remoto Quality #13 (Backend/Frontend success), integrado por `8ec47d9`. Cadastro pendente/autorizações após A1, ativação, login/sessões e integração de rotas ainda não concluídos. Acompanhar `docs/sprints/SPRINT-01-STATUS.md`.
+- Estado: `integration-pending`. S1-01/02/03A/03B e A1 estão integrados em `develop`. Em 2026-10-18, A2a1/A2a2/A2b foram implementados; ativação, login/sessões e leitura protegida do diretório foram implementados na branch backend `feature/s1-04a2-access-grants`. Login, ativação, administração e cliente TypeScript foram conectados na branch isolada `feature/s1-06-identity-integration`, baseada em `develop` 8ffa44c, após autorização explícita para conectar as telas neste worktree. Gate Feature passou 369/369 (Domain 100%/72 linhas), revisão independente sem bloqueadores, Graphify atualizado em ambos worktrees e frontend lint/build passaram. Falta verificação manual com API configurada e integrar/revisar a candidata combinada em `develop`; ver `docs/sprints/SPRINT-01-STATUS.md` e `docs/sprints/S1-06-INTEGRATION.md`.
 - Autorização: usuário confirmou iniciar esta sprint, atualizar specs e delegar execução na conversa de 06/10/2026. Reutilizar essa autorização no escopo descrito; não aprovar módulos futuros ou publicação por inferência.
 - Base: `f412f5194b07fb263a1d95f259a25cacea06197f`.
 - Integração: `develop`; incremento atual em `feature/s1-03b-audit`; estabilidade/release em `main`.
 - SM: agente coordenador desta conversa. Frontend/UX: terminal separado, com trabalho preservado.
 
 ## Objetivo
+
+Execução contínua autorizada em 2026-10-18 até concluir esta sprint: encadear os incrementos com testes focados e revisão conforme risco; consolidar Feature/cobertura na candidata de integração. Relatar ao final o que foi desenvolvido e os limites observados. A autorização não inclui deploy.
 
 Disponibilizar a base de identidade empresarial: perfil cadastrado, acesso autorizado, ativação inicial, autenticação e escopo de filiais. Uma empresa por ambiente nesta primeira entrega, URL única e tenant configurado no servidor; login sem subdomínio ou código da empresa. Manter tenant explícito nos dados e autorização para isolamento e futura evolução.
 
@@ -26,7 +28,9 @@ Disponibilizar a base de identidade empresarial: perfil cadastrado, acesso autor
 
 ## Primeiro acesso e sessão
 
-- Primeiro dono/admin provisionado por comando administrativo explícito, sem cadastro público e sem senha padrão versionada. Comando deve respeitar tenant configurado e ser idempotente ou rejeitar duplicata de forma segura.
+- Primeiro `Owner` de cada tenant provisionado por comando administrativo explícito após migrations, sem cadastro público e sem senha padrão versionada. Cria conta `Pending`; o Owner define a senha pelo link/token de uso único de ativação. A execução não ocorre a cada startup da API, respeita o tenant configurado e rejeita tentativa duplicada sem alterar credenciais/acessos existentes.
+- Owner tem acesso operacional a todas as filiais ativas do próprio tenant e pode administrar acessos. `AccessAdministrator` é uma capacidade delegada: administra concessões de `Seller`/`BranchManager`, mas não pode conceder/remover papéis `Owner`/`AccessAdministrator`. Somente Owner pode alterar esses papéis empresariais.
+- Impedir revogação, bloqueio ou remoção do último Owner ativo do tenant; verificar concorrência para impedir que alterações simultâneas violem essa invariante. Todas as alterações são auditadas.
 - Token de ativação/recuperação aleatório, armazenado somente por hash, de uso único, com expiração e revogação. Não é sessão operacional; não dá acesso a endpoints de negócio.
 - Decisão de escopo do MVP em 2026-10-06: adiar a integração SMTP para reduzir custo e tempo até a primeira entrega funcional. O fluxo de ativação permanece; o sistema gera link/token temporário de uso único, que um administrador autorizado copia e entrega por um canal externo já utilizado pela empresa. Exibir o segredo uma única vez, guardar somente hash, nunca registrar em logs e permitir emissão/revogação administrativa auditada. Não implementar entrega automática nesta sprint.
 - Proposta técnica reversível: ativação 24h; recuperação 15min; JWT 15min conforme ADR; refresh rotativo com validade absoluta de 7 dias, logout revoga sessão. Confirmar/documentar esses parâmetros no contrato, configuráveis, sem implementar remember-device com validade ilimitada.
@@ -80,18 +84,18 @@ O percentual anterior de 3/7 (≈43%) era uma contagem uniforme de marcos, sem e
 | S1-01 | Contrato OpenAPI e modelo Identity, alinhamento ADR/PRD | entregue na branch feature | Esta spec |
 | S1-02 | Políticas de domínio: usuário ativo, papéis e filiais | núcleo validado e integrado | Red → Green → revisão comprovados |
 | S1-03 | Persistência/migrations/RLS e auditoria | 03A/03B integrados em develop; CI remoto verde | PostgreSQL + QA Red + revisão independente |
-| S1-04A1 | Cadastro de perfil pendente pelo gestor | Incremento ativo; critérios em `S1-04A1-PENDING-PROFILE.md` | S1-02/03; sem concessão implícita |
-| S1-04A2 | Concessão explícita de papéis/filiais | Próximo após A1 | Administrador de acessos/dono autorizado |
-| S1-04B | Ativação manual e definição de senha | Planejado para MVP | Token seguro, hash/uso único/expiração; sem dependência de SMTP |
-| S1-05 | Login, sessão, refresh/logout | Planejado para MVP após S1-04 | S1-02/03/04 |
+| S1-04A1 | Cadastro de perfil pendente pelo gestor | Implementado em etapa anterior; branch develop `8ec47d9` | S1-02/03; sem concessão implícita |
+| S1-04A2 | Auditoria inicial, bootstrap do Owner, concessão/revogação e status de acesso | Implementado; Gate Feature/revisão aprovados | Administrador de acessos/dono autorizado; Owner inicial Pending por comando explícito |
+| S1-04B | Ativação manual e definição de senha | Implementado; Gate Feature/revisão aprovados | Token hash, uso único/expiração; SMTP adiado |
+| S1-05 | Login, sessão, refresh/logout | Implementado; Gate Feature/revisão aprovados | Argon2id, JWT sid, CSRF, cookie refresh HttpOnly e consulta de direitos atuais |
 | S1-05D (pós-MVP) | Recuperação self-service | Adiado | SMTP e fluxo de recuperação revisado |
 | S1-04C (pós-MVP) | Envio SMTP de ativação | Adiado | Adaptador/configuração SMTP; pode substituir o repasse manual sem alterar semântica do token |
-| S1-06 | Cliente TS gerado e passagem para frente UX/frontend | aguardando contrato | Sem implementação visual neste checkout |
-| S1-07 | Integração, revisão independente e candidata develop | aguardando entregas | Gate Feature completo |
+| S1-06 | Cliente TS e conexão das telas login/ativação/admin | Implementado; revisão de código feita; lint/build aprovados; verificação manual pendente | Contrato regenerado; preservar UI; testes automatizados/E2E frontend adiados |
+| S1-07 | Integração, revisão independente e candidata develop | pendente | Integrar branches e validar candidata combinada após verificação manual |
 
 ## DoD e evidências
 
-- Contrato/modelagem antes de implementação; Red funcional pelo QA antes do Green.
+- Contrato/modelagem e testes antes da implementação; Red funcional por fatia, QA revisa os cenários conforme risco. Usar `docs/TESTING_STRATEGY_MVP.md` para ciclos focados e gate final.
 - Architecture, Domain, Application e Integration com testes reais executados; Domain >=90%; build sem warnings.
 - PostgreSQL real para RLS/tenant/constraints; não substituir por InMemory/SQLite nem ignorar testes para passar CI.
 - Revisor independente confirma diff, critérios, riscos e evidências da versão candidata.
@@ -116,4 +120,4 @@ O percentual anterior de 3/7 (≈43%) era uma contagem uniforme de marcos, sem e
 
 ## Execução em incrementos — refinamento do plano
 
-Por decisão do usuário, cada run executa somente um incremento pequeno. Os itens03/04/05 estão decompostos em `docs/INCREMENTAL_EXECUTION.md`; S1-01/02/03A/03B foram entregues e integrados com as evidências registradas. Incremento validado, integração e sprintDone são estados distintos. SMTP e recuperação self-service foram adiados do MVP, sem remoção dos requisitos de segurança de ativação, autorização ou auditoria. Nenhum gate técnico do backend foi removido.
+Por decisão do usuário, a conclusão desta Sprint 01 pode encadear incrementos pequenos e validados dentro da mesma execução; a regra anterior de encerrar após um único incremento foi atualizada com autorização explícita em 2026-10-18. Entrega de uma branch, integração à develop e sprintDone continuam estados distintos. SMTP, recuperação self-service e testes automatizados/E2E de frontend permanecem adiados, sem reduzir requisitos de segurança, autorização ou auditoria do backend.

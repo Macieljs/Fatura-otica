@@ -20,7 +20,8 @@
 
 ## Plano de testes
 
-- Suítes e cenários exigidos:
+- Comando/filtro local exato, nome dos grupos de testes e critério que cada grupo cobre:
+- Suíte/cenários do gate final (Feature backend uma vez no candidato final):
 - Limites, erros e permissões:
 - Isolamento entre tenants, quando aplicável:
 - Contrato e fluxos de front/backend:

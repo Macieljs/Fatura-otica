@@ -20,14 +20,14 @@ Para frontend, o fluxo atual é especificação/aceite → UX quando aplicável 
 
 O CI atual do frontend executa instalação, lint e build. A ausência de testes frontend/E2E não é bloqueante; falhas de lint/build e critérios de aceite não atendidos continuam bloqueantes. O script `quality-gate.ps1 -Scope Frontend` permanece preparado para a futura fase com testes e não integra o fluxo atual. Não executá-lo como requisito de conclusão nesta fase.
 
-O backend mantém seus requisitos de testes, TDD e cobertura. A revisão combinada aplica os critérios atuais de cada frente. Entrega frontend aprovada nesta fase significa aprovação pelos critérios acima, sem cobertura automatizada de comportamento. A ativação da fase com testes frontend/E2E depende de nova decisão do usuário e atualização de CI/DoD.
+O backend mantém testes test-first e cobertura no gate final; o ciclo local usa testes focados conforme [`TESTING_STRATEGY_MVP.md`](TESTING_STRATEGY_MVP.md). A revisão combinada aplica os critérios atuais de cada frente. Entrega frontend aprovada nesta fase significa aprovação pelos critérios acima, sem cobertura automatizada de comportamento. A ativação da fase com testes frontend/E2E depende de nova decisão do usuário e atualização de CI/DoD.
 
 ## Fluxo
 
 ```mermaid
 flowchart LR
     A[Demanda e escopo autorizado] --> B[Orquestrador: aceite e contrato]
-    B -->|Backend| C[QA: teste que falha pelo motivo esperado]
+    B -->|Backend| C[Testes test-first por fatia, com QA conforme risco]
     B -->|Frontend atual: UX e aceite definidos| D
     C --> D[Dev: implementar e refatorar]
     D --> E[CI: lint/build frontend e testes backend]
@@ -43,7 +43,7 @@ flowchart LR
 | Agente | Responsabilidade | Entrega |
 | --- | --- | --- |
 | Orquestrador | Refinar, registrar o escopo autorizado, delegar, integrar as entregas e acompanhar bloqueios. | Tarefa com critérios de aceite, donos, dependências e estado atual. |
-| QA de testes | Traduzir os critérios em testes, registrar a falha esperada e avaliar cobertura de cenários. | Testes e evidência Red; casos de limites, erro, autorização e tenant quando aplicável. |
+| QA de testes | Traduzir critérios em cenários e revisar a cobertura de risco. | Casos/Red independentes para mudanças críticas; revisão dos testes escritos primeiro pelo Dev em tarefas simples. |
 | Backend | Definir contrato e modelagem; implementar o comportamento mínimo e refatorar. | Código, migrations e contrato OpenAPI; evidência Green. |
 | Frontend | Implementar os estados e fluxos aprovados, usando os componentes e o contrato acordados. | UI conforme o escopo, lint/build e evidências de verificação manual dos fluxos disponíveis; testes automatizados adiados. |
 | Revisor | Revisar o diff, critérios, testes e implicações da mudança em um contexto independente do autor. | Parecer para a revisão exata de código, com achados e bloqueios. |
@@ -99,7 +99,7 @@ JUnit pode ser produzido por uma ferramenta compatível com testes de componente
 
 Build com warnings tratados como erros. Para uma funcionalidade completa, os quatro projetos de testes devem conter testes executados e aprovados: Architecture, Domain, Application e Integration. O gate confirma contagens no TRX; o código de saída zero do `dotnet test` sozinho não basta.
 
-O Domínio precisa de pelo menos 90% de cobertura de linhas, com linhas instrumentadas; resultado vazio não é 100%. O projeto Domain.Tests produz Cobertura por `coverlet.collector`, filtrado para a assembly `FaturaOtica.Domain`. Cenários de endpoint/persistência precisam comprovar autorização e isolamento entre tenants com PostgreSQL real/Testcontainers. O QA mapeia esses cenários aos critérios de aceite; a contagem de testes e a cobertura não provam sozinhas isolamento de tenant.
+O Domínio precisa de pelo menos 90% de cobertura de linhas, com linhas instrumentadas; resultado vazio não é 100%. Coletar cobertura no gate final, não em cada iteração local. O projeto Domain.Tests produz cobertura por `coverlet.collector`, filtrado para a assembly `FaturaOtica.Domain`. Cenários de endpoint/persistência precisam comprovar autorização e isolamento entre tenants com PostgreSQL real/Testcontainers. QA mapeia cenários aos critérios de aceite; contagem e cobertura não provam sozinhas isolamento de tenant.
 
 O modo `Bootstrap` permite validar a infraestrutura atual apenas com testes de arquitetura e identifica explicitamente o resultado como preparação. Esse modo não qualifica a entrega de funcionalidades nem a liberação. O CI de PR usa `Feature` e continua bloqueado enquanto as suítes exigidas estiverem vazias.
 
@@ -113,8 +113,12 @@ npm.cmd run build:backend
 # Infraestrutura inicial; não autoriza liberação.
 pwsh -NoProfile -File scripts/test-backend.ps1 -Level Bootstrap -Configuration Debug
 
-# Gate completo para uma funcionalidade; requer as suítes preenchidas.
+# Gate completo no candidato final; durante o ciclo, usar o runner focado.
+# Evitar duplicar execução local se o CI validar o mesmo SHA.
 pwsh -NoProfile -File scripts/test-backend.ps1 -Level Feature -Configuration Debug
+
+# Exemplo: executar somente os testes Domain desta classe.
+npm.cmd run test:backend:focused -- -Project Domain -Filter "FullyQualifiedName~AccessPolicyTests" -NoRestore
 
 # Somente na futura fase frontend com testes autorizada pelo usuário.
 # Não é requisito de conclusão na fase atual.

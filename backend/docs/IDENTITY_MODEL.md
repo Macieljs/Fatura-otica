@@ -59,7 +59,7 @@ Leitor consultado em cada operação, sem cache na S1-02. Snapshot ausente => In
 2. Usuário/filial alvo de tenant diferente do configurado => deny TenantMismatch, inclusive Owner.
 3. Pending/Blocked => deny InactiveUser, inclusive Owner/admin.
 4. ReadOwnProfile => usuário ativo do ambiente, sem exigir filial.
-5. ManageAccess => Owner/AccessAdministrator em TenantRoles. Gestor/vendedor não podem conceder, mesmo com filial.
+5. `Owner` tem `ManageAccess` no próprio tenant. `AccessAdministrator` recebe permissão delegável somente para concessões operacionais `Seller`/`BranchManager`; não pode conceder/remover `Owner`/`AccessAdministrator`. Essa distinção deve ser aplicada pelo caso de uso/API, pois `ManageAccess` isolado não codifica a autoridade sobre o papel-alvo.
 6. OperateBranch => filial obrigatória. Owner cobre todas as filiais válidas do próprio tenant; demais somente BranchGrant Seller/BranchManager explícito para alvo.
 7. CreatePendingProfile => filial obrigatória. Owner ou BranchManager explicitamente concedido para alvo. Admin sem vínculo operacional não ganha cadastro operacional implicitamente.
 8. Owner/admin em BranchGrants não criam privilégios empresariais; Seller/BranchManager em TenantRoles não criam acesso global. Snapshot inválido/enum desconhecido nega.
@@ -79,4 +79,4 @@ SMTP precisa captura local e configuração externa em homologação. Docker/Pos
 
 ## Transporte S1-05
 
-Decisão fechada pelo SM: refresh cookie HttpOnly/host-only/SameSite=Lax/Secure em HTTPS; JWT curto em memória, sem localStorage. POST refresh/logout protege CSRF+Origin. Contrato inclui bootstrap GET /csrf com sessão refresh, no-store e Origin permitido. Proxy mesma origem recomendado, destinos pendentes. Ver ADR-0005. Proteção último admin é proposta pendente fora S1-02.
+Decisão fechada pelo SM: refresh cookie HttpOnly/host-only/SameSite=Lax/Secure em HTTPS; JWT curto em memória, sem localStorage. POST refresh/logout protege CSRF+Origin. Contrato inclui bootstrap GET /csrf com sessão refresh, no-store e Origin permitido. Proxy mesma origem recomendado, destinos pendentes. Ver ADR-0005. Decisão do PO para S1-04A2: o sistema deve manter pelo menos um Owner ativo e impedir a remoção/bloqueio do último, inclusive sob concorrência.

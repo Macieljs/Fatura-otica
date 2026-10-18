@@ -8,7 +8,7 @@ namespace FaturaOtica.Integration.Tests;
 public sealed class IdentityMigrationTests(IdentityPostgreSqlFixture fixture)
 {
     private static readonly string[] ExpectedTables =
-        ["auditoria", "concessoes_filiais", "filiais", "papeis_usuarios", "tenants", "usuarios"];
+        ["ativacoes", "auditoria", "concessoes_filiais", "filiais", "papeis_usuarios", "sessoes", "tenants", "usuarios"];
 
     [Fact]
     public async Task MigrateAsync_BancoVazio_CriaModeloIdentityVersionadoComRlsForcada()
@@ -107,7 +107,8 @@ public sealed class IdentityMigrationTests(IdentityPostgreSqlFixture fixture)
             if (name is "id" or "tenant_id" or "usuario_id" or "filial_id" or "autor_usuario_id" or "alvo_usuario_id")
             {
                 Assert.Equal("uuid", columnReader.GetString(2));
-                Assert.Equal(name == "filial_id" && columnReader.GetString(0) == "auditoria" ? "YES" : "NO", columnReader.GetString(3));
+                var nullableAuditReference = columnReader.GetString(0) == "auditoria" && (name is "filial_id" or "autor_usuario_id");
+                Assert.Equal(nullableAuditReference ? "YES" : "NO", columnReader.GetString(3));
                 if (name == "id") Assert.True(columnReader.IsDBNull(4));
                 checkedColumns++;
             }

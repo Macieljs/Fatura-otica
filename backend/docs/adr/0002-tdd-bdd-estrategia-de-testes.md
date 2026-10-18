@@ -4,14 +4,14 @@
 - **Data:** 05/10/2026 (Sprint 22)
 
 ## Decisão
-- Todo comportamento nasce de um cenário BDD (`Dado / Quando / Então`) no PRD aprovado e de um **teste falhando** (Red → Green → Refactor).
+- Todo comportamento nasce de critérios testáveis BDD (`Dado / Quando / Então`) no PRD aprovado e passa por test-first (Red → Green → Refactor) em fatias. Execução focada durante desenvolvimento; cobertura e Feature completos no candidato final. Detalhes em `../../../docs/TESTING_STRATEGY_MVP.md`.
 - **Ferramentas:** xUnit, AwesomeAssertions (fork Apache-2.0 do FluentAssertions — a v8 do FluentAssertions exige licença comercial), NSubstitute, Testcontainers (PostgreSQL), `WebApplicationFactory`, Respawn, NetArchTest, coverlet.
 
 ## Pirâmide
 
 | Projeto | Escopo | I/O | Meta |
 | :--- | :--- | :--- | :--- |
-| `Domain.Tests` | Value Objects, entidades, máquinas de estado | Nenhum | Cobertura ≥ 90% |
+| `Domain.Tests` | Value Objects, entidades, máquinas de estado | Nenhum | Cobertura ≥ 90% no gate final |
 | `Application.Tests` | Casos de uso com portas mockadas | Nenhum | Todos os cenários BDD |
 | `Integration.Tests` | API + EF Core + PostgreSQL real (RLS, constraints, migrations) | Docker | Isolamento de tenant em todo endpoint |
 | `Architecture.Tests` | Regras de dependência entre camadas | Nenhum | 100% verde |

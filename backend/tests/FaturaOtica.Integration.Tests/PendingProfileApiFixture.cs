@@ -21,6 +21,7 @@ internal sealed class PendingProfileApiFixture : WebApplicationFactory<Program>
     private readonly byte[] signingKey = RandomNumberGenerator.GetBytes(64);
     private readonly IdentityPostgreSqlFixture database;
     private readonly IReadOnlyDictionary<string, string?> configurationOverrides;
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, Guid> sessions = new();
     public IdentityTestData Data { get; }
 
     public PendingProfileApiFixture(IdentityPostgreSqlFixture database, IdentityTestData data,
@@ -41,6 +42,7 @@ internal sealed class PendingProfileApiFixture : WebApplicationFactory<Program>
         builder.UseSetting("Identity:Jwt:Audience", Audience);
         builder.UseSetting("Identity:Jwt:SigningKey", Convert.ToBase64String(signingKey));
         builder.UseSetting("Identity:Jwt:AllowedAlgorithms:0", "HS256");
+        builder.UseSetting("Identity:AllowedOrigins:0", "https://app.example.test");
         foreach (var setting in configurationOverrides)
             builder.UseSetting(setting.Key, setting.Value);
         // The minimal-host factory normalizes null web-host settings to empty strings.
@@ -60,6 +62,7 @@ internal sealed class PendingProfileApiFixture : WebApplicationFactory<Program>
             ["aud"] = variant == "audience" ? "another-api" : Audience,
             ["sub"] = (actor ?? Data.UserA).ToString(),
             ["tenant_id"] = Data.TenantA.ToString(),
+            ["sid"] = sessions.GetOrAdd(actor ?? Data.UserA, SeedSession).ToString(),
             ["iat"] = now,
             ["nbf"] = now - 1,
             ["exp"] = now + 900,
@@ -78,6 +81,10 @@ internal sealed class PendingProfileApiFixture : WebApplicationFactory<Program>
             case "sub-empty": payload["sub"] = Guid.Empty.ToString(); break;
             case "sub-malformed": payload["sub"] = "not-a-uuid"; break;
             case "sub-absent": payload.Remove("sub"); break;
+            case "sid-absent": payload.Remove("sid"); break;
+            case "sid-empty": payload["sid"] = Guid.Empty.ToString(); break;
+            case "sid-malformed": payload["sid"] = "not-a-uuid"; break;
+            case "sid-forged": payload["sid"] = Guid.CreateVersion7().ToString(); break;
         }
         if (forgedPermissions)
         {
@@ -98,6 +105,24 @@ internal sealed class PendingProfileApiFixture : WebApplicationFactory<Program>
             _ => Base64Url(HMACSHA256.HashData(key, input)),
         };
         return $"{header}.{body}.{signature}";
+    }
+
+    private Guid SeedSession(Guid user)
+    {
+        var sid = Guid.CreateVersion7();
+        using var connection = new NpgsqlConnection(database.AdminConnectionString);
+        connection.Open();
+        using var command = new NpgsqlCommand("""
+            GRANT SELECT, INSERT, UPDATE, DELETE ON identity.ativacoes, identity.sessoes TO s103a_runtime;
+            INSERT INTO identity.sessoes(id,tenant_id,usuario_id,familia_id,token_hash,criado_em,expira_em)
+            SELECT @id,tenant_id,id,@sid,@hash,now(),now()+interval '7 days' FROM identity.usuarios WHERE id=@user;
+            """, connection);
+        command.Parameters.AddWithValue("id", Guid.CreateVersion7());
+        command.Parameters.AddWithValue("sid", sid);
+        command.Parameters.AddWithValue("hash", FaturaOtica.Infrastructure.Identity.IdentitySecrets.Hash(FaturaOtica.Infrastructure.Identity.IdentitySecrets.Generate()));
+        command.Parameters.AddWithValue("user", user);
+        command.ExecuteNonQuery();
+        return sid;
     }
 
     private static string Base64Url(byte[] value)

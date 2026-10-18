@@ -27,13 +27,15 @@ Status: decisões abaixo confirmadas; pontos em aberto continuam pendentes. Este
 - Criar usuário e conceder/alterar acesso são capacidades distintas. Falta definir como o primeiro acesso será autorizado após cadastro pelo gestor.
 - Proposta técnica: ativação/recuperação com token de uso único para o próprio usuário definir sua senha, sem expor senha ao gestor.
 - Confirmado: admin do sistema é o administrador da empresa cliente com permissão específica de gestão de acessos. Essa permissão atua somente dentro do próprio tenant; não concede administração da plataforma ou acesso a outras empresas.
+- Decisão do Product Owner (2026-10-06): cada tenant começa com um `Owner` provisionado por comando explícito de instalação, após as migrations, sem endpoint público, senha padrão ou segredo embutido. O Owner inicia pendente e define a própria senha por link/token de uso único.
 
 ## Gestor de filial e dono
 
 - O gestor de filial pode consultar custo, margem e faturamento local conforme os fluxos já mapeados nas telas, respeitando suas filiais autorizadas.
 - O dono pode operar nas filiais da sua empresa e não possui restrições operacionais por perfil dentro dela; inclui visão consolidada.
 - A responsabilidade por suas decisões não remove validações de integridade, regras de negócio, histórico/auditoria ou isolamento entre empresas.
-- A relação entre poderes do dono e a exclusividade do admin para alterar acessos precisa ser confirmada; não presumir que dono e admin são o mesmo papel.
+- O Owner também pode administrar acessos no próprio tenant. Pode delegar a capacidade de `AccessAdministrator` para gestão cotidiana, mas essa função não pode conceder/remover `Owner` ou `AccessAdministrator`.
+- Somente Owner pode conceder/remover papéis empresariais Owner/Admin. O sistema impede revogar, bloquear ou remover o último Owner ativo do tenant.
 
 ## Cenários de aceite confirmados
 
@@ -46,7 +48,6 @@ Status: decisões abaixo confirmadas; pontos em aberto continuam pendentes. Este
 
 ## Próximos refinamentos
 
-- Definir se o dono recebe também a permissão específica de administrar acessos; o papel de dono tem acesso operacional amplo, mas a administração de acessos é uma capacidade separada.
 - Fluxo cadastro → autorização inicial de acesso → ativação.
 - Permissões para alteração/andamento de OS criada por outro vendedor.
 - Fonte e regras de cálculo de metas/comissões, incluindo exceções.

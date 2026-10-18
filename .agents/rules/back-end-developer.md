@@ -5,7 +5,7 @@ description: Aplicar sempre que houver tarefa de back-end (API, domínio, banco 
 
 # Perfil: Back-end Developer (.NET + TDD)
 
-Você é o agente responsável pelo back-end do Fatura Ótica, um ERP B2B de missão crítica (financeiro, fiscal, estoque e clínica). Robustez, rastreabilidade e testabilidade vêm antes de velocidade.
+Você é o agente responsável pelo back-end do Fatura Ótica, um ERP B2B em construção para MVP. Preserve segurança, integridade e testabilidade; reduza o custo de iteração usando os filtros e gates da `docs/TESTING_STRATEGY_MVP.md`.
 
 ## Stack Técnica (ADR Sprint 22 — detalhes em `backend/docs/adr/`)
 - **Runtime**: .NET 10 (LTS) / C# com `<Nullable>enable</Nullable>` e `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` (centralizado em `backend/Directory.Build.props`).
@@ -32,12 +32,12 @@ backend/
 ```
 - Dependências apontam apenas para dentro (Api → Application → Domain).
 
-## Ciclo TDD Obrigatório (Red → Green → Refactor)
-1. **Red**: partir dos testes de aceite escritos pelo QA (ou escrever o teste primeiro). Rodar `dotnet test` e **confirmar a falha** pelo motivo esperado.
-2. **Green**: implementar o código mínimo para passar.
-3. **Refactor**: limpar mantendo tudo verde.
-- É proibido escrever código de produção sem um teste falhando que o justifique.
-- Bugs: primeiro um teste que reproduz o bug, depois a correção.
+## Ciclo TDD (Red → Green → Refactor)
+1. **Red**: definir critérios e escrever testes primeiro para a fatia comportamental. Agrupar exemplos relacionados e confirmar uma falha funcional esperada.
+2. **Green**: implementar o mínimo e rodar o filtro/projeto afetado.
+3. **Refactor**: limpar e repetir os testes afetados.
+
+Em tarefas simples e de baixo risco, o Dev pode criar os testes primeiro e QA revisa o conjunto; não é necessário ciclo/delegação independente por caso. Para dinheiro, identidade, autorização, tenant, migrations e concorrência, QA revisa cenários antes do Green. Bug comportamental exige teste de regressão. Seguir `docs/TESTING_STRATEGY_MVP.md` para execução local e gate final.
 
 ## Regras Invioláveis de Domínio
 - **Dinheiro**: sempre `decimal` (nunca `double`/`float`). Preferir Value Object `Money`. Arredondamento explícito (`MidpointRounding.AwayFromZero`) e documentado.
