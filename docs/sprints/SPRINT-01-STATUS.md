@@ -8,7 +8,7 @@ Data: 2026-10-18. Estado da sprint: candidata integrada e aprovada em gates téc
 - Gate Feature da candidata combinada em `develop`: `artifacts/quality/backend/20261018-213720-f983e3c8` — 369/369 (Architecture 3, Domain 69, Application 7, Integration 290), zero falhas/skips, build 0 avisos/0 erros, Domain 100% de 72 linhas. SHA `1d723db182da7bfdf723d161197e7f199edbb4ab`; snapshot `588ce3b269c7ae9b2a5093039327be77a80a0a6061e7629b9953d48b5c754091`.
 - Revisão independente da candidata combinada: sem achados P0–P2; conferiu as 14 operações geradas contra OpenAPI, migrations preservadas e gates.
 - Frontend lint e build de produção passaram na candidata combinada. Graphify foi atualizado nos dois worktrees de tarefa e no `develop`: backend 1.924 nós/3.998 arestas/150 comunidades. Query `IdentitySessionService` encontrou o serviço, endpoints e testes relacionados (BFS profundidade 2; 160 nós correspondentes).
-- Pendências: verificação manual de login/seleção de filial/ativação/administração/logout com API configurada; CI remoto e revisão/proteções do provedor não foram verificados. `main` e deploy não foram alterados.
+- Pendências: verificação manual de login/seleção de filial/ativação/administração/logout com API configurada; as variáveis obrigatórias de identidade estão ausentes e não há PostgreSQL local na porta 5432. CI remoto e revisão/proteções do provedor não foram verificados. `main` e deploy não foram alterados.
 - SMTP, recuperação self-service e testes frontend automatizados/E2E continuam adiados pelo PO. A ativação manual e senha definida pelo usuário continuam no MVP.
 
 ## Estimativa de conclusão
