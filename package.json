@@ -8,6 +8,7 @@
     "lint:frontend": "npm --prefix frontend run lint",
     "build:backend": "dotnet build backend/FaturaOtica.slnx",
     "test:backend": "dotnet test backend/FaturaOtica.slnx",
+    "generate:identity": "node scripts/generate-identity-client.mjs",
     "graph:update": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/graphify.ps1 update .",
     "graph:query": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/graphify.ps1 query",
     "graph:explain": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/graphify.ps1 explain",

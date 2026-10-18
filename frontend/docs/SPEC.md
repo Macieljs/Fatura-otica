@@ -942,3 +942,16 @@ Os componentes e as rotas do Next.js mantêm seus caminhos relativos dentro do f
 - Estado em `localStorage` (`fatura_otica_sidebar_collapsed`) refletido em `<html data-sidebar="collapsed">` por script inline no `<head>` antes da pintura; `SidebarContext` lê via `useSyncExternalStore`. Rotas permanecem estáticas (sem cookie/`cookies()`).
 - Padrões reutilizáveis: `frontend/docs/PERFORMANCE_UI.md`.
 
+
+
+## Sprint 01 — Integração das telas de identidade com API (2026-10-18)
+
+- Login usa credenciais vazias e sessão real; a seleção de filial usa exclusivamente as filiais retornadas pelo servidor e também funciona após restauração da sessão. Contas sem filial com papel Owner ou AccessAdministrator podem abrir a administração de acessos.
+- Removidos atalhos de demonstração, credenciais locais, opção de lembrar dispositivo e recuperação simulada. Recuperação orienta contato com o administrador.
+- Ativação recebe o segredo real do fragmento da URL (query legada também aceita e removida do endereço), exige nome e senha de 12 a 128 caracteres e só confirma sucesso após resposta da API. Não há validação antecipada fictícia do token.
+- Diretório e filiais usam endpoints reais; perfis novos permanecem pendentes sem papel Seller automático. Cargo não integra a requisição de criação.
+- Owner e AccessAdministrator podem conceder/revogar acesso, alterar estado e emitir ativação. Gestores de filial criam perfis nas filiais sob gestão e consultam o diretório limitado pelo servidor.
+- Editor aplica diferenças de concessões com chamadas sequenciais e relê o diretório em falha parcial. Papéis operacionais são editados por filial, preservando outras concessões.
+- Emissão de ativação apresenta link para entrega manual e expiração retornada pelo servidor; não afirma envio de e-mail. O segredo é mantido apenas no estado da tela.
+- Formulários usam Button canônico, estado de carregamento e trava síncrona contra submissões concorrentes; containers e controles possuem IDs semânticos.
+- Verificação: lint/build e revisão coordenados no incremento de integração. Testes automatizados frontend/E2E e SMTP/recuperação permanecem adiados conforme escopo autorizado.

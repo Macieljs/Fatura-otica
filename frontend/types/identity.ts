@@ -30,10 +30,10 @@ export interface Profile {
   name: string;
   email: string;
   status: ProfileStatus;
-  branchId?: string;
+  branchId?: string | null;
   branchName?: string;
   cargo?: string;
-  createdAt: string;
+  createdAt?: string;
   lastLoginAt?: string;
 }
 
