@@ -1,8 +1,8 @@
 # S1-06 — integração das telas de identidade
 
-Estado: implementação e revisão de código aprovadas; verificação manual e integração da candidata combinada pendentes.
+Estado: integrada em `develop`; revisão de código, gate backend e lint/build aprovados; verificação manual pendente.
 
-O usuário autorizou conectar login, ativação e administração neste worktree, preservando o visual existente. A branch `feature/s1-06-identity-integration` parte de `develop` em `8ffa44c`; o checkout do outro terminal não é alterado.
+O usuário autorizou conectar login, ativação e administração neste worktree, preservando o visual existente. A branch `feature/s1-06-identity-integration` partiu de `develop` em `8ffa44c`, commit `83d3344`, e foi integrada em `develop` no commit `1d723db`; o checkout do outro terminal não foi alterado.
 
 ## Contrato e sessão
 
@@ -36,6 +36,6 @@ O navegador omite Origin em GET de mesma origem. Por isso `/api/v1/identity/csrf
 - Gate backend Feature aprovado no worktree da API: 369/369, zero skips, Domain 100%/72 linhas. Evidência `artifacts/quality/backend/20261018-213328-13def3ec`.
 - Graphify atualizado nos dois worktrees (backend 1.813 nós/3.741 arestas/136 comunidades; frontend 1.470 nós/2.642 arestas/123 comunidades).
 
-Pendente: verificar manualmente login, seleção de filial, ativação, administração, restauração e logout com API configurada; integrar e revisar a candidata combinada em `develop`.
+Pendente: verificar manualmente login, seleção de filial, ativação, administração, restauração e logout com API configurada; conferir CI remoto e regras de proteção antes da promoção para `main`.
 
 Testes automatizados frontend/E2E continuam adiados conforme decisão do usuário. Resultados dos módulos isolados não aprovam esta integração.

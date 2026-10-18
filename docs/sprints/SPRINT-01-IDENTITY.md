@@ -1,7 +1,7 @@
 # Sprint 01 — Identidade e acesso empresarial
 
 - Data: 2026-10-06 (America/Fortaleza).
-- Estado: `integration-pending`. S1-01/02/03A/03B e A1 estão integrados em `develop`. Em 2026-10-18, A2a1/A2a2/A2b foram implementados; ativação, login/sessões e leitura protegida do diretório foram implementados na branch backend `feature/s1-04a2-access-grants`. Login, ativação, administração e cliente TypeScript foram conectados na branch isolada `feature/s1-06-identity-integration`, baseada em `develop` 8ffa44c, após autorização explícita para conectar as telas neste worktree. Gate Feature passou 369/369 (Domain 100%/72 linhas), revisão independente sem bloqueadores, Graphify atualizado em ambos worktrees e frontend lint/build passaram. Falta verificação manual com API configurada e integrar/revisar a candidata combinada em `develop`; ver `docs/sprints/SPRINT-01-STATUS.md` e `docs/sprints/S1-06-INTEGRATION.md`.
+- Estado: `candidate-integrated`. S1-01/02/03A/03B e A1 estão integrados em `develop`. Em 2026-10-18, A2a1/A2a2/A2b foram implementados; ativação, login/sessões e leitura protegida do diretório foram implementados na branch backend `feature/s1-04a2-access-grants`. Login, ativação, administração e cliente TypeScript foram conectados na branch isolada `feature/s1-06-identity-integration`, baseada em `develop` 8ffa44c, após autorização explícita para conectar as telas neste worktree. Os commits foram integrados em `develop` (HEAD `1d723db`). O gate Feature passou 369/369 (Domain 100%/72 linhas), revisão independente da candidata combinada sem bloqueadores e frontend lint/build passaram. Falta verificação manual com API configurada e validação remota antes da promoção para `main`; ver `docs/sprints/SPRINT-01-STATUS.md` e `docs/sprints/S1-06-INTEGRATION.md`.
 - Autorização: usuário confirmou iniciar esta sprint, atualizar specs e delegar execução na conversa de 06/10/2026. Reutilizar essa autorização no escopo descrito; não aprovar módulos futuros ou publicação por inferência.
 - Base: `f412f5194b07fb263a1d95f259a25cacea06197f`.
 - Integração: `develop`; incremento atual em `feature/s1-03b-audit`; estabilidade/release em `main`.
@@ -90,8 +90,8 @@ O percentual anterior de 3/7 (≈43%) era uma contagem uniforme de marcos, sem e
 | S1-05 | Login, sessão, refresh/logout | Implementado; Gate Feature/revisão aprovados | Argon2id, JWT sid, CSRF, cookie refresh HttpOnly e consulta de direitos atuais |
 | S1-05D (pós-MVP) | Recuperação self-service | Adiado | SMTP e fluxo de recuperação revisado |
 | S1-04C (pós-MVP) | Envio SMTP de ativação | Adiado | Adaptador/configuração SMTP; pode substituir o repasse manual sem alterar semântica do token |
-| S1-06 | Cliente TS e conexão das telas login/ativação/admin | Implementado; revisão de código feita; lint/build aprovados; verificação manual pendente | Contrato regenerado; preservar UI; testes automatizados/E2E frontend adiados |
-| S1-07 | Integração, revisão independente e candidata develop | pendente | Integrar branches e validar candidata combinada após verificação manual |
+| S1-06 | Cliente TS e conexão das telas login/ativação/admin | Integrado em develop; revisão de código e lint/build aprovados; verificação manual pendente | Contrato regenerado; preservar UI; testes automatizados/E2E frontend adiados |
+| S1-07 | Integração, revisão independente e candidata develop | Candidata integrada e aprovada no gate técnico local | Verificação manual e validação remota antes de promoção para `main` |
 
 ## DoD e evidências
 
