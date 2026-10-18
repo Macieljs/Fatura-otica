@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useOperator } from "@/hooks/useOperator";
 import { useSidebar } from "@/context/SidebarContext";
 import OpticalBrandLogo from "@/components/OpticalBrandLogo";
+import Button from "@/components/Button";
+import { useToast } from "@/components/ToastProvider";
+import { logout } from "@/services/identityClient";
 
 interface NavItem {
   id: string;
@@ -25,8 +28,14 @@ interface NavGroup {
 
 export default function SidebarNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const toast = useToast();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { operator, isManager } = useOperator();
+  const { operator, isManager, canManageAccess, me } = useOperator();
+  const handleLogout = async () => {
+    try { await logout(); router.replace("/login"); }
+    catch { toast.error("Não foi possível confirmar o encerramento no servidor. Tente novamente."); }
+  };
   const { isCollapsed, toggleCollapse } = useSidebar();
 
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -92,7 +101,7 @@ export default function SidebarNav() {
             { id: "nav-link-entrada-nfe", href: "/kardex/entrada-nfe", label: "Entrada NF-e XML", icon: "receipt_long" },
           ],
     },
-    ...(isManager
+    ...((canManageAccess || me?.grants.some(grant => grant.role === "branchManager"))
       ? [
           {
             group: "Administração & Acessos",
@@ -297,23 +306,23 @@ export default function SidebarNav() {
           <div className={`border-t border-[#021024] bg-[#021024]/60 flex-shrink-0 mt-auto ${collapsed ? "p-2" : "p-3"}`}>
             {collapsed ? (
               <div className="flex flex-col items-center gap-2 w-9 ml-2.5">
-                <Link
+                <div
                   id="btn-sidebar-user-avatar"
-                  href="/login"
-                  title={`${operator.name} • ${operator.role} • Trocar`}
+                  title={`${operator.name} • ${operator.role}`}
                   className="relative w-9 h-9 rounded-xl bg-[#5483B3] border border-[#7DA0CA]/50 flex items-center justify-center text-white text-xs font-bold shadow-xs hover:border-white transition-all cursor-pointer"
                 >
                   <span>{initials}</span>
                   <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#052659]"></span>
-                </Link>
-                <Link
-                  id="btn-sidebar-trocar-operador"
-                  href="/login"
+                </div>
+                <Button
+                  id={`btn-sidebar-${collapsed ? "compact" : "expanded"}-sair`}
+                  variant="ghost"
+                  onClick={handleLogout}
                   title="Sair / Trocar de Terminal"
                   className="p-1 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[18px]">logout</span>
-                </Link>
+                </Button>
               </div>
             ) : (
               <div className="p-2.5 rounded-xl bg-[#031c44] border border-[#7DA0CA]/30 shadow-xs flex items-center justify-between gap-2.5">
@@ -343,14 +352,15 @@ export default function SidebarNav() {
                     </div>
                   </div>
                 </div>
-                <Link
-                  id="btn-sidebar-trocar-operador"
-                  href="/login"
+                <Button
+                  id={`btn-sidebar-${collapsed ? "compact" : "expanded"}-sair`}
+                  variant="ghost"
+                  onClick={handleLogout}
                   title="Sair / Trocar de Terminal"
                   className="p-1.5 rounded-lg text-[#7DA0CA] hover:text-white hover:bg-[#5483B3]/20 transition-all flex items-center justify-center flex-shrink-0"
                 >
                   <span className="material-symbols-outlined text-[18px]">logout</span>
-                </Link>
+                </Button>
               </div>
             )}
           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useTransition } from "react";
+import { useState, useEffect, useMemo, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useOperator } from "@/hooks/useOperator";
 import PageHeader from "@/components/PageHeader";
@@ -15,7 +15,8 @@ import {
   ProfileStatus,
   CreateProfileRequest,
 } from "@/types/identity";
-import { identityMockService } from "@/services/identityMockService";
+import { identityClient } from "@/services/identityClient";
+import { identityService } from "@/services/identityService";
 
 const ROLE_LABELS: Record<Role, { label: string; bg: string; text: string; border: string }> = {
   owner: {
@@ -26,9 +27,9 @@ const ROLE_LABELS: Record<Role, { label: string; bg: string; text: string; borde
   },
   accessAdministrator: {
     label: "Admin de Acessos",
-    bg: "bg-purple-50",
-    text: "text-purple-700",
-    border: "border-purple-200",
+    bg: "bg-[#F0F6FC]",
+    text: "text-[#052659]",
+    border: "border-[#C1E8FF]",
   },
   branchManager: {
     label: "Gestor de Filial",
@@ -68,7 +69,20 @@ const STATUS_CONFIG: Record<
 export default function AdminUsuariosPage() {
   const router = useRouter();
   const toast = useToast();
-  const { isManager, isLoaded } = useOperator();
+  const { isLoaded } = useOperator();
+  const me = identityClient.getCurrentMe();
+  const isOwner = me?.tenantRoles.includes("owner") ?? false;
+  const canManageAccess = !!me?.tenantRoles.some(role => role === "owner" || role === "accessAdministrator");
+  const managerBranchIds = me?.grants.filter(grant => grant.role === "branchManager" && grant.scope === "branch").map(grant => grant.branchId) ?? [];
+  const managerBranchKey = managerBranchIds.join(",");
+  const isManager = canManageAccess || managerBranchIds.length > 0;
+  const canCreateProfile = isOwner || managerBranchIds.length > 0;
+  const canIssueActivationFor = (profile: Profile) => canManageAccess && profile.status !== "blocked" &&
+    (isOwner || !(grantsMap[profile.id] ?? []).some(grant => grant.scope === "tenant" &&
+      (grant.role === "owner" || grant.role === "accessAdministrator")));
+  const createSubmitting = useRef(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [activation, setActivation] = useState<{ link: string; expiresAt: string } | null>(null);
   const [, startTransition] = useTransition();
 
   // Proteção de rota corporativa: apenas gestores e administradores podem acessar
@@ -104,6 +118,7 @@ export default function AdminUsuariosPage() {
 
   // Drawer de Concessões & Permissões
   const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
+  const [grantBranchId, setGrantBranchId] = useState("");
   const [userGrantsEdit, setUserGrantsEdit] = useState<Grant[]>([]);
   const [showGrantsDrawer, setShowGrantsDrawer] = useState(false);
 
@@ -115,16 +130,17 @@ export default function AdminUsuariosPage() {
     void (async () => {
       try {
         const [branchList, usersData] = await Promise.all([
-          identityMockService.getBranches(),
-          identityMockService.getUsers(),
+          identityService.getBranches(),
+          identityService.getUsers(),
         ]);
         if (!isMounted) return;
-        setBranches(branchList);
+        const availableBranches = canManageAccess ? branchList : branchList.filter(branch => managerBranchKey.split(",").includes(branch.id));
+        setBranches(availableBranches);
         setProfiles(usersData.profiles);
         setGrantsMap(usersData.grantsMap);
         setNewProfileForm((prev) => ({
           ...prev,
-          branchId: prev.branchId || branchList[0]?.id || "",
+          branchId: prev.branchId || availableBranches[0]?.id || "",
         }));
       } catch {
         if (!isMounted) return;
@@ -141,7 +157,7 @@ export default function AdminUsuariosPage() {
     return () => {
       isMounted = false;
     };
-  }, [toast, isLoaded, isManager]);
+  }, [toast, isLoaded, isManager, canManageAccess, managerBranchKey]);
 
   // KPIs
   const kpis = useMemo(() => {
@@ -170,6 +186,7 @@ export default function AdminUsuariosPage() {
 
   // Handlers
   const handleOpenCreateModal = () => {
+    if (!canCreateProfile) return;
     setNewProfileForm({
       name: "",
       email: "",
@@ -181,6 +198,9 @@ export default function AdminUsuariosPage() {
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (createSubmitting.current) return;
+    if (!branches.some(branch => branch.id === newProfileForm.branchId)) return;
+    if (!isOwner && !managerBranchIds.includes(newProfileForm.branchId)) return;
     if (!newProfileForm.name.trim() || !newProfileForm.email.trim()) {
       toast.warning("Nome e e-mail corporativo são obrigatórios.", {
         title: "Campos Obrigatórios",
@@ -188,14 +208,18 @@ export default function AdminUsuariosPage() {
       return;
     }
 
+    createSubmitting.current = true;
+    setIsCreating(true);
     try {
-      const created = await identityMockService.createProfile(newProfileForm);
+      const created = await identityService.createProfile(newProfileForm);
       startTransition(() => {
-        setProfiles((prev) => [created, ...prev]);
+        // The API's create response omits branch provenance; attach the validated
+        // branch from this request so the new row follows the active branch filter.
+        setProfiles((prev) => [{ ...created, branchId: newProfileForm.branchId }, ...prev]);
         setShowCreateModal(false);
       });
       toast.success(
-        `Colaborador "${created.name}" cadastrado! Convite seguro disparado para ${created.email}.`,
+        `Colaborador "${created.name}" cadastrado como pendente. Um administrador deve conceder acesso e emitir o link de ativação.`,
         {
           title: "Colaborador Criado",
           icon: "person_add",
@@ -203,11 +227,16 @@ export default function AdminUsuariosPage() {
       );
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao cadastrar colaborador.");
+    } finally {
+      createSubmitting.current = false;
+      setIsCreating(false);
     }
   };
 
   const handleOpenGrantsDrawer = (profile: Profile) => {
+    if (!canManageAccess) return;
     setSelectedUser(profile);
+    setGrantBranchId(profile.branchId || branches[0]?.id || "");
     const existing = grantsMap[profile.id] || [];
     setUserGrantsEdit([...existing]);
     setShowGrantsDrawer(true);
@@ -215,15 +244,16 @@ export default function AdminUsuariosPage() {
 
   const handleToggleRole = (role: Role) => {
     setUserGrantsEdit((prev) => {
-      const exists = prev.some((g) => g.role === role);
+      const matches = (g: Grant) => g.role === role && (g.scope === "tenant" || g.branchId === grantBranchId);
+      const exists = prev.some(matches);
       if (exists) {
-        return prev.filter((g) => g.role !== role);
+        return prev.filter((g) => !matches(g));
       }
       const newGrant: Grant = {
         id: `g-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
         role,
         scope: role === "owner" || role === "accessAdministrator" ? "tenant" : "branch",
-        branchId: selectedUser?.branchId,
+        branchId: role === "owner" || role === "accessAdministrator" ? undefined : grantBranchId,
       };
       return [...prev, newGrant];
     });
@@ -231,9 +261,9 @@ export default function AdminUsuariosPage() {
 
   const handleToggleBranchScope = (branchId: string) => {
     setUserGrantsEdit((prev) => {
-      const exists = prev.some((g) => g.branchId === branchId);
+      const exists = prev.some((g) => g.role === "seller" && g.branchId === branchId);
       if (exists) {
-        return prev.filter((g) => g.branchId !== branchId);
+        return prev.filter((g) => !(g.role === "seller" && g.branchId === branchId));
       }
       const newGrant: Grant = {
         id: `g-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
@@ -246,24 +276,31 @@ export default function AdminUsuariosPage() {
   };
 
   const handleSaveGrants = async () => {
-    if (!selectedUser) return;
+    if (!selectedUser || !canManageAccess) return;
     try {
-      await identityMockService.updateUserGrants(selectedUser.id, userGrantsEdit);
-      setGrantsMap((prev) => ({ ...prev, [selectedUser.id]: userGrantsEdit }));
+      const updated = await identityService.updateUserGrants(selectedUser.id, userGrantsEdit);
+      setGrantsMap((prev) => ({ ...prev, [selectedUser.id]: updated }));
       setShowGrantsDrawer(false);
       toast.success(`Permissões e papéis de "${selectedUser.name}" atualizados com sucesso!`, {
         title: "Acessos Atualizados",
         icon: "verified_user",
       });
     } catch {
-      toast.error("Erro ao salvar permissões do operador.");
+      try {
+        const fresh = await identityService.getUsers();
+        setProfiles(fresh.profiles);
+        setGrantsMap(fresh.grantsMap);
+        setUserGrantsEdit(fresh.grantsMap[selectedUser.id] ?? []);
+      } catch { /* The error feedback also covers a failed refresh. */ }
+      toast.error("Não foi possível concluir as permissões. A lista foi recarregada quando disponível; confira o estado antes de tentar novamente.");
     }
   };
 
   const handleToggleStatus = async (profile: Profile) => {
+    if (!canManageAccess) return;
     const nextStatus: ProfileStatus = profile.status === "blocked" ? "active" : "blocked";
     try {
-      await identityMockService.updateUserStatus(profile.id, nextStatus);
+      await identityService.updateUserStatus(profile.id, nextStatus);
       setProfiles((prev) =>
         prev.map((p) => (p.id === profile.id ? { ...p, status: nextStatus } : p))
       );
@@ -285,15 +322,12 @@ export default function AdminUsuariosPage() {
   };
 
   const handleResendActivation = async (profile: Profile) => {
+    if (!canIssueActivationFor(profile)) return;
     try {
-      const res = await identityMockService.resendActivation(profile.id);
-      toast.success(
-        `Novo link seguro de ativação enviado para ${profile.email}! Validade: ${res.expiresAt}.`,
-        {
-          title: "Convite Reenviado",
-          icon: "send",
-        }
-      );
+      const res = await identityService.resendActivation(profile.id);
+      const link = new URL("/ativar-conta", window.location.origin);
+      link.hash = new URLSearchParams({ token: res.token }).toString();
+      setActivation({ link: link.toString(), expiresAt: res.expiresAt });
     } catch {
       toast.error("Erro ao reenviar convite de ativação.");
     }
@@ -305,17 +339,17 @@ export default function AdminUsuariosPage() {
         id="admin-usuarios-guard-loading"
         className="flex-1 flex items-center justify-center min-h-[500px] bg-[#F0F6FC]"
       >
-        <div className="flex flex-col items-center gap-3 p-8 bg-white border border-[#5483B3]/20 rounded-2xl shadow-sm text-center max-w-md">
-          <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center">
+        <div id="admin-usuarios-div-estrutura-2" className="flex flex-col items-center gap-3 p-8 bg-white border border-[#5483B3]/20 rounded-2xl shadow-sm text-center max-w-md">
+          <div id="admin-usuarios-div-estrutura-3" className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center">
             <span className="material-symbols-outlined text-2xl">lock</span>
           </div>
-          <div>
+          <div id="admin-usuarios-div-estrutura-4">
             <h3 className="font-bold text-[#021024] text-base">Acesso Restrito a Gestores</h3>
             <p className="text-xs text-[#5483B3] mt-1">
               Esta área de configuração de colaboradores e permissões RBAC é restrita a gestores e administradores. Redirecionando...
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-[#5483B3] font-mono mt-2">
+          <div id="admin-usuarios-div-estrutura-5" className="flex items-center gap-2 text-xs text-[#5483B3] font-mono mt-2">
             <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
             <span>Verificando credenciais corporativas...</span>
           </div>
@@ -325,7 +359,7 @@ export default function AdminUsuariosPage() {
   }
 
   return (
-    <div className="flex-1 bg-[#F0F6FC] min-h-screen pb-16 text-[#021024]">
+    <div id="admin-usuarios-div-estrutura-6" className="flex-1 bg-[#F0F6FC] min-h-screen pb-16 text-[#021024]">
       {/* 1. CABEÇALHO PADRONIZADO DA TELA */}
       <PageHeader
         id="header-admin-usuarios"
@@ -341,7 +375,7 @@ export default function AdminUsuariosPage() {
           { label: "Administração" },
           { label: "Colaboradores & Acessos" },
         ]}
-        actions={
+        actions={canCreateProfile ? (
           <Button
             id="btn-admin-novo-usuario"
             variant="primary"
@@ -350,21 +384,29 @@ export default function AdminUsuariosPage() {
           >
             + Novo Colaborador
           </Button>
-        }
+        ) : undefined}
       />
 
+      {activation && (
+        <section id="admin-usuarios-ativacao-manual" className="mx-4 sm:mx-6 mt-4 p-4 bg-white border border-[#C1E8FF] rounded-xl space-y-2">
+          <h2 id="admin-usuarios-ativacao-titulo" className="font-bold text-[#052659]">Link de ativação para entrega manual</h2>
+          <p className="text-sm text-[#052659]">Compartilhe diretamente com o colaborador. Válido até {new Date(activation.expiresAt).toLocaleString("pt-BR")}.</p>
+          <input id="input-admin-usuarios-link-ativacao" aria-label="Link de ativação" readOnly value={activation.link} className="w-full border border-[#7DA0CA] rounded-lg p-2 text-sm font-mono" />
+          <Button id="btn-admin-usuarios-fechar-ativacao" variant="outline" onClick={() => setActivation(null)}>Fechar</Button>
+        </section>
+      )}
       {/* 2. CONTEÚDO PRINCIPAL */}
-      <main className="max-w-7xl 2xl:max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main id="admin-usuarios-main-estrutura-8" className="max-w-7xl 2xl:max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Faixa de Indicadores de Governança (KPIs) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div id="admin-usuarios-div-estrutura-9" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard
             id="card-kpi-total-usuarios"
             title="Total de Colaboradores"
             value={kpis.total}
             unit="usuários"
             icon="group"
-            trend={{ text: "Quadro geral da organização", isNeutral: true }}
-            footerLeft="Todas as filiais vinculadas"
+            trend={{ text: "Diretório disponível para seu acesso", isNeutral: true }}
+            footerLeft="Colaboradores autorizados para consulta"
           />
           <KpiCard
             id="card-kpi-usuarios-ativos"
@@ -396,9 +438,9 @@ export default function AdminUsuariosPage() {
         </div>
 
         {/* 3. BARRA DE FERRAMENTAS & FILTROS */}
-        <div className="bg-white border border-[#C1E8FF] rounded-2xl p-4 shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5">
+        <div id="admin-usuarios-div-estrutura-10" className="bg-white border border-[#C1E8FF] rounded-2xl p-4 shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5">
           {/* Busca textual */}
-          <div className="relative flex-1 max-w-md">
+          <div id="admin-usuarios-div-estrutura-11" className="relative flex-1 max-w-md">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">
               search
             </span>
@@ -407,24 +449,24 @@ export default function AdminUsuariosPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar por nome, e-mail corporativo ou cargo..."
+              placeholder="Buscar por nome ou e-mail corporativo..."
               className="w-full h-9.5 pl-9 pr-8 rounded-xl border border-[#7DA0CA]/60 text-xs font-medium text-[#052659] placeholder:text-slate-400 focus:outline-none focus:border-[#5483B3] focus:ring-2 focus:ring-[#5483B3]/20 bg-white"
             />
             {search && (
-              <button
+              <Button variant="ghost"
                 id="btn-admin-limpar-busca"
                 type="button"
                 onClick={() => setSearch("")}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#052659] p-0.5"
               >
                 <span className="material-symbols-outlined text-[16px]">close</span>
-              </button>
+              </Button>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div id="admin-usuarios-div-estrutura-12" className="flex flex-wrap items-center gap-2.5">
             {/* Filtro por Filial */}
-            <div className="flex items-center gap-1.5 bg-[#F0F6FC] px-2.5 py-1 rounded-xl border border-[#7DA0CA]/40">
+            <div id="admin-usuarios-div-estrutura-13" className="flex items-center gap-1.5 bg-[#F0F6FC] px-2.5 py-1 rounded-xl border border-[#7DA0CA]/40">
               <span className="material-symbols-outlined text-[#5483B3] text-[16px]">apartment</span>
               <select
                 id="select-admin-filtro-filial"
@@ -442,14 +484,14 @@ export default function AdminUsuariosPage() {
             </div>
 
             {/* Pílulas de Filtro de Status */}
-            <div className="flex items-center gap-1 bg-[#F0F6FC] p-1 rounded-xl border border-[#7DA0CA]/40">
+            <div id="admin-usuarios-div-estrutura-14" className="flex items-center gap-1 bg-[#F0F6FC] p-1 rounded-xl border border-[#7DA0CA]/40">
               {[
                 { id: "all", label: "Todos" },
                 { id: "active", label: "Ativos" },
                 { id: "pending", label: "Pendentes" },
                 { id: "blocked", label: "Bloqueados" },
               ].map((st) => (
-                <button
+                <Button variant="ghost"
                   key={st.id}
                   id={`btn-filtro-status-${st.id}`}
                   type="button"
@@ -461,16 +503,16 @@ export default function AdminUsuariosPage() {
                   }`}
                 >
                   {st.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
         </div>
 
         {/* 4. TABELA DE COLABORADORES */}
-        <div className="bg-white border border-[#C1E8FF] rounded-2xl overflow-hidden shadow-xs">
-          <div className="p-4 bg-[#F0F6FC] border-b border-[#C1E8FF] flex items-center justify-between">
-            <div className="flex items-center gap-2">
+        <div id="admin-usuarios-div-estrutura-15" className="bg-white border border-[#C1E8FF] rounded-2xl overflow-hidden shadow-xs">
+          <div id="admin-usuarios-div-estrutura-16" className="p-4 bg-[#F0F6FC] border-b border-[#C1E8FF] flex items-center justify-between">
+            <div id="admin-usuarios-div-estrutura-17" className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#052659] text-lg">manage_accounts</span>
               <h3 className="text-xs font-bold text-[#052659] uppercase tracking-wider">
                 Colaboradores Cadastrados
@@ -482,20 +524,20 @@ export default function AdminUsuariosPage() {
           </div>
 
           {isLoading ? (
-            <div className="p-12 text-center text-slate-400 flex flex-col items-center justify-center gap-2">
+            <div id="admin-usuarios-div-estrutura-18" className="p-12 text-center text-slate-400 flex flex-col items-center justify-center gap-2">
               <span className="material-symbols-outlined animate-spin text-3xl text-[#5483B3]">
                 progress_activity
               </span>
               <span className="text-xs font-semibold">Carregando operadores do tenant...</span>
             </div>
           ) : filteredProfiles.length === 0 ? (
-            <div className="p-12 text-center text-slate-500 space-y-2">
+            <div id="admin-usuarios-div-estrutura-19" className="p-12 text-center text-slate-500 space-y-2">
               <span className="material-symbols-outlined text-4xl text-slate-300">person_search</span>
               <h4 className="text-sm font-bold text-[#052659]">Nenhum colaborador encontrado</h4>
               <p className="text-xs text-slate-500">Tente ajustar os filtros de busca ou filial.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div id="admin-usuarios-div-estrutura-20" className="overflow-x-auto">
               <table id="table-admin-usuarios" className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-[#F8FAFC] text-[#052659] border-b border-[#C1E8FF] text-[11px] font-bold uppercase tracking-wider select-none">
@@ -520,8 +562,8 @@ export default function AdminUsuariosPage() {
                       >
                         {/* Coluna Colaborador */}
                         <td className="px-5 py-3.5">
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-[#052659] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                          <div id={`admin-usuarios-div-estrutura-21-${p.id}`} className="flex items-center gap-3">
+                            <div id={`admin-usuarios-div-estrutura-22-${p.id}`} className="w-9 h-9 rounded-xl bg-[#052659] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                               {p.name
                                 .split(" ")
                                 .map((n) => n[0])
@@ -529,7 +571,7 @@ export default function AdminUsuariosPage() {
                                 .join("")
                                 .toUpperCase()}
                             </div>
-                            <div className="min-w-0">
+                            <div id={`admin-usuarios-div-estrutura-23-${p.id}`} className="min-w-0">
                               <span className="font-bold text-[#052659] text-xs block truncate">
                                 {p.name}
                               </span>
@@ -547,17 +589,17 @@ export default function AdminUsuariosPage() {
 
                         {/* Coluna Filial */}
                         <td className="px-5 py-3.5">
-                          <div className="flex items-center gap-1.5">
+                          <div id={`admin-usuarios-div-estrutura-24-${p.id}`} className="flex items-center gap-1.5">
                             <span className="material-symbols-outlined text-[15px] text-[#5483B3]">
                               storefront
                             </span>
-                            <span className="font-medium text-slate-700">{p.branchName}</span>
+                            <span className="font-medium text-slate-700">{branches.find(branch => branch.id === p.branchId)?.name || "Sem lotação"}</span>
                           </div>
                         </td>
 
                         {/* Coluna Papéis */}
                         <td className="px-5 py-3.5">
-                          <div className="flex items-center gap-1.5 flex-wrap">
+                          <div id={`admin-usuarios-div-estrutura-25-${p.id}`} className="flex items-center gap-1.5 flex-wrap">
                             {userGrants.length === 0 ? (
                               <span className="text-[11px] text-slate-400 italic">
                                 Sem papéis concedidos
@@ -594,30 +636,33 @@ export default function AdminUsuariosPage() {
                         {/* Coluna Último Acesso */}
                         <td className="px-5 py-3.5">
                           <span className="font-mono text-slate-600 text-[11px]">
-                            {p.lastLoginAt || "Nunca acessou"}
+                            {p.lastLoginAt || "Não informado"}
                           </span>
                         </td>
 
                         {/* Coluna Ações */}
                         <td className="px-5 py-3.5 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            {p.status === "pending" && (
-                              <button
+                          {canManageAccess && <div id={`admin-usuarios-div-estrutura-26-${p.id}`} className="flex items-center justify-end gap-1.5">
+                            {canIssueActivationFor(p) && (
+                              <Button variant="ghost"
                                 id={`btn-usuario-reenviar-convite-${p.id}`}
                                 type="button"
+                                disabled={!canManageAccess}
                                 onClick={() => handleResendActivation(p)}
                                 className="p-1.5 rounded-lg text-[#5483B3] hover:text-[#052659] hover:bg-[#F0F6FC] transition-colors"
-                                title="Reenviar convite de ativação por e-mail"
+                                aria-label={p.status === "pending" ? "Emitir link de ativação para entrega manual" : "Reemitir link para redefinir a senha"}
+                                title={p.status === "pending" ? "Emitir link de ativação para entrega manual" : "Reemitir link para redefinir a senha"}
                               >
                                 <span className="material-symbols-outlined text-[18px]">
                                   forward_to_inbox
                                 </span>
-                              </button>
+                              </Button>
                             )}
 
-                            <button
+                            <Button variant="ghost"
                               id={`btn-usuario-gerenciar-acessos-${p.id}`}
                               type="button"
+                              disabled={!canManageAccess}
                               onClick={() => handleOpenGrantsDrawer(p)}
                               className="px-2.5 py-1.5 rounded-lg bg-[#F0F6FC] hover:bg-[#C1E8FF] text-[#052659] font-bold text-[11px] transition-colors border border-[#7DA0CA]/40 inline-flex items-center gap-1"
                               title="Configurar papéis e filiais autorizadas"
@@ -626,24 +671,26 @@ export default function AdminUsuariosPage() {
                                 admin_panel_settings
                               </span>
                               <span>Acessos</span>
-                            </button>
+                            </Button>
 
-                            <button
+                            <Button variant="ghost"
                               id={`btn-usuario-toggle-bloqueio-${p.id}`}
                               type="button"
+                              disabled={!canManageAccess || p.status === "pending"}
                               onClick={() => handleToggleStatus(p)}
                               className={`group/lock relative w-8 h-8 rounded-lg transition-all duration-200 active:scale-90 flex items-center justify-center cursor-pointer ${
                                 p.status === "blocked"
                                   ? "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 hover:shadow-2xs"
                                   : "text-rose-600 hover:text-rose-700 hover:bg-rose-50 hover:shadow-2xs"
                               }`}
+                              aria-label={p.status === "blocked" ? "Reativar colaborador" : "Suspender acesso"}
                               title={
                                 p.status === "blocked"
                                   ? "Clique para reativar/desbloquear o acesso deste colaborador"
                                   : "Clique para suspender/bloquear o acesso deste colaborador"
                               }
                             >
-                              <div className="relative w-5 h-5 flex items-center justify-center pointer-events-none">
+                              <div id={`admin-usuarios-div-estrutura-27-${p.id}`} className="relative w-5 h-5 flex items-center justify-center pointer-events-none">
                                 {p.status === "blocked" ? (
                                   <>
                                     {/* Estado normal (Verde): lock_open */}
@@ -668,8 +715,8 @@ export default function AdminUsuariosPage() {
                                   </>
                                 )}
                               </div>
-                            </button>
-                          </div>
+                            </Button>
+                          </div>}
                         </td>
                       </tr>
                     );
@@ -689,44 +736,44 @@ export default function AdminUsuariosPage() {
           id="modal-admin-novo-usuario"
           className="fixed inset-0 bg-[#021024]/70 backdrop-blur-xs z-50 flex items-center justify-center p-4"
         >
-          <div className="bg-white rounded-2xl border border-[#7DA0CA] max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-[#F0F6FC] pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-[#052659] text-white flex items-center justify-center">
+          <div id="admin-usuarios-div-estrutura-29" className="bg-white rounded-2xl border border-[#7DA0CA] max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+            <div id="admin-usuarios-div-estrutura-30" className="flex items-center justify-between border-b border-[#F0F6FC] pb-3">
+              <div id="admin-usuarios-div-estrutura-31" className="flex items-center gap-2.5">
+                <div id="admin-usuarios-div-estrutura-32" className="w-9 h-9 rounded-xl bg-[#052659] text-white flex items-center justify-center">
                   <span className="material-symbols-outlined text-[20px]">person_add</span>
                 </div>
-                <div>
+                <div id="admin-usuarios-div-estrutura-33" >
                   <h3 className="text-base font-bold text-[#052659]">Cadastrar Novo Colaborador</h3>
                   <p className="text-[11px] text-slate-500">
                     O funcionário receberá um link seguro para definir sua própria senha.
                   </p>
                 </div>
               </div>
-              <button
+              <Button variant="ghost"
                 id="btn-modal-usuario-fechar-topo"
                 type="button"
                 onClick={() => setShowCreateModal(false)}
                 className="text-slate-400 hover:text-slate-700 p-1 rounded-lg"
               >
                 <span className="material-symbols-outlined">close</span>
-              </button>
+              </Button>
             </div>
 
             {/* Aviso de Governança de Senhas */}
-            <div className="p-3 bg-[#F0F6FC] rounded-xl border border-[#7DA0CA]/50 flex items-start gap-2.5">
+            <div id="admin-usuarios-div-estrutura-34" className="p-3 bg-[#F0F6FC] rounded-xl border border-[#7DA0CA]/50 flex items-start gap-2.5">
               <span className="material-symbols-outlined text-[#052659] text-[18px] shrink-0 mt-0.5">
                 shield
               </span>
               <p className="text-[11px] text-slate-600 leading-relaxed">
                 <strong>Proteção Estrita de Credenciais:</strong> Gestores não criam senhas para
-                colaboradores. O perfil será criado como <em>Pendente</em> e um e-mail de primeiro
-                acesso com token de 24h será enviado para o endereço corporativo cadastrado.
+                colaboradores. O perfil será criado como <em>Pendente</em>. Um administrador deve
+                conceder as permissões e emitir um link de ativação para entrega manual.
               </p>
             </div>
 
-            <form onSubmit={handleSaveProfile} className="space-y-4">
+            <form id="form-admin-usuarios-criar" onSubmit={handleSaveProfile} className="space-y-4">
               {/* Nome Completo */}
-              <div className="space-y-1">
+              <div id="admin-usuarios-div-estrutura-36" className="space-y-1">
                 <label
                   htmlFor="input-modal-usuario-nome"
                   className="text-xs font-bold text-[#052659] uppercase tracking-wider block"
@@ -747,7 +794,7 @@ export default function AdminUsuariosPage() {
               </div>
 
               {/* E-mail Corporativo */}
-              <div className="space-y-1">
+              <div id="admin-usuarios-div-estrutura-37" className="space-y-1">
                 <label
                   htmlFor="input-modal-usuario-email"
                   className="text-xs font-bold text-[#052659] uppercase tracking-wider block"
@@ -768,7 +815,7 @@ export default function AdminUsuariosPage() {
               </div>
 
               {/* Filial de Lotação */}
-              <div className="space-y-1">
+              <div id="admin-usuarios-div-estrutura-38" className="space-y-1">
                 <label
                   htmlFor="select-modal-usuario-filial"
                   className="text-xs font-bold text-[#052659] uppercase tracking-wider block"
@@ -792,27 +839,9 @@ export default function AdminUsuariosPage() {
               </div>
 
               {/* Cargo / Função */}
-              <div className="space-y-1">
-                <label
-                  htmlFor="input-modal-usuario-cargo"
-                  className="text-xs font-bold text-[#052659] uppercase tracking-wider block"
-                >
-                  Cargo ou Especialidade Clínica
-                </label>
-                <input
-                  id="input-modal-usuario-cargo"
-                  type="text"
-                  value={newProfileForm.cargo || ""}
-                  onChange={(e) =>
-                    setNewProfileForm((prev) => ({ ...prev, cargo: e.target.value }))
-                  }
-                  placeholder="Ex: Consultora de Atendimento / Optometrista"
-                  className="w-full h-9.5 px-3 border border-[#7DA0CA]/60 rounded-xl text-xs font-medium focus:border-[#5483B3] focus:ring-2 focus:ring-[#5483B3]/20 outline-none"
-                />
-              </div>
 
               {/* Modal Actions */}
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+              <div id="admin-usuarios-div-estrutura-39" className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
                 <Button
                   id="btn-modal-usuario-cancelar"
                   variant="outline"
@@ -823,13 +852,14 @@ export default function AdminUsuariosPage() {
                 </Button>
                 <Button
                   id="btn-modal-usuario-salvar"
+                  isLoading={isCreating}
                   type="submit"
                   variant="primary"
                   size="md"
                   icon="send"
                   loadingText="Criando Colaborador..."
                 >
-                  Criar &amp; Enviar Convite
+                  Criar Colaborador
                 </Button>
               </div>
             </form>
@@ -840,37 +870,37 @@ export default function AdminUsuariosPage() {
       {/* ========================================================================= */}
       {/* DRAWER: MATRIZ DE PAPÉIS & FILIAIS AUTORIZADAS (ADMINISTRAÇÃO DE ACESSOS) */}
       {/* ========================================================================= */}
-      {showGrantsDrawer && selectedUser && (
+      {canManageAccess && showGrantsDrawer && selectedUser && (
         <div
           id="drawer-admin-permissoes-usuario"
           className="fixed inset-0 bg-[#021024]/60 backdrop-blur-2xs z-50 flex justify-end"
         >
-          <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between p-6 overflow-y-auto animate-in slide-in-from-right duration-200">
-            <div className="space-y-5">
+          <div id="admin-usuarios-div-estrutura-41" className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between p-6 overflow-y-auto animate-in slide-in-from-right duration-200">
+            <div id="admin-usuarios-div-estrutura-42" className="space-y-5">
               {/* Header do Drawer */}
-              <div className="flex items-center justify-between border-b border-[#F0F6FC] pb-3">
-                <div className="flex items-center gap-2">
+              <div id="admin-usuarios-div-estrutura-43" className="flex items-center justify-between border-b border-[#F0F6FC] pb-3">
+                <div id="admin-usuarios-div-estrutura-44" className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#052659] text-2xl">
                     admin_panel_settings
                   </span>
-                  <div>
+                  <div id="admin-usuarios-div-estrutura-45" >
                     <h3 className="text-base font-bold text-[#052659]">Concessões de Acesso</h3>
                     <p className="text-[11px] text-slate-500">Matriz RBAC do Colaborador</p>
                   </div>
                 </div>
-                <button
+                <Button variant="ghost"
                   id="btn-drawer-fechar"
                   type="button"
                   onClick={() => setShowGrantsDrawer(false)}
                   className="text-slate-400 hover:text-slate-700 p-1 rounded-lg"
                 >
                   <span className="material-symbols-outlined">close</span>
-                </button>
+                </Button>
               </div>
 
               {/* Card do Usuário */}
-              <div className="p-3.5 bg-[#F0F6FC] rounded-xl border border-[#7DA0CA]/50 space-y-1">
-                <div className="flex items-center justify-between">
+              <div id="admin-usuarios-div-estrutura-46" className="p-3.5 bg-[#F0F6FC] rounded-xl border border-[#7DA0CA]/50 space-y-1">
+                <div id="admin-usuarios-div-estrutura-47" className="flex items-center justify-between">
                   <span className="text-xs font-bold text-[#052659]">{selectedUser.name}</span>
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
@@ -884,12 +914,18 @@ export default function AdminUsuariosPage() {
                   {selectedUser.email}
                 </span>
                 <span className="text-[11px] text-[#5483B3] font-semibold block">
-                  Filial Principal: {selectedUser.branchName}
+                  Filial Principal: {branches.find(branch => branch.id === selectedUser.branchId)?.name || "Sem lotação"}
                 </span>
               </div>
 
+              <div id="admin-usuarios-escopo-concessao" className="space-y-1">
+                <label htmlFor="select-admin-usuarios-filial-papel" className="text-xs font-bold text-[#052659]">Filial para papéis operacionais</label>
+                <select id="select-admin-usuarios-filial-papel" value={grantBranchId} onChange={event => setGrantBranchId(event.target.value)} className="w-full border border-[#7DA0CA] rounded-lg p-2 text-sm">
+                  {branches.map(branch => <option key={branch.id} value={branch.id}>{branch.name}</option>)}
+                </select>
+              </div>
               {/* 1. Seleção de Papéis do Sistema */}
-              <div className="space-y-2">
+              <div id="admin-usuarios-div-estrutura-49" className="space-y-2">
                 <label className="text-xs font-bold text-[#052659] uppercase tracking-wider flex items-center justify-between">
                   <span>1. Papéis Atribuídos</span>
                   <span className="text-[10px] text-slate-500 font-normal">
@@ -897,7 +933,7 @@ export default function AdminUsuariosPage() {
                   </span>
                 </label>
 
-                <div className="space-y-2">
+                <div id="admin-usuarios-div-estrutura-50" className="space-y-2">
                   {(
                     [
                       {
@@ -922,12 +958,13 @@ export default function AdminUsuariosPage() {
                       },
                     ] as const
                   ).map((item) => {
-                    const isChecked = userGrantsEdit.some((g) => g.role === item.role);
+                    const isChecked = userGrantsEdit.some((g) => g.role === item.role && (g.scope === "tenant" || g.branchId === grantBranchId));
                     return (
-                      <button
+                      <Button variant="ghost"
                         key={item.role}
-                        id={`btn-toggle-papel-${item.role}`}
+                        id={`btn-toggle-papel-${item.role.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`)}`}
                         type="button"
+                        disabled={((item.role === "seller" || item.role === "branchManager") && !grantBranchId) || (!isOwner && (item.role === "owner" || item.role === "accessAdministrator"))}
                         onClick={() => handleToggleRole(item.role)}
                         className={`w-full p-3 rounded-xl border text-left transition-all flex items-start gap-3 cursor-pointer ${
                           isChecked
@@ -938,9 +975,8 @@ export default function AdminUsuariosPage() {
                         <span className="material-symbols-outlined text-[18px] shrink-0 mt-0.5">
                           {isChecked ? "check_box" : "check_box_outline_blank"}
                         </span>
-                        <div>
-                          <div
-                            className={`text-xs font-bold ${isChecked ? "text-white" : "text-[#052659]"}`}
+                        <div id={`admin-usuarios-div-estrutura-51-${item.role.toLowerCase()}`} >
+                          <div id={`admin-usuarios-div-estrutura-52-${item.role.toLowerCase()}`} className={`text-xs font-bold ${isChecked ? "text-white" : "text-[#052659]"}`}
                           >
                             {item.title}
                           </div>
@@ -952,26 +988,26 @@ export default function AdminUsuariosPage() {
                             {item.desc}
                           </p>
                         </div>
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
               </div>
 
               {/* 2. Filiais Autorizadas */}
-              <div className="space-y-2 pt-2 border-t border-slate-100">
+              <div id="admin-usuarios-div-estrutura-53" className="space-y-2 pt-2 border-t border-slate-100">
                 <label className="text-xs font-bold text-[#052659] uppercase tracking-wider flex items-center justify-between">
-                  <span>2. Filiais com Acesso Autorizado</span>
+                  <span>2. Acesso de Vendedor por Filial</span>
                   <span className="text-[10px] text-slate-500 font-normal">
                     (Escopo operacional)
                   </span>
                 </label>
 
-                <div className="space-y-1.5">
+                <div id="admin-usuarios-div-estrutura-54" className="space-y-1.5">
                   {branches.map((b) => {
-                    const hasAccess = userGrantsEdit.some((g) => g.branchId === b.id);
+                    const hasAccess = userGrantsEdit.some((g) => g.role === "seller" && g.branchId === b.id);
                     return (
-                      <button
+                      <Button variant="ghost"
                         key={b.id}
                         id={`btn-toggle-filial-${b.id}`}
                         type="button"
@@ -982,7 +1018,7 @@ export default function AdminUsuariosPage() {
                             : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                         }`}
                       >
-                        <div className="flex items-center gap-2">
+                        <div id={`admin-usuarios-div-estrutura-55-${b.id}`} className="flex items-center gap-2">
                           <span className="material-symbols-outlined text-[16px] text-[#5483B3]">
                             apartment
                           </span>
@@ -991,7 +1027,7 @@ export default function AdminUsuariosPage() {
                         <span className="material-symbols-outlined text-[18px]">
                           {hasAccess ? "check_circle" : "radio_button_unchecked"}
                         </span>
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
@@ -999,7 +1035,7 @@ export default function AdminUsuariosPage() {
             </div>
 
             {/* Ações do Drawer */}
-            <div className="pt-4 border-t border-slate-200 space-y-2">
+            <div id="admin-usuarios-div-estrutura-56" className="pt-4 border-t border-slate-200 space-y-2">
               <Button
                 id="btn-drawer-salvar-concessoes"
                 variant="primary"
@@ -1011,9 +1047,10 @@ export default function AdminUsuariosPage() {
                 Salvar Concessões
               </Button>
 
-              <div className="flex items-center gap-2">
-                <button
+              <div id="admin-usuarios-div-estrutura-57" className="flex items-center gap-2">
+                <Button variant="ghost"
                   id="btn-drawer-toggle-bloqueio"
+                  disabled={selectedUser.status === "pending"}
                   type="button"
                   onClick={() => handleToggleStatus(selectedUser)}
                   className={`group/drawer-lock flex-1 py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${
@@ -1026,17 +1063,17 @@ export default function AdminUsuariosPage() {
                     {selectedUser.status === "blocked" ? "lock_open" : "lock"}
                   </span>
                   <span>{selectedUser.status === "blocked" ? "Reativar Colaborador" : "Suspender Acesso"}</span>
-                </button>
+                </Button>
 
-                {selectedUser.status === "pending" && (
-                  <button
+                {canIssueActivationFor(selectedUser) && (
+                  <Button variant="ghost"
                     id="btn-drawer-reenviar-convite"
                     type="button"
                     onClick={() => handleResendActivation(selectedUser)}
                     className="flex-1 py-2 px-3 rounded-xl border border-[#7DA0CA] bg-white hover:bg-[#F0F6FC] text-[#052659] text-xs font-bold transition-colors"
                   >
-                    Reenviar Convite
-                  </button>
+                    {selectedUser.status === "pending" ? "Emitir Link de Ativação" : "Reemitir Link para Definir Senha"}
+                  </Button>
                 )}
               </div>
             </div>
