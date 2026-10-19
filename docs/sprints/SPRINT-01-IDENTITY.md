@@ -1,7 +1,7 @@
 # Sprint 01 — Identidade e acesso empresarial
 
 - Data: 2026-10-06 (America/Fortaleza).
-- Estado: candidata funcional integrada e verificada localmente em `develop`; validação remota ainda pendente. A integração de backend está em `435c614`, a integração frontend em `1d723db`, e a candidata recebeu correções de smoke/documentação até `866876c`. O gate Feature passou 369/369 (Domain 100%/72 linhas), a revisão independente da candidata combinada não encontrou bloqueadores, o frontend lint/build passaram e o smoke manual com PostgreSQL descartável passou. O worktree está limpo. Publicar a candidata em `develop` e conferir o CI remoto; promoção para `main` segue sujeita aos critérios de estabilidade de `docs/BRANCH_WORKFLOW.md`, sem deploy nesta sprint.
+- Estado: Sprint 01 concluída em `develop` no candidato de código `36d9eb2`. O gate GitHub Actions Quality passou nos jobs Frontend e Backend (run `39245614768`); o gate Feature local passou 369/369 (Domain 100%/72 linhas), a revisão independente da candidata combinada não encontrou bloqueadores, lint/build passaram e o smoke manual com PostgreSQL descartável passou. A atualização de status deste resultado será o commit documental seguinte. O status separado `Vercel` reportou falha de implantação automática; isso não alterou o resultado dos jobs Quality. `main` e produção não foram alteradas. Uma promoção futura continua sujeita aos critérios de estabilidade de `docs/BRANCH_WORKFLOW.md` e à autorização de ambiente aplicável.
 - Autorização: usuário confirmou iniciar esta sprint, atualizar specs e delegar execução na conversa de 06/10/2026. Reutilizar essa autorização no escopo descrito; não aprovar módulos futuros ou publicação por inferência.
 - Base: `f412f5194b07fb263a1d95f259a25cacea06197f`.
 - Integração: `develop`; incremento atual em `feature/s1-03b-audit`; estabilidade/release em `main`.
@@ -91,7 +91,7 @@ O percentual anterior de 3/7 (≈43%) era uma contagem uniforme de marcos, sem e
 | S1-05D (pós-MVP) | Recuperação self-service | Adiado | SMTP e fluxo de recuperação revisado |
 | S1-04C (pós-MVP) | Envio SMTP de ativação | Adiado | Adaptador/configuração SMTP; pode substituir o repasse manual sem alterar semântica do token |
 | S1-06 | Cliente TS e conexão das telas login/ativação/admin | Integrado, revisado e verificado manualmente em ambiente descartável; lint/build aprovados | Contrato regenerado; preservar UI; testes automatizados/E2E frontend adiados |
-| S1-07 | Integração, revisão independente e candidata develop | Integração local completa; gate backend, lint/build, smoke e revisão independente aprovados | CI remoto da candidata em `develop`; promoção para `main` somente após critérios de estabilidade |
+| S1-07 | Integração, revisão independente e candidata develop | Concluído em `develop`; CI remoto Quality passou em Frontend e Backend no run `39245614768` | Promoção para `main` somente após critérios de estabilidade |
 
 ## DoD e evidências
 

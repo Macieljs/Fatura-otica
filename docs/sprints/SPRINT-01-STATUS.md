@@ -1,6 +1,6 @@
 # Sprint 01 — acompanhamento do Scrum Master
 
-Data: 2026-10-19. Estado da sprint: recorte funcional S1-01 a S1-06 integrado e verificado localmente em `develop`; S1-07 aguarda publicação e CI remoto da candidata. Promoção para `main` e deploy não realizados.
+Data: 2026-10-19. Estado da sprint: Sprint 01 concluída em `develop` no candidato de código `36d9eb23485e82b5460a9ae18393e2bd6ac648ce`. GitHub Actions Quality passou no remoto. Promoção para `main` e deploy não realizados.
 
 ## Estado atual da candidata — 19/10/2026
 
@@ -10,8 +10,9 @@ Data: 2026-10-19. Estado da sprint: recorte funcional S1-01 a S1-06 integrado e 
 - Frontend lint e build de produção passaram na candidata combinada. No smoke manual, Owner e Vendedor entraram e selecionaram filial; a ativação respondeu 204, a administração criou colaborador, gravou papel/filial e emitiu link, e o vendedor recebeu 403 ao abrir a área restrita. Logout e restauração por refresh cookie foram verificados. Ambiente PostgreSQL 17 descartável, migrations aplicadas; nenhum dado externo foi usado.
 - O smoke identificou e corrigiu duas falhas de frontend: aviso de acesso negado repetido durante o redirect e alegações de certificação/compliance sem comprovação no login/ativação. As mensagens foram simplificadas; lint e build passaram após as correções. O dashboard de operação segue com conteúdo demonstrativo e não foi considerado dado integrado da API.
 - Graphify foi atualizado após as correções e a atualização documental: `develop` com 1.926 nós, 4.002 arestas e 154 comunidades. Query `IdentitySessionService` encontrou 165 nós em BFS de profundidade 2, incluindo serviço, endpoints, testes e documentação relacionada.
-- A referência `origin/develop` foi consultada diretamente no GitHub em 19/10 e ainda aponta para `8ffa44c`; a candidata local é descendente direta e está 8 commits à frente. Nenhum CI remoto foi executado para os commits da Sprint 1 porque ainda não foram publicados.
-- Pendências para fechar a candidata: publicar `develop` e aguardar os checks remotos. As proteções de branch ainda não foram consultadas. `main` e deploy não foram alterados; isso é uma etapa posterior de estabilidade/liberação.
+- A referência remota `develop` avançou por fast-forward para `36d9eb23485e82b5460a9ae18393e2bd6ac648ce`. GitHub Actions Quality run `39245614768` concluiu `success`: Frontend quality (lint/build) e Backend quality (Feature + cobertura) passaram. A API pública de Actions confirmou os dois jobs concluídos com sucesso.
+- O status separado `Vercel` no commit está `failure` e aponta a implantação `AL6k6psT9NE7gWMicNuNqgjDh9A9`; a mensagem pede inspeção pelo Vercel CLI. O workflow GitHub Actions Quality não falhou e o check não faz parte dos dois jobs do workflow. Registrar como pendência de implantação/preview se ela for necessária; esta sprint não autorizou deploy.
+- Sprint funcional concluída em `develop`. Antes de qualquer promoção futura para `main`, ainda é preciso verificar regras de proteção/revisão, avaliar o erro do Vercel caso o ambiente de preview seja necessário e repetir os gates para o SHA candidato de promoção. `main` e produção não foram alteradas.
 - SMTP, recuperação self-service e testes frontend automatizados/E2E continuam adiados pelo PO. A ativação manual e senha definida pelo usuário continuam no MVP.
 
 ## Estimativa de conclusão
