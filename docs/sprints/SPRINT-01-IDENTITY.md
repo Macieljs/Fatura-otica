@@ -1,7 +1,7 @@
 # Sprint 01 — Identidade e acesso empresarial
 
 - Data: 2026-10-06 (America/Fortaleza).
-- Estado: `candidate-integrated`. S1-01/02/03A/03B e A1 estão integrados em `develop`. Em 2026-10-18, A2a1/A2a2/A2b foram implementados; ativação, login/sessões e leitura protegida do diretório foram implementados na branch backend `feature/s1-04a2-access-grants`. Login, ativação, administração e cliente TypeScript foram conectados na branch isolada `feature/s1-06-identity-integration`, baseada em `develop` 8ffa44c, após autorização explícita para conectar as telas neste worktree. Os commits foram integrados em `develop` (código em `1d723db`, HEAD atual `fd21a50` após atualização documental). O gate Feature passou 369/369 (Domain 100%/72 linhas), revisão independente da candidata combinada sem bloqueadores e frontend lint/build passaram. Falta verificação manual com API configurada e validação remota antes da promoção para `main`; ver `docs/sprints/SPRINT-01-STATUS.md` e `docs/sprints/S1-06-INTEGRATION.md`.
+- Estado: candidata funcional integrada e verificada localmente em `develop`; validação remota ainda pendente. A integração de backend está em `435c614`, a integração frontend em `1d723db`, e a candidata recebeu correções de smoke/documentação até `866876c`. O gate Feature passou 369/369 (Domain 100%/72 linhas), a revisão independente da candidata combinada não encontrou bloqueadores, o frontend lint/build passaram e o smoke manual com PostgreSQL descartável passou. O worktree está limpo. Publicar a candidata em `develop` e conferir o CI remoto; promoção para `main` segue sujeita aos critérios de estabilidade de `docs/BRANCH_WORKFLOW.md`, sem deploy nesta sprint.
 - Autorização: usuário confirmou iniciar esta sprint, atualizar specs e delegar execução na conversa de 06/10/2026. Reutilizar essa autorização no escopo descrito; não aprovar módulos futuros ou publicação por inferência.
 - Base: `f412f5194b07fb263a1d95f259a25cacea06197f`.
 - Integração: `develop`; incremento atual em `feature/s1-03b-audit`; estabilidade/release em `main`.
@@ -90,8 +90,8 @@ O percentual anterior de 3/7 (≈43%) era uma contagem uniforme de marcos, sem e
 | S1-05 | Login, sessão, refresh/logout | Implementado; Gate Feature/revisão aprovados | Argon2id, JWT sid, CSRF, cookie refresh HttpOnly e consulta de direitos atuais |
 | S1-05D (pós-MVP) | Recuperação self-service | Adiado | SMTP e fluxo de recuperação revisado |
 | S1-04C (pós-MVP) | Envio SMTP de ativação | Adiado | Adaptador/configuração SMTP; pode substituir o repasse manual sem alterar semântica do token |
-| S1-06 | Cliente TS e conexão das telas login/ativação/admin | Integrado em develop; revisão de código e lint/build aprovados; verificação manual pendente | Contrato regenerado; preservar UI; testes automatizados/E2E frontend adiados |
-| S1-07 | Integração, revisão independente e candidata develop | Candidata integrada e aprovada no gate técnico local | Verificação manual e validação remota antes de promoção para `main` |
+| S1-06 | Cliente TS e conexão das telas login/ativação/admin | Integrado, revisado e verificado manualmente em ambiente descartável; lint/build aprovados | Contrato regenerado; preservar UI; testes automatizados/E2E frontend adiados |
+| S1-07 | Integração, revisão independente e candidata develop | Integração local completa; gate backend, lint/build, smoke e revisão independente aprovados | CI remoto da candidata em `develop`; promoção para `main` somente após critérios de estabilidade |
 
 ## DoD e evidências
 
